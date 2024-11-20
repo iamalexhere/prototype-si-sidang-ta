@@ -6,5 +6,7 @@ module.exports = {
         blueText: '#26547c',
       },
     },
-    plugins: [],
+    plugins: [
+      require('tailwindcss-filters'),
+    ]
   }

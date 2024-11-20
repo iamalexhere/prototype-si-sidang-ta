@@ -11,10 +11,16 @@
             background-size: cover;
             background-position: center;
         }
+        .mainColor{
+            background-color: #EF476F;
+        }
+        .mainColor:hover{
+            background-color: #DA5C7A;
+        }
     </style>
 </head>
 <body class="bg-random h-screen flex items-center justify-center">
-    <div class="bg-white bg-opacity-30 backdrop-blur-lg rounded-lg shadow-lg p-8 max-w-sm w-full">
+    <div class="bg-white bg-opacity-50  backdrop-blur-2xl  backdrop-filter rounded-2xl shadow-lg p-8 max-w-sm w-full  border-2 border-white">
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login SISTA</h2>
         <form form action="dashboard-mahasiswa.html" method="get">
             <div class="mb-4">
@@ -25,8 +31,8 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
                 <input id="password" type="password" placeholder="Enter your password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
             </div>
-            <div class="flex items-center justify-between">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Login</button>
+            <div class="flex items-center justify-center">
+                <button type="submit" class="mainColor text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full rounded-md">Login</button>
             </div>
         </form>
     </div>
