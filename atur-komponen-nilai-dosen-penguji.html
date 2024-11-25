@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atur Komponen Nilai untuk Dosen Penguji</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="max-w-4xl mx-auto mt-10">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-xl font-bold">Manajemen Komponen Nilai</h1>
+            <button id="addRowButton" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg shadow-md">
+                Tambahkan Komponen Nilai Baru
+            </button>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-3 text-left">Komponen</th>
+                        <th class="p-3 text-left">Bobot</th>
+                        <th class="p-3 text-left">Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Baris akan di isi di sini -->
+                </tbody>
+            </table>
+        </div>
+
+        <h2>TOTAL</h2>
+        <h2></h2>
+    </div>
+
+    <script>
+        // Dummy data
+        const dummyData = [
+            { komponen: "Tata Tulis Laporan", bobot: "30%" },
+            { komponen: "Penguasaan Materi", bobot: "40%" },
+            { komponen: "Kelengkapan Materi", bobot: "20%" },
+            { komponen: "Kelengkapan Bimbingan", bobot: "10%" },
+        ];
+
+        const tableBody = document.getElementById('tableBody');
+        const addRowButton = document.getElementById('addRowButton');
+
+        // Render baris tabel
+        function renderTableRows(data) {
+            tableBody.innerHTML = '';
+            data.forEach((item, index) => {
+                tableBody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3">${item.komponen}</td>
+                        <td class="p-3">${item.bobot}</td>
+                        <td class="p-3">
+                            <button class="text-blue-500 hover:underline" onclick="editRow(${index})">Edit</button>
+                            <button class="text-red-500 hover:underline" onclick="deleteRow(${index})">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Menambah baris baru
+        addRowButton.addEventListener('click', () => {
+            const newRow = { komponen: "Komponen Baru", bobot: "0%" };
+            dummyData.push(newRow);
+            renderTableRows(dummyData);
+        });
+
+        // Edit baris
+        function editRow(index) {
+            const newKomponen = prompt("Edit Komponen:", dummyData[index].komponen);
+            const newBobot = prompt("Edit Bobot:", dummyData[index].bobot);
+            if (newKomponen !== null) dummyData[index].komponen = newKomponen;
+            if (newBobot !== null) dummyData[index].bobot = newBobot;
+            renderTableRows(dummyData);
+        }
+
+        // Menghapus baris
+        function deleteRow(index) {
+            if (confirm("Apakah Anda yakin ingin menghapus komponen ini?")) {
+                dummyData.splice(index, 1);
+                renderTableRows(dummyData);
+            }
+        }
+
+        // Initial render
+        renderTableRows(dummyData);
+    </script>
+
+</body>
+</html>
