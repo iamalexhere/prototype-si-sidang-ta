@@ -1,0 +1,49 @@
+#containerTambahPeserta {
+    width: 80%;
+    height: 85%;
+    border-color: black;
+    border-width: 1px;
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#containerTambahPeserta > h1 {
+    font-size: 40px;
+}
+
+#data {
+    width: 80%;
+    margin-top: 30px;
+}
+
+#data > form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+}
+
+#data > form > input[type="text"] {
+    background-color: transparent;
+    border-bottom: 1px solid black;
+    outline: none;
+    font-size: 20px;
+}
+
+#data > form > input[type="submit"] {
+    background-color: lightblue;
+    outline: none;
+    width: 20%;
+    height: 50px;
+    border-radius: 20px;
+    font-size: 18px;
+}
+
+#data > form > input[type="submit"]:hover {
+    background-color: blue;
+    color: white;
+    transition-duration: 0.7s;
+}

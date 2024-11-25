@@ -1,0 +1,27 @@
+#kelola {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 40px;
+    row-gap: 50px;
+    margin: 60px;
+}
+
+#kelola > form {
+    border-color: black;
+    border-width: 1px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#kelola > form > button {
+    width: 254px;
+    height: 186px;
+    font-size: 30px;
+}
+
+#kelola > form:hover {
+    background-color: #C75B7A;
+    color: white;
+    transition-duration: 500ms;
+}
