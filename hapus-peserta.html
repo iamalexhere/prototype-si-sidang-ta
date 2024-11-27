@@ -6,7 +6,7 @@
     <title>Kelola TA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="sidebar.js" text="text/javascript" defer></script>
-    <link rel="stylesheet" href="ubah-peserta.css">
+    <link rel="stylesheet" href="hapus-peserta.css">
 </head>
 <body class="bg-gray-100 font-sans h-screen">
 
@@ -71,6 +71,7 @@
 
                         <footer>
                             <p>Penguji: Lionov, Ph.D., Natalia, S.Si,M.Si.</p>
+                            <input type="button" value="Hapus">
                         </footer>
                     </div>
 
@@ -86,32 +87,34 @@
 
                         <footer>
                             <p>Penguji: Lionov, Ph.D., Natalia, S.Si,M.Si.</p>
+                            <input type="button" value="Hapus">
                         </footer>
                     </div>
                 </div>
 
-                <div id="popupEdit" style="display: none;">
-                    <h1>Data Peserta</h1>
-                    <form action="" method="">
-                        <input type="text" name="npm" placeholder="NPM" required>
-                        <input type="text" name="nama" placeholder="Nama" required>
-                        <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
-                        <input type="text" name="pembimbing" placeholder="Pembimbing" required>
-                        <input type="text" name="penguji1" placeholder="Penguji 1" required>
-                        <input type="text" name="penguji2" placeholder="Penguji 2" required>
-                        <input type="button" name="submitData" value="Ubah Peserta" onclick="popUpKonfirmasi">
-                    </form>
-                </div>
-
-                <div id="popupKonfirmasi" style="display: none;">
-                    <p>Apakah Data Peserta Sudah Benar?</p>
+                <div class="popupKonfirmasi" id="konfsatu" style="display: none;">
+                    <p>Apakah Anda yakin ingin menghapus?</p>
                     
                     <input type="submit" value="Tidak">
                     <input type="submit" value="Ya">
                </div>
 
-               <div id="pesanBerhasil" style="display: none;">
-                    <p>Data Peserta berhasil diubah!</p>
+               <div class="popupKonfirmasi" id="konfdua" style="display: none;">
+                    <p>Apakah Anda yakin ingin menghapus?</p>
+                    
+                    <input type="submit" value="Tidak">
+                    <input type="submit" value="Ya">
+                </div>
+
+               <div class="pesanBerhasil" id="pesansatu" style="display: none;">
+                    <p>Data Peserta berhasil dihapus!</p>
+                    <div id="ok">
+                        <input type="submit" value="OK">
+                    </div> 
+                </div>
+
+                <div class="pesanBerhasil" id="pesandua" style="display: none;">
+                    <p>Data Peserta berhasil dihapus!</p>
                     <div id="ok">
                         <input type="submit" value="OK">
                     </div> 
@@ -149,41 +152,58 @@
         (function () {
             let tombolCari = document.querySelector("input[value='Cari']");
             let hasilCari = document.querySelector("#hasilCari");
+            let listPeserta = document.querySelectorAll(".peserta");
 
             tombolCari.addEventListener("click", showHasilCari => {
                 hasilCari.removeAttribute("style");
+                listPeserta[0].removeAttribute("style");
+                listPeserta[1].removeAttribute("style");
             })
 
-            let listPeserta = document.querySelectorAll(".peserta");
-            let popupEdit = document.querySelector("#popupEdit");
-            let popupKonf = document.querySelector("#popupKonfirmasi");
-            let popupPesan = document.querySelector("#pesanBerhasil");
+            let popupKonf1 = document.querySelector("#konfsatu");
+            let popupKonf2 = document.querySelector("#konfdua");
+            let popupPesan1 = document.querySelector("#pesansatu");
+            let popupPesan2 = document.querySelector("#pesandua");
 
-            listPeserta.forEach(peserta => {
-                peserta.addEventListener("click", showEditForm => {
-                    popupEdit.removeAttribute("style");
-                });
+            let tombolHapus1 = listPeserta[0].querySelector("footer>input");
+            let tombolHapus2 = listPeserta[1].querySelector("footer>input");
+
+            tombolHapus1.addEventListener("click", showKonf => {
+                popupKonf1.removeAttribute("style");
             });
 
-            let ubahBtn = popupEdit.querySelector("form>input:last-child");
-            ubahBtn.addEventListener("click", showPopUpKonf => {
-                popupKonf.removeAttribute("style");
+            tombolHapus2.addEventListener("click", showKonf => {
+                popupKonf2.removeAttribute("style");
             });
 
-            let tombolTidak = popupKonf.querySelector("input[value='Tidak']");
-            let tombolYa = popupKonf.querySelector("input[value='Ya']");
-            tombolTidak.addEventListener("click", hidePopUpKonf => {
-                popupKonf.setAttribute("style", "display: none");
+            let tombolTidak1 = popupKonf1.querySelector("input[value='Tidak']");
+            let tombolTidak2 = popupKonf2.querySelector("input[value='Tidak']");
+            let tombolYa1 = popupKonf1.querySelector("input[value='Ya']");
+            let tombolYa2 = popupKonf2.querySelector("input[value='Ya']");
+            tombolTidak1.addEventListener("click", hidePopUpKonf => {
+                popupKonf1.setAttribute("style", "display: none");
             })
-            tombolYa.addEventListener("click", showPesan => {
-                popupKonf.setAttribute("style", "display: none");
-                popupPesan.removeAttribute("style");
+            tombolYa1.addEventListener("click", showPesan => {
+                popupKonf1.setAttribute("style", "display: none");
+                popupPesan1.removeAttribute("style");
+            })
+            tombolTidak2.addEventListener("click", hidePopUpKonf => {
+                popupKonf2.setAttribute("style", "display: none");
+            })
+            tombolYa2.addEventListener("click", showPesan => {
+                popupKonf2.setAttribute("style", "display: none");
+                popupPesan2.removeAttribute("style");
             })
 
-            let tombolOK = popupPesan.querySelector("div>input");
-            tombolOK.addEventListener("click", closePopUps => {
-                popupEdit.setAttribute("style", "display: none");
-                popupPesan.setAttribute("style", "display: none");
+            let tombolOK1 = popupPesan1.querySelector("div>input");
+            let tombolOK2 = popupPesan2.querySelector("div>input");
+            tombolOK1.addEventListener("click", closePopUps => {
+                popupPesan1.setAttribute("style", "display: none");
+                listPeserta[0].setAttribute("style", "display: none");
+            });
+            tombolOK2.addEventListener("click", closePopUps => {
+                popupPesan2.setAttribute("style", "display: none");
+                listPeserta[1].setAttribute("style", "display: none");
             });
         })();
     </script>

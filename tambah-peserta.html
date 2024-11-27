@@ -54,15 +54,29 @@
                     <h1>Data  Peserta TA</h1>
 
                     <div id="data">
-                        <form action="" method="post">
-                            <input type="text" name="npm" placeholder="NPM">
-                            <input type="text" name="nama" placeholder="Nama">
-                            <input type="text" name="judulSkripsi" placeholder="Judul Skripsi">
-                            <input type="text" name="pembimbing" placeholder="Pembimbing">
-                            <input type="text" name="penguji1" placeholder="Penguji 1">
-                            <input type="text" name="penguji2" placeholder="Penguji 2">
-                            <input type="submit" name="submitData" value="Tambah Peserta">
+                        <form action="" method="">
+                            <input type="text" name="npm" placeholder="NPM" required>
+                            <input type="text" name="nama" placeholder="Nama" required>
+                            <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
+                            <input type="text" name="pembimbing" placeholder="Pembimbing" required>
+                            <input type="text" name="penguji1" placeholder="Penguji 1" required>
+                            <input type="text" name="penguji2" placeholder="Penguji 2" required>
+                            <input type="button" name="submitData" value="Tambah Peserta" onclick="popUpKonfirmasi">
                         </form>
+                    </div>
+
+                    <div id="popupKonfirmasi" style="display: none;">
+                        <p>Apakah Data Peserta Sudah Benar?</p>
+                        
+                        <input type="submit" value="Tidak">
+                        <input type="submit" value="Ya">
+                   </div>
+                   
+                   <div id="pesanBerhasil" style="display: none;">
+                        <p>Data Peserta berhasil ditambah!</p>
+                        <div id="ok">
+                            <input type="submit" value="OK">
+                        </div> 
                     </div>
                </div>
             </div>
@@ -91,5 +105,34 @@
         </div>
 
     </div>
+
+    <script>
+        (function () {
+            let popUpKonf = document.querySelector("#popupKonfirmasi");
+            let popUpBerhasil = document.querySelector("#pesanBerhasil");
+
+            let tambahPesertaBtn = document.querySelector("#data>form>input[type='button']");
+            let tombolTidak = popUpKonf.querySelector("input[value='Tidak']");
+            let tombolYa = popUpKonf.querySelector("input[value='Ya']");
+            let tombolOK = popUpBerhasil.querySelector("div > input");
+
+            tambahPesertaBtn.addEventListener("click", showKonf => {
+                popUpKonf.removeAttribute("style");
+            });
+
+            tombolTidak.addEventListener("click", hide => {
+                popUpKonf.setAttribute("style", "display: none");
+            });
+
+            tombolYa.addEventListener("click", showPesan => {
+                popUpKonf.setAttribute("style", "display: none");
+                popUpBerhasil.removeAttribute("style")
+            });
+
+            tombolOK.addEventListener("click", hide => {
+                popUpBerhasil.setAttribute("style", "display: none");
+            });
+        })();
+    </script>
 </body>
 </html>
