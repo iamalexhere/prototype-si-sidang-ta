@@ -1,0 +1,197 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .header {
+            display: flex;
+            align-items: center; /* Menyelaraskan vertikal antara logo dan teks */
+            padding: 20px; /* Memberikan padding pada container */
+            border-bottom: 3px solid #4b5563; /* Garis bawah */
+        }
+        
+        .header .logo {
+            width: 90px; /* Ukuran lebar gambar */
+            height: 90px; /* Ukuran tinggi gambar */
+            object-fit: contain; /* Menjaga rasio gambar tetap utuh */
+        }
+        
+        .header .font-semibold {
+            line-height: 1.5; /* Mengatur tinggi baris untuk teks */
+        }
+        
+        .header .text-xl {
+            font-size: 1.5rem; /* Ukuran font untuk Program Studi */
+        }
+        
+        .header .text-lg {
+            font-size: 1.125rem; /* Ukuran font untuk Fakultas dan Universitas */
+        }
+        
+               
+    </style>
+
+</head>
+    <body class="bg-gray-150 text-black-800 font-mono">
+        <!-- BAGIAN ATAS  -->
+        <div class="header bg-white p-4">
+            <img src="/Gambar/Logo_unpar_kecil.png" alt="logo Universitas" class="logo">
+            <div class="font-semibold ml-4">
+                <p class="text-xl">Program Studi Teknik Informatika</p>
+                <p class="text-lg">Fakultas Teknologi Informasi dan Sains</p>
+                <p class="text-lg">Universitas Katolik Parahyangan</p>
+            </div>
+        </div>
+        
+
+        <!-- JUDUL DI TENGAH -->
+        <div class="text-center space-x-0.5 space-y-3 font-mono">
+            <h1 class="text-3xl font-bold ">Berita Acara Pelaksanaan</h1>
+            <h1 class="text-2xl font-semibold">Sidang Skripsi</h2>
+            <h1 class="text-xl font-medium">Semester:Ganjil 2024/2025</h2>
+        </div>
+
+        <!-- ISI KAYA NPM NAMA TOPIK  -->
+        <div class="mx-auto bg-white rounded-md mb-1 p-1 font-mono">
+            <p class="mb-4 text-lg font-semibold">Telah diselenggarakan Review untuk kuliah AIF18002-05 Skripsi 2 bagi:</p>
+            <div class="flex flex-center space-x-6 mb-4"> 
+                <p class="text-lg font-semibold">Npm: <span class="text-gray font-normal" th:text="${NPM}">618220108712312231123123132</span></p>
+                <p class="text-lg font-semibold">Nama: <span class="text-gray font-normal"th:text="${Nama}">Rayner Hamonangan Manuel cuanda</span></p>
+            </div>
+            <p class="text-lg font-semibold mb-4">Topik: <span class="text-gray font-normal" th:text="${Topik}">Topik akan muncul di sini</span></p>
+        </div>
+        
+        <!--TABEL PENGUJI  NAMA PERAN  -->
+        <div class=" p-1 rounded-md mb-1 font-mono">
+            <p class="text-lg font-semibold font-mono">Dengan pembimbing dan penguji:</p>
+                <table class="table-auto border-2 border-black text-left text-1xl">
+                    <tr>
+                        <th class="border px-4 py-2 font-semibold w-[40%]">Peran</th>
+                        <th class="border px-4 py-2 font-semibold w-[60%]">Nama</th>
+                    </tr>
+                    <tr class=" text-semibold">
+                        <td class="border px-4 py-2">Pembimbing Tunggal</td>
+                        <td class="border px-4 py-2">Manuel Hamonangan</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Pembimbing Pendamping</td>
+                        <td class="border px-4 py-2">Manuel Cuanda</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Ketua Tim Penguji</td>
+                        <td class="border px-4 py-2">Manuel Here</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2">Anggota Tim Penguji</td>
+                        <td class="border px-4 py-2">Manuel Farrel</td>
+                    </tr>
+
+                </table>
+        </div>
+
+        <!-- REKAP NILAI DAN TABEL NILAINYA -->
+        <div class="text-1xl space-x-0.5 space-y-3 font-mono P-1 mb-1" >
+            <p class="text-lg font-semibold">Rekapitulasi nilai Sidang Skripsi 2 yang diberikan oleh pembimbing, penguji & koordinator skripsi:</p>
+            <div>
+                <table class="table-auto border-2 border-black text-left text-1xl align-center mx-auto mb-7">
+                    <tr>
+                        <th class="border px-4 py-2 font-semibold w-[5%]">Nomor</th>
+                        <th class="border px-4 py-2 font-semibold w-[30%]">Pembimbing/Penguji</th>
+                        <th class="border px-4 py-2 font-semibold w-[10%]">Nilai</th>
+                        <th class="border px-4 py-2 font-semibold w-[10%]">Bobot</th>
+                        <th class="border px-4 py-2 font-semibold w-[10%]">Nilai Akhir</th>
+                    </tr>
+                    <tr class=" text-semibold">
+                        <td class="border px-4 py-2">1</td>
+                        <td class="border px-4 py-2">Ketua Tim Penguji</td>
+                        <td class="border px-4 py-2">80.90</td>
+                        <td class="border px-4 py-2">35%</td>
+                        <td class="border px-4 py-2">28,315</td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="border px-4 py-2">2</td>
+                        <td class="border px-4 py-2">Anggota Tim Penguji</td>
+                        <td class="border px-4 py-2">80.90</td>
+                        <td class="border px-4 py-2">35%</td>
+                        <td class="border px-4 py-2">28,315</td>
+                    </tr>
+
+                    <tr>
+                        <td class="border px-4 py-2">3</td>
+                        <td class="border px-4 py-2">Pembimbing</td>
+                        <td class="border px-4 py-2">80.90</td>
+                        <td class="border px-4 py-2">20%</td>
+                        <td class="border px-4 py-2">28,315</td>
+                    </tr>
+
+                    <tr>
+                        <td class="border px-4 py-2">4</td>
+                        <td class="border px-4 py-2">koordinator Skripsi</td>
+                        <td class="border px-4 py-2">80.90</td>
+                        <td class="border px-4 py-2">10%</td>
+                        <td class="border px-4 py-2">28,315</td>
+                    </tr>
+                    <tr>
+                        <td class="border px-4 py-2 bg-black"></td>
+                        <td class="border px-4 py-2">Total</td>
+                        <td class="border px-4 py-2 bg-black"></td>
+                        <td class="border px-4 py-2">100%</td>
+                        <td class="border px-4 py-2">80.12</td>
+                    </tr>
+
+
+                </table>
+            </div>
+        </div>
+
+        <!-- WAKTU SIDANG?ATAU WAKTU PENGUMUMAN INTINYA MAH -->
+        <div class=" flex flex-item-center font-mono p-1 mb-1">
+            <p class="text-lg font-semibold mr-8">Ditetapkan di Bandung:</p>
+            <table class="table-auto border border-gray-300 text-left text-1xl">
+                <tr>
+                    <td th:text="${tanggal}">Tanggal</td>
+                
+                    <td th:text="${bulan}">Bulan</td>
+                
+                    <td th:text="${tahun}">Tahun</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- TABEL ISI TTD  -->
+        <div class="text-1xl space-x-0.5 space-y-3 font-mono P-1 mb-7">
+            <table class="table-auto border-2 border-black text-left text-1xl mx-auto">
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Ketua Tim Penguji</th>
+                    <th class="border border-gray-300 px-4 py-2">Anggota Tim Penguji</th>
+                    <th class="border border-gray-300 px-4 py-2">Pembimbing</th>
+                    <th class="border border-gray-300 px-4 py-2">Mahasiswa</th>
+                    <th class="border border-gray-300 px-4 py-2">Koordinator Skripsi</th>
+                </tr>
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2">Isi tanda tangan</td>
+                    <td class="border border-gray-300 px-4 py-2">Isi tanda tangan</td>
+                    <td class="border border-gray-300 px-4 py-2">Isi tanda tangan</td>
+                    <td class="border border-gray-300 px-4 py-2">Isi tanda tangan</td>
+                    <td class="border border-gray-300 px-4 py-2">Isi tanda tangan</td>
+                </tr>
+
+            </table>
+        </div>
+        <!-- FORM BUAT SAVE DAN BUAT UPLOAD TTD -->
+        <form><!-- action sama methodnya belum ditulis -->
+            <label class="block mb-1 text-sm font-Semibold text-lg text-black-800" for="file-input">Upload file    (Isi Persetujuan BAP dengan mengirimkan file Tanda tangan)</label>
+            <input class="block text-sm text-white-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 mb-2" id="file_input" type="file">
+            <button  class="bg-green-600 hover:bg-green-800 text-white font-bold rounded-full py-2 px-6 w-32" id="saveButton">SAVE</button>
+        </form>
+        <script>//script buat kalau SAVE bakal muncul notifikasi,sementara ini gini aja dulu lah ya :v
+            document.getElementById("saveButton").addEventListener("click", function() {
+                alert("Data berhasil disimpan.");
+            });
+        </script>
+    </body>
+</html>
