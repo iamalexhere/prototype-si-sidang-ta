@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atur Sidang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">SISTA</h1>
+                <p class="text-sm">Grup Pengguna KTA</p>
+            </div>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a href="dashboard-kta.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                        Dashboard</a></li>
+                    <li><a href="kelola-ta.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                        Kelola TA</a></li>
+                    <li><a href="atur-sidang.html" class="flex items-center bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <strong>Atur Sidang</strong></a></li>
+                    <li><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Log Out</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Atur Sidang Tugas Akhir</h1>
+                    <p class="text-gray-600">Kelola jadwal sidang mahasiswa</p>
+                </div>
+
+                <!-- Search and Filter Section -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Search Bar -->
+                        <div class="md:col-span-2">
+                            <div class="relative">
+                                <input type="text" id="searchInput"
+                                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                                       placeholder="Cari berdasarkan nama atau NPM...">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Filter Dropdown -->
+                        <div>
+                            <select id="statusFilter" 
+                                    class="w-full border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 p-2">
+                                <option value="all">Semua Status</option>
+                                <option value="pending">Menunggu Jadwal</option>
+                                <option value="scheduled">Sudah Terjadwal</option>
+                                <option value="completed">Selesai</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mahasiswa List -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul TA</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosen Pembimbing</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="mahasiswaList">
+                            <!-- Sample data - Replace with dynamic data -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2020730001</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Ahmad Fauzi</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">Implementasi Machine Learning untuk Prediksi Cuaca</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Pascal, S.Kom., M.Kom</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                        Menunggu Jadwal
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <a href="jadwal-sidang.html" class="text-purple-600 hover:text-purple-900">Atur Jadwal</a>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2020730002</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Sarah Wijaya</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">Pengembangan Sistem Keamanan IoT</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Lionov, Ph.D</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Sudah Terjadwal
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <a href="jadwal-sidang.html" class="text-purple-600 hover:text-purple-900">Lihat Detail</a>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2020730003</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Budi Santoso</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">Analisis Performa Database NoSQL</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Mariskha Tri Adithia, S.Si., M.Sc.</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        Selesai
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <a href="jadwal-sidang.html" class="text-purple-600 hover:text-purple-900">Lihat Detail</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const mahasiswaList = document.getElementById('mahasiswaList');
+        const rows = mahasiswaList.getElementsByTagName('tr');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusTerm = statusFilter.value.toLowerCase();
+
+            for (let row of rows) {
+                const npm = row.cells[0].textContent.toLowerCase();
+                const name = row.cells[1].textContent.toLowerCase();
+                const status = row.cells[4].textContent.toLowerCase();
+                
+                const matchesSearch = npm.includes(searchTerm) || name.includes(searchTerm);
+                const matchesStatus = statusTerm === 'all' || status.includes(statusTerm);
+
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            }
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+    </script>
+</body>
+</html>
