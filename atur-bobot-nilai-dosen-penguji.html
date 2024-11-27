@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atur Bobot Nilai Dosen Penguji</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">SISTA</h1>
+                <p class="text-sm">Grup Pengguna KTA</p>
+            </div>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a href="dashboard-kta.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                        Dashboard</a></li>
+                    <li><a href="kelola-ta.html" class="flex items-center bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                        <strong>Kelola TA</strong></a></li>
+                    <li><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Log Out</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-lg w-full">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Bobot Nilai Dosen Penguji</h1>
+                    <p class="text-gray-600">Atur persentase bobot untuk setiap komponen penilaian</p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <form id="weightForm" class="space-y-6">
+                        <!-- Components -->
+                        <div class="space-y-4">
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Presentasi</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="presentasi" min="0" max="100" 
+                                           class="block w-full pr-12 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tata Tulis Laporan</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="tata_tulis" min="0" max="100" 
+                                           class="block w-full pr-12 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Penguasaan Materi</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="penguasaan_materi" min="0" max="100"
+                                           class="block w-full pr-12 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kelengkapan Materi</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="kelengkapan_materi" min="0" max="100"
+                                           class="block w-full pr-12 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kelengkapan Bimbingan</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <input type="number" name="kelengkapan_bimbingan" min="0" max="100"
+                                           class="block w-full pr-12 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Display -->
+                        <div class="pt-4 border-t">
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-semibold text-gray-700">Total</span>
+                                <span id="totalWeight" class="text-lg font-bold text-blue-600">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex flex-col space-y-4">
+                            <button type="submit" 
+                                    class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                                Simpan Perubahan
+                            </button>
+                            <a href="atur-bobot-nilai.html" 
+                               class="text-center text-gray-600 hover:text-gray-800">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Kembali
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById('weightForm');
+            const inputs = form.querySelectorAll('input[type="number"]');
+            const totalDisplay = document.getElementById('totalWeight');
+
+            // Update total when any input changes
+            inputs.forEach(input => {
+                input.addEventListener('input', updateTotal);
+            });
+
+            function updateTotal() {
+                let total = 0;
+                inputs.forEach(input => {
+                    total += parseInt(input.value) || 0;
+                });
+                totalDisplay.textContent = total + '%';
+                
+                // Visual feedback
+                if (total === 100) {
+                    totalDisplay.classList.remove('text-red-600');
+                    totalDisplay.classList.add('text-green-600');
+                } else {
+                    totalDisplay.classList.remove('text-green-600');
+                    totalDisplay.classList.add('text-red-600');
+                }
+            }
+
+            // Form submission
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let total = 0;
+                inputs.forEach(input => {
+                    total += parseInt(input.value) || 0;
+                });
+
+                if (total !== 100) {
+                    alert('Total bobot harus 100%');
+                    return;
+                }
+
+                // TODO: Add your save logic here
+                alert('Bobot berhasil disimpan!');
+            });
+        </script>
+    </div>
+</body>
+</html>
