@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nilai - Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="nilai-mahasiswa.css">
+    <script src="sidebar.js" defer></script>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
 
@@ -25,7 +29,7 @@
                         <strong>Nilai</strong></a></li>
                     <li><a href="catatan-sidang.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" /></svg>
-                        <strong>Catatan Sidang</strong></a></li>
+                        Catatan Sidang</a></li>
                     <li><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         Log Out</a></li>
@@ -36,61 +40,160 @@
 
         <!-- Main Content & Profile Section -->
         <div class="flex-1 flex flex-col p-8 overflow-y-auto">
-
-            <!-- Main Content (Nilai) -->
-            <div class="flex-grow">
-                 <div>
+            <div class="welcome-header flex">
+                <div>
                     <h2 class="text-3xl font-bold mb-4"> Selamat Datang, John!</h2>
                     <p class="text-gray-600">Senin, 14 Oktober 2024</p>
-                 </div>
+                </div>
 
-                 <div class="grid grid-cols-2 gap-4 mt-6">
+                <div class="ml-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="profile_pic" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded-md transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
+             </div>
 
-                    <div class="bg-white p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Ketua Tim Penguji</h4>
-                        <p class="text-4xl font-bold text-purple-600">72.40</p>
-                        <p class="text-sm text-gray-600 mt-2">*bobot: 35%</p>
-                        <p class="text-sm text-gray-600">*NA: 25.34</p>
+            <!-- Main Content (Nilai) -->
+            <div class="nilai">
+
+                    <div class="nilai-ketua-penguji flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Ketua Tim Penguji</h4>
+                        </div>
+                        <div class="flex flex-grow justify-center items-center">
+                            <p class="text-6xl font-bold text-purple-600">72.40</p>
+                        </div>
+                        <div class="flex flex-row justify-between w-full">
+                            <p class="text-sm text-gray-600">*bobot: 35%</p>
+                            <p class="text-sm text-gray-600">*NA: 25.34</p>
+                        </div>
                     </div>
 
 
-                    <div class="bg-white p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Anggota Tim Penguji</h4>
-                        <p class="text-4xl font-bold text-purple-600">71.70</p>
-                        <p class="text-sm text-gray-600 mt-2">*bobot: 20%</p>
-                        <p class="text-sm text-gray-600">*NA: 25.09</p>
+                    <div class="nilai-anggota-penguji flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Anggota Tim Penguji</h4>
+                        </div>
+                        <div class="flex flex-grow justify-center items-center">
+                            <p class="text-6xl font-bold text-purple-600">71.70</p>
+                        </div>
+                        <div class="flex flex-row justify-between w-full">
+                            <p class="text-sm text-gray-600">*bobot: 20%</p>
+                            <p class="text-sm text-gray-600">*NA: 25.09</p>
+                        </div>
                     </div>
 
-
-                    <div class="bg-white p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Pembimbing</h4>
-                        <p class="text-4xl font-bold text-purple-600">78.90</p>
-                        <p class="text-sm text-gray-600 mt-2">*bobot: 20%</p>
-                        <p class="text-sm text-gray-600">*NA: 15.78</p>
+                    <div class="nilai-anggota-penguji flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Pembimbing</h4>
+                        </div>
+                        <div class="flex flex-grow justify-center items-center">
+                            <p class="text-6xl font-bold text-purple-600">78.90</p>
+                        </div>
+                        <div class="flex flex-row justify-between w-full">
+                            <p class="text-sm text-gray-600">*bobot: 20%</p>
+                            <p class="text-sm text-gray-600">*NA: 15.78</p>
+                        </div>
                     </div>
 
-                    <div class="bg-white p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Koordinator TA</h4>
-                        <p class="text-4xl font-bold text-purple-600">78.90</p>
-                        <p class="text-sm text-gray-600 mt-2">*bobot: 20%</p>
-                        <p class="text-sm text-gray-600">*NA: 10.00</p>
+                    <div class="nilai-anggota-penguji flex flex-col justify-center bg-white p-6 rounded-lg shadow-lg">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-800 mb-4">Nilai dari Koordinator TA</h4>
+                        </div>
+                        <div class="flex flex-grow justify-center items-center">
+                            <p class="text-6xl font-bold text-purple-600">78.90</p>
+                        </div>
+                        <div class="flex flex-row justify-between w-full">
+                            <p class="text-sm text-gray-600">*bobot: 20%</p>
+                            <p class="text-sm text-gray-600">*NA: 10.00</p>
+                        </div>
                     </div>
-                 </div>
+            </div>
 
-                 <div class="bg-purple-600 text-white p-6 rounded-lg mt-8">
-                    <h4 class="text-lg font-medium mb-2">Total (Nilai Akhir)</h4>
-                    <p class="text-4xl font-bold">76.21</p>
-                 </div>
-
-
+            <div class="mt-5">
+                <div class="nilai-akhir flex justify-between bg-purple-600 text-white p-6 rounded-lg shadow-xl">
+                    <div class="flex justify-start items-start">
+                        <h4 class="text-lg font-medium mb-2">Total (Nilai Akhir)</h4>
+                    </div>
+                    <div class="flex justify-center items-center mr-32 flex-grow">
+                        <p class="text-5xl font-bold">76.21</p>
+                    </div>
+                </div>
             </div>
 
         </div>
 
+        <div id="profile" class="h-full w-3/12 ml-auto flex flex-col bg-white">
+            <p class="font-bold m-4">Profile</p>
 
+            <div class="about flex flex-col justify-center items-center mt-14">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
 
+                <div class="flex flex-col">
+                    <div class="flex flex-col">
+                        <p class="name text-center text-xl mt-4"><strong>John Doe</strong></p>
+                        <p class="email text-center text-xl mt-4">6182001100@student.unpar.ac.id</p>   
+                    </div> 
+
+                    <div class="flex gap-5 flex-col w-96 bg-gray-100 rounded-xl p-5 mt-7">
+                        <div class="flex">
+                            <div class="flex">
+                                <p>SEMESTER</p>
+                            </div>
+                            <div class="flex ml-auto">
+                                <p><strong>7 • 2425/1</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex">
+                                <p>DOSEN WALI</p>
+                            </div>
+                            <div class="flex ml-auto">
+                                <p><strong>Elisati Hulu, M.T (ELH)</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex">
+                                <p>PROGRAM STUDI</p>
+                            </div>
+                            <div class="flex ml-auto">
+                                <p><strong>S1 Informatika</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-5 flex-col w-96 bg-gray-100 rounded-xl p-5 mt-7">
+                        <div class="flex">
+                            <div class="flex">
+                                <p>IPS</p>
+                            </div>
+                            <div class="flex ml-auto">
+                                <p><strong>3.9</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex">
+                                <p>IPK</p>
+                            </div>
+                            <div class="flex ml-auto">
+                                <p><strong>3.9</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-
 </body>
 
 </html>

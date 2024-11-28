@@ -1,0 +1,42 @@
+.body{
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.nilai{
+    height: 100vh;
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 1rem;
+    column-gap: 1rem;
+    grid-template-areas: 
+    "ketua-penguji anggota-penguji"
+    "pembimbing koor"
+}
+
+.nilai-ketua-penguji{
+    grid-area: 'ketua-penguji';
+    border: 2px solid purple;
+}
+
+.nilai-anggota-penguji{
+    grid-area: 'anggota-penguji';
+    border: 2px solid purple;    
+}
+
+.nilai-pembimbing{
+    grid-area: 'pembimbing';
+}
+
+.nilai-koordinator-TA{
+    grid-area: 'koor';
+}
+
+.nilai-akhir{
+    height: 6.5rem;
+}
+
