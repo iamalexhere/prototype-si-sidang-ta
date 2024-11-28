@@ -22,14 +22,14 @@
                     <li><a href="dashboard-kta.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                         Dashboard</a></li>
-                    <li><a href="kelola-ta.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
+                    <li><a href="kelola-ta.html" class="flex items-center bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                        Kelola TA</a></li>
-                    <li><a href="atur-sidang.html" class="flex items-center bg-purple-700 p-2 rounded">
+                        <strong>Kelola TA</strong></a></li>
+                    <li><a href="atur-sidang.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <strong>Atur Sidang</strong></a></li>
+                        Atur Sidang</a></li>
                     <li><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         Log Out</a></li>
@@ -41,37 +41,101 @@
         <div class="flex-1 flex flex-col p-8 overflow-y-auto"> 
 
             <!-- Main Content -->
-            <div class="flex-grow">
-               <div class="header-welcome flex w-full"> 
-                    <div>
-                        <h2 class="text-3xl font-bold mb-4"> Selamat Datang, John!</h2>
-                        <p class="text-gray-600">Senin, 14 Oktober 2024</p>
-                    </div>
-                    <div id="profile_pic" class="profile-bar ml-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
-                        </svg>
-                    </div>
-               </div>
+            <div class="flex-1 p-8">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Kelola Tugas Akhir</h2>
+                    <p class="text-gray-600">Manajemen dan pemantauan progress tugas akhir mahasiswa</p>
+                </div>
 
-               <div id="kelola">
-                    <form action="tambah-peserta.html">
-                        <button type="submit">Tambah Peserta</button>
-                    </form>
-                    <form action="ubah-peserta.html">
-                        <button type="submit">Ubah Peserta</button>
-                    </form>
-                    <form action="hapus-peserta.html">
-                        <button type="submit">Hapus Peserta</button>
-                    </form>
-                    <form action="atur-bobot-nilai.html">
-                        <button type="submit">Atur Bobot Penilaian</button>
-                    </form>
-                    <form action="atur-komponen-nilai.html">
-                        <button type="submit">Atur Komponen Penilaian</button>
-                    </form>
-               </div>
+                <!-- Search and Filter -->
+                <div class="flex space-x-4 mb-6">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <input type="text" placeholder="Cari mahasiswa..." class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:border-pink-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <select class="border rounded-lg px-4 py-2 focus:outline-none focus:border-pink-500">
+                        <option>Semua Status</option>
+                        <option>Dalam Proses</option>
+                        <option>Menunggu Persetujuan</option>
+                        <option>Selesai</option>
+                    </select>
+                    <button class="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Tambah Peserta -->
+                    <a href="tambah-peserta.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 bg-green-100 rounded-lg mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Tambah Peserta</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Tambahkan mahasiswa baru ke dalam sistem Tugas Akhir</p>
+                    </a>
+
+                    <!-- Ubah Peserta -->
+                    <a href="ubah-peserta.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 bg-blue-100 rounded-lg mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Ubah Peserta</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Modifikasi data mahasiswa yang sudah terdaftar</p>
+                    </a>
+
+                    <!-- Hapus Peserta -->
+                    <a href="hapus-peserta.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 bg-red-100 rounded-lg mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Hapus Peserta</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Hapus data mahasiswa dari sistem Tugas Akhir</p>
+                    </a>
+
+                    <!-- Atur Bobot Penilaian -->
+                    <a href="atur-bobot-nilai.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 bg-yellow-100 rounded-lg mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Atur Bobot Penilaian</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Konfigurasi bobot penilaian untuk setiap komponen</p>
+                    </a>
+
+                    <!-- Atur Komponen Penilaian -->
+                    <a href="atur-komponen-nilai.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="p-3 bg-purple-100 rounded-lg mr-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Atur Komponen Penilaian</h3>
+                        </div>
+                        <p class="text-gray-600 text-sm">Kelola komponen-komponen dalam penilaian Tugas Akhir</p>
+                    </a>
+                </div>
             </div>
         </div>
 
