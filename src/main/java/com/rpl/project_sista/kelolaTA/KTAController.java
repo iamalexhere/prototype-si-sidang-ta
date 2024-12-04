@@ -18,6 +18,21 @@ public class KTAController {
 
     @GetMapping("/kta/kelolaTA")
     public String kelolaView() {
-        return "kta/kelola-ta";
+        return "/kta/kelola-ta";
+    }
+
+    @GetMapping("/kta/kelolaTA/tambahPeserta")
+    public String tambahPesertaView() {
+        return "/kta/tambah-peserta";
+    }
+
+    @GetMapping("/kta/kelolaTA/ubahPeserta")
+    public String ubahPesertaView() {
+        return "/kta/ubah-peserta";
+    }
+
+    @GetMapping("/kta/kelolaTA/hapusPeserta")
+    public String hapusPesertaView() {
+        return "/kta/hapus-peserta";
     }
 }

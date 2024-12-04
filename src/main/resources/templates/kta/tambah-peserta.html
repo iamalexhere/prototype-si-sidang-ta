@@ -6,7 +6,7 @@
     <title>Kelola TA</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="sidebar.js" text="text/javascript" defer></script>
-    <link rel="stylesheet" href="/kta/kelola-ta.css">
+    <link rel="stylesheet" href="/kta/tambah-peserta.css">
 </head>
 <body class="bg-gray-100 font-sans h-screen">
 
@@ -63,78 +63,50 @@
         <div class="flex-1 flex flex-col p-8 overflow-y-auto"> 
 
             <!-- Main Content -->
-            <div class="flex-1 p-8">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-bold mb-2">Kelola Tugas Akhir</h2>
-                    <p class="text-gray-600">Manajemen dan pemantauan progress tugas akhir mahasiswa</p>
-                </div>
+            <div class="flex-grow">
+               <div class="header-welcome flex w-full"> 
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4"> Selamat Datang, John!</h2>
+                        <p class="text-gray-600">Senin, 14 Oktober 2024</p>
+                    </div>
+                    <div id="profile_pic" class="profile-bar ml-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                        </svg>
+                    </div>
+               </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Tambah Peserta -->
-                    <a href="/kta/kelolaTA/tambahPeserta" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-green-100 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold">Tambah Peserta</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm">Tambahkan mahasiswa baru ke dalam sistem Tugas Akhir</p>
-                    </a>
+               <div id="containerTambahPeserta">
+                    <h1>Data  Peserta TA</h1>
 
-                    <!-- Ubah Peserta -->
-                    <a href="/kta/kelolaTA/ubahPeserta" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-blue-100 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold">Ubah Peserta</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm">Modifikasi data mahasiswa yang sudah terdaftar</p>
-                    </a>
+                    <div id="data">
+                        <form action="" method="">
+                            <input type="text" name="npm" placeholder="NPM" required>
+                            <input type="text" name="nama" placeholder="Nama" required>
+                            <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
+                            <input type="text" name="pembimbing" placeholder="Pembimbing" required>
+                            <input type="text" name="penguji1" placeholder="Penguji 1" required>
+                            <input type="text" name="penguji2" placeholder="Penguji 2" required>
+                            <input type="button" name="submitData" value="Tambah Peserta" onclick="popUpKonfirmasi">
+                        </form>
+                    </div>
 
-                    <!-- Hapus Peserta -->
-                    <a href="/kta/kelolaTA/hapusPeserta" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-red-100 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold">Hapus Peserta</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm">Hapus data mahasiswa dari sistem Tugas Akhir</p>
-                    </a>
+                    <div id="popupKonfirmasi" style="display: none;">
+                        <p>Apakah Data Peserta Sudah Benar?</p>
+                        
+                        <input type="submit" value="Tidak">
+                        <input type="submit" value="Ya">
+                   </div>
+                   
 
-                    <!-- Atur Bobot Penilaian -->
-                    <a href="atur-bobot-nilai.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-yellow-100 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold">Atur Bobot Penilaian</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm">Konfigurasi bobot penilaian untuk setiap komponen</p>
-                    </a>
-
-                    <!-- Atur Komponen Penilaian -->
-                    <a href="atur-komponen-nilai.html" class="block p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <div class="p-3 bg-purple-100 rounded-lg mr-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                            </div>
-                            <h3 class="text-lg font-semibold">Atur Komponen Penilaian</h3>
-                        </div>
-                        <p class="text-gray-600 text-sm">Kelola komponen-komponen dalam penilaian Tugas Akhir</p>
-                    </a>
-                </div>
+                   <div id="pesanBerhasil" style="display: none;">
+                        <p>Data Peserta berhasil ditambah!</p>
+                        <div id="ok">
+                            <input type="submit" value="OK">
+                        </div> 
+                    </div>
+               </div>
             </div>
         </div>
 
@@ -161,5 +133,34 @@
         </div>
 
     </div>
+
+    <script>
+        (function () {
+            let popUpKonf = document.querySelector("#popupKonfirmasi");
+            let popUpBerhasil = document.querySelector("#pesanBerhasil");
+
+            let tambahPesertaBtn = document.querySelector("#data>form>input[type='button']");
+            let tombolTidak = popUpKonf.querySelector("input[value='Tidak']");
+            let tombolYa = popUpKonf.querySelector("input[value='Ya']");
+            let tombolOK = popUpBerhasil.querySelector("div > input");
+
+            tambahPesertaBtn.addEventListener("click", showKonf => {
+                popUpKonf.removeAttribute("style");
+            });
+
+            tombolTidak.addEventListener("click", hide => {
+                popUpKonf.setAttribute("style", "display: none");
+            });
+
+            tombolYa.addEventListener("click", showPesan => {
+                popUpKonf.setAttribute("style", "display: none");
+                popUpBerhasil.removeAttribute("style")
+            });
+
+            tombolOK.addEventListener("click", hide => {
+                popUpBerhasil.setAttribute("style", "display: none");
+            });
+        })();
+    </script>
 </body>
 </html>
