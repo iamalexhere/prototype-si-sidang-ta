@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atur Jadwal Sidang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white p-6">
+            <h1 class="text-2xl font-bold">SISTA</h1>
+            <nav class="mt-6">
+                <ul class="space-y-4">
+                    <li><a href="dashboard-kta.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Dashboard</a></li>
+                    <li><a href="kelola-ta.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Data Mahasiswa TA</a></li>
+                    <li><a href="tambah-peserta.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Tambah Peserta</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="flex-1 p-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <h1 class="text-3xl font-bold mb-6">Atur Jadwal Sidang Tugas Akhir</h1>
+                <form id="aturJadwalForm" class="space-y-6">
+                    <div>
+                        <label for="mahasiswa" class="block text-sm font-medium text-gray-700">Mahasiswa</label>
+                        <select id="mahasiswa" name="mahasiswa" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Mahasiswa</option>
+                            <!-- Options for mahasiswa will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal dan Waktu Sidang</label>
+                        <input type="datetime-local" id="tanggal" name="tanggal" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                    </div>
+                    <div>
+                        <label for="ruangan" class="block text-sm font-medium text-gray-700">Ruangan</label>
+                        <select id="ruangan" name="ruangan" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Ruangan</option>
+                            <!-- Options for ruangan will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="penguji1" class="block text-sm font-medium text-gray-700">Penguji 1</label>
+                        <select id="penguji1" name="penguji1" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Penguji 1</option>
+                            <!-- Options for penguji 1 will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="penguji2" class="block text-sm font-medium text-gray-700">Penguji 2</label>
+                        <select id="penguji2" name="penguji2" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Penguji 2</option>
+                            <!-- Options for penguji 2 will be populated dynamically -->
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">Simpan Jadwal</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
