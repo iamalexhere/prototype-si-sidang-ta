@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola TA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="sidebar.js" text="text/javascript" defer></script>
+    <link rel="stylesheet" href="ubah-peserta.css">
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">SISTA</h1>
+                <p class="text-sm">Grup Pengguna KTA</p>
+            </div>
+            <nav>
+                <ul class="space-y-4">
+                    <li><a href="dashboard-kta.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                        Dashboard</a></li>
+                    
+                    <!-- Manajemen TA Section -->
+                    <li class="mt-6">
+                        <h3 class="px-2 text-xs font-semibold text-white uppercase tracking-wider">Manajemen TA</h3>
+                    </li>
+                    <li><a href="kelola-ta.html" class="flex items-center bg-purple-700 p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        <strong>Data Mahasiswa TA</strong></a></li>
+                    <li><a href="atur-sidang.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Jadwal Sidang</a></li>
+
+                    <!-- Pengaturan Section -->
+                    <li class="mt-6">
+                        <h3 class="px-2 text-xs font-semibold text-white uppercase tracking-wider">Pengaturan</h3>
+                    </li>
+                    <li><a href="atur-komponen-nilai.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Komponen Nilai</a></li>
+                    <li><a href="atur-bobot-nilai.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Bobot Nilai</a></li>
+
+                    <li class="mt-6"><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                        Log Out</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content & Profile -->
+        <div class="flex-1 flex flex-col p-8 overflow-y-auto"> 
+
+            <!-- Main Content -->
+            <div class="flex-grow">
+               <div class="header-welcome flex w-full"> 
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4"> Selamat Datang, John!</h2>
+                        <p class="text-gray-600">Senin, 14 Oktober 2024</p>
+                    </div>
+                    <div id="profile_pic" class="profile-bar ml-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                        </svg>
+                    </div>
+               </div>
+
+               <div id="container">
+                <form action="" method="post">
+                    <p>Cari Peserta: <input type="text" name="searchPeserta" placeholder="Nama Peserta"> <input type="button" value="Cari"></p>
+                </form>
+
+                <div id="hasilCari" style="display: none;">
+                    <div class="peserta">
+                        <header>
+                            <h1>John Doe</h1>
+                            <p>Pembimbing: Elisati Hulu, S.T,M.T.</p>
+                        </header>
+
+                        <div id="content">
+                            <p>Implementasi protokol transfer data 
+                                dengan multiple frame/packet yang reliable di 
+                                Wireless Sensor Network bertopologi kluster
+                            </p>
+                        </div>
+
+                        <footer>
+                            <p>Penguji: Lionov, Ph.D., Natalia, S.Si,M.Si.</p>
+                        </footer>
+                    </div>
+
+                    <div class="peserta">
+                        <header>
+                            <h1>Jane Doe</h1>
+                            <p>Pembimbing: Elisati Hulu, S.T,M.T.</p>
+                        </header>
+
+                        <div id="content">
+                            <p>Eksplorasi Templating Engine pada NodeJS</p>
+                        </div>
+
+                        <footer>
+                            <p>Penguji: Lionov, Ph.D., Natalia, S.Si,M.Si.</p>
+                        </footer>
+                    </div>
+                </div>
+
+                <div id="popupEdit" style="display: none;">
+                    <h1>Data Peserta</h1>
+                    <form action="" method="">
+                        <input type="text" name="npm" placeholder="NPM" required>
+                        <input type="text" name="nama" placeholder="Nama" required>
+                        <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
+                        <input type="text" name="pembimbing" placeholder="Pembimbing" required>
+                        <input type="text" name="penguji1" placeholder="Penguji 1" required>
+                        <input type="text" name="penguji2" placeholder="Penguji 2" required>
+                        <input type="button" name="submitData" value="Ubah Peserta" onclick="popUpKonfirmasi">
+                    </form>
+                </div>
+
+                <div id="popupKonfirmasi" style="display: none;">
+                    <p>Apakah Data Peserta Sudah Benar?</p>
+                    
+                    <input type="submit" value="Tidak">
+                    <input type="submit" value="Ya">
+               </div>
+
+               <div id="pesanBerhasil" style="display: none;">
+                    <p>Data Peserta berhasil diubah!</p>
+                    <div id="ok">
+                        <input type="submit" value="OK">
+                    </div> 
+                </div>
+
+               </div>
+            </div>
+        </div>
+
+        <!--Left bar for profile-->
+        <div id="profile" class="hidden h-full w-64 ml-auto">
+            <p class="font-bold m-4">Profile</p>
+
+            <div class="about flex flex-col justify-center items-center mt-6">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="name text-center"><strong>John Doe</strong></p>
+                    <p class="email text-center">6182001100@student.unpar.ac.id</p>    
+                </div>
+            </div>
+
+            <div class="bg-gray-200 w-64 h-64 rounded mt-3">
+                
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+            let tombolCari = document.querySelector("input[value='Cari']");
+            let hasilCari = document.querySelector("#hasilCari");
+
+            tombolCari.addEventListener("click", showHasilCari => {
+                hasilCari.removeAttribute("style");
+            })
+
+            let listPeserta = document.querySelectorAll(".peserta");
+            let popupEdit = document.querySelector("#popupEdit");
+            let popupKonf = document.querySelector("#popupKonfirmasi");
+            let popupPesan = document.querySelector("#pesanBerhasil");
+
+            listPeserta.forEach(peserta => {
+                peserta.addEventListener("click", showEditForm => {
+                    popupEdit.removeAttribute("style");
+                });
+            });
+
+            let ubahBtn = popupEdit.querySelector("form>input:last-child");
+            ubahBtn.addEventListener("click", showPopUpKonf => {
+                popupKonf.removeAttribute("style");
+            });
+
+            let tombolTidak = popupKonf.querySelector("input[value='Tidak']");
+            let tombolYa = popupKonf.querySelector("input[value='Ya']");
+            tombolTidak.addEventListener("click", hidePopUpKonf => {
+                popupKonf.setAttribute("style", "display: none");
+            })
+            tombolYa.addEventListener("click", showPesan => {
+                popupKonf.setAttribute("style", "display: none");
+                popupPesan.removeAttribute("style");
+            })
+
+            let tombolOK = popupPesan.querySelector("div>input");
+            tombolOK.addEventListener("click", closePopUps => {
+                popupEdit.setAttribute("style", "display: none");
+                popupPesan.setAttribute("style", "display: none");
+            });
+        })();
+    </script>
+</body>
+</html>
