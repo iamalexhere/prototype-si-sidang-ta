@@ -40,10 +40,22 @@ dependencies {
 	// https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
 	implementation("jakarta.persistence:jakarta.persistence-api")
 
+	// https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+	implementation("jakarta.validation:jakarta.validation-api")
+	
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	// https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
+	implementation("org.hibernate.orm:hibernate-core")
+	// https://mvnrepository.com/artifact/org.springframework/spring-aspects
+	implementation("org.springframework:spring-aspects")
+
+
+
 	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
-	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
