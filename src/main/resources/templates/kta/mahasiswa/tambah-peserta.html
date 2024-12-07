@@ -3,38 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Mahasiswa</title>
+    <title th:text="${title}">Tambah Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans h-screen">
-    <div class="flex h-full">
-        <aside class="w-64 bg-purple-600 text-white p-6">
-            <h1 class="text-2xl font-bold">SISTA</h1>
-            <nav class="mt-6">
-                <ul class="space-y-4">
-                    <li><a th:href="@{/dashboard-kta}" class="hover:bg-purple-700 p-2 rounded">Dashboard</a></li>
-                    <li><a th:href="@{/kelola-ta}" class="hover:bg-purple-700 p-2 rounded">Data Mahasiswa TA</a></li>
-                    <li><a th:href="@{/atur-sidang}" class="hover:bg-purple-700 p-2 rounded">Atur Sidang</a></li>
-                </ul>
-            </nav>
+<body class="bg-gray-50 font-sans min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white">
+            <div class="fixed w-64 h-full">
+                <div class="flex items-center justify-between p-4 border-b border-purple-500">
+                    <h1 class="text-2xl font-bold tracking-wider">SISTA</h1>
+                </div>
+                <nav class="p-4">
+                    <ul class="space-y-2">
+                        <li>
+                            <a th:href="@{/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                <i class="fas fa-home w-5"></i>
+                                <span class="ml-3">Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                <i class="fas fa-graduation-cap w-5"></i>
+                                <span class="ml-3">Data Mahasiswa TA</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                <i class="fas fa-calendar-alt w-5"></i>
+                                <span class="ml-3">Atur Sidang</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </aside>
-        <main class="flex-1 p-6">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-bold mb-6">Tambah Mahasiswa</h1>
-                <form th:action="@{/mahasiswa/tambah}" method="post" class="bg-white rounded-xl shadow-lg p-8">
-                    <div class="mb-4">
-                        <label for="npm" class="block text-gray-700">NPM</label>
-                        <input type="text" id="npm" name="npm" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 ml-64">
+            <div class="max-w-2xl mx-auto">
+                <!-- Header -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h1 class="text-3xl font-bold text-gray-800" th:text="${title}">Tambah Mahasiswa</h1>
                     </div>
-                    <div class="mb-4">
-                        <label for="nama" class="block text-gray-700">Nama Lengkap</label>
-                        <input type="text" id="nama" name="nama" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    <p class="text-gray-600">Tambahkan data mahasiswa baru ke dalam sistem.</p>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/mahasiswa/tambah}" method="post" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
+                    <!-- NPM -->
+                    <div>
+                        <label for="npm" class="block text-sm font-medium text-gray-700 mb-1">NPM</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-id-card text-gray-400"></i>
+                            </div>
+                            <input type="text" id="npm" name="npm" required
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Masukkan NPM">
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label for="email" class="block text-gray-700">Email</label>
-                        <input type="email" id="email" name="email" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+
+                    <!-- Nama -->
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="nama" name="nama" required
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Masukkan nama lengkap">
+                        </div>
                     </div>
-                    <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-md">Simpan</button>
+
+                    <!-- Username -->
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-at text-gray-400"></i>
+                            </div>
+                            <input type="text" id="username" name="username" required
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Masukkan username">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="email" name="email" required
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Masukkan alamat email">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required
+                                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                   placeholder="Masukkan password">
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex items-center justify-end space-x-4 pt-4">
+                        <a th:href="@{/mahasiswa}"
+                           class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Batal
+                        </a>
+                        <button type="submit"
+                                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Simpan
+                        </button>
+                    </div>
                 </form>
             </div>
         </main>

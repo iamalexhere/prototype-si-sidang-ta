@@ -18,38 +18,59 @@ public class MahasiswaController {
     public String listMahasiswa(Model model) {
         List<Mahasiswa> mahasiswaList = mahasiswaRepository.findAll();
         model.addAttribute("mahasiswaList", mahasiswaList);
-        return "mahasiswa/index"; // Thymeleaf template for listing mahasiswa
+        model.addAttribute("title", "Data Mahasiswa");
+        return "kta/mahasiswa/index";
     }
 
     @GetMapping("/mahasiswa/tambah")
-    public String showAddMahasiswaForm() {
-        return "mahasiswa/tambah-mahasiswa"; // Thymeleaf template for adding mahasiswa
+    public String showAddMahasiswaForm(Model model) {
+        model.addAttribute("mahasiswa", new Mahasiswa());
+        model.addAttribute("title", "Tambah Mahasiswa");
+        return "kta/mahasiswa/tambah-peserta";
     }
 
     @PostMapping("/mahasiswa/tambah")
-    public String addMahasiswa(@RequestParam String npm, @RequestParam String nama) {
-        Mahasiswa newMahasiswa = new Mahasiswa(null, npm, nama, null, null);
+    public String addMahasiswa(@RequestParam String npm, @RequestParam String nama,
+                             @RequestParam String username, @RequestParam String email,
+                             @RequestParam String password) {
+        Mahasiswa newMahasiswa = new Mahasiswa(npm, nama, StatusTA.draft,
+                                             username, email, password);
         mahasiswaRepository.save(newMahasiswa);
-        return "redirect:/mahasiswa"; // Redirect to the list after adding
+        return "redirect:/mahasiswa";
     }
 
     @GetMapping("/mahasiswa/ubah")
     public String showUpdateMahasiswaForm(@RequestParam Integer id, Model model) {
-        Mahasiswa mahasiswa = mahasiswaRepository.findById(id).orElseThrow(() -> new RuntimeException("Mahasiswa not found"));
+        Mahasiswa mahasiswa = mahasiswaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Mahasiswa not found"));
         model.addAttribute("mahasiswa", mahasiswa);
-        return "mahasiswa/ubah-mahasiswa"; // Thymeleaf template for editing mahasiswa
+        model.addAttribute("title", "Ubah Data Mahasiswa");
+        model.addAttribute("statusTaList", StatusTA.values());
+        return "kta/mahasiswa/ubah-peserta";
     }
 
     @PostMapping("/mahasiswa/ubah")
-    public String updateMahasiswa(@RequestParam Integer id, @RequestParam String npm, @RequestParam String nama) {
-        Mahasiswa mahasiswa = new Mahasiswa(id, npm, nama, null, null);
-        mahasiswaRepository.save(mahasiswa);
-        return "redirect:/mahasiswa"; // Redirect to the list after updating
+    public String updateMahasiswa(@RequestParam Integer id, @RequestParam String npm,
+                                @RequestParam String nama, @RequestParam String username,
+                                @RequestParam String email, @RequestParam(required = false) String password,
+                                @RequestParam StatusTA statusTa) {
+        Mahasiswa existingMahasiswa = mahasiswaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Mahasiswa not found"));
+        existingMahasiswa.setNpm(npm);
+        existingMahasiswa.setNama(nama);
+        existingMahasiswa.setUsername(username);
+        existingMahasiswa.setEmail(email);
+        existingMahasiswa.setStatusTa(statusTa);
+        if (password != null && !password.isEmpty()) {
+            existingMahasiswa.setPasswordHash(password);
+        }
+        mahasiswaRepository.save(existingMahasiswa);
+        return "redirect:/mahasiswa";
     }
 
     @PostMapping("/mahasiswa/hapus")
     public String deleteMahasiswa(@RequestParam Integer id) {
-        mahasiswaRepository.findById(id).ifPresent(mahasiswa -> mahasiswaRepository.save(new Mahasiswa(id, mahasiswa.getNpm(), mahasiswa.getNama(), null, null))); // Logic to delete mahasiswa
-        return "redirect:/mahasiswa"; // Redirect to the list after deleting
+        mahasiswaRepository.deleteById(id);
+        return "redirect:/mahasiswa";
     }
 }

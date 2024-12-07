@@ -18,44 +18,54 @@ public class DosenController {
     public String listDosen(Model model) {
         List<Dosen> dosenList = dosenRepository.findAll();
         model.addAttribute("dosenList", dosenList);
-        return "kta/dosen/index"; // Thymeleaf template for listing dosen
+        return "kta/dosen/index";
     }
 
     @GetMapping("/dosen/tambah")
-    public String showAddDosenForm() {
-        return "kta/dosen/tambah-dosen"; // Thymeleaf template for adding dosen
+    public String showAddDosenForm(Model model) {
+        model.addAttribute("dosen", new Dosen());
+        model.addAttribute("title", "Tambah Dosen");
+        return "kta/dosen/tambah-dosen";
     }
 
     @PostMapping("/dosen/tambah")
-    public String addDosen(@RequestParam String nip, @RequestParam String nama, @RequestParam(required = false) Integer userId) {
-        Dosen newDosen = new Dosen(null, nip, nama, userId, null); // Include userId
+    public String addDosen(@RequestParam String nip, @RequestParam String nama,
+                          @RequestParam String username, @RequestParam String email,
+                          @RequestParam String password) {
+        Dosen newDosen = new Dosen(nip, nama, username, email, password);
         dosenRepository.save(newDosen);
-        return "redirect:/dosen"; // Redirect to the list after adding
+        return "redirect:/dosen";
     }
 
     @GetMapping("/dosen/ubah")
     public String showUpdateDosenForm(@RequestParam Integer id, Model model) {
-        Dosen dosen = dosenRepository.findById(id).orElseThrow(() -> new RuntimeException("Dosen not found"));
+        Dosen dosen = dosenRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dosen not found"));
         model.addAttribute("dosen", dosen);
-        return "kta/dosen/ubah-dosen"; // Thymeleaf template for editing dosen
+        model.addAttribute("title", "Ubah Data Dosen");
+        return "kta/dosen/ubah-dosen";
     }
 
     @PostMapping("/dosen/ubah")
-    public String updateDosen(@RequestParam Integer id, @RequestParam String nip, @RequestParam String nama, @RequestParam(required = false) Integer userId) {
-        Dosen existingDosen = dosenRepository.findById(id).orElseThrow(() -> new RuntimeException("Dosen not found"));
+    public String updateDosen(@RequestParam Integer id, @RequestParam String nip,
+                            @RequestParam String nama, @RequestParam String username,
+                            @RequestParam String email, @RequestParam(required = false) String password) {
+        Dosen existingDosen = dosenRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dosen not found"));
         existingDosen.setNip(nip);
         existingDosen.setNama(nama);
-        if (userId != null) {
-            existingDosen.setUserId(userId);
+        existingDosen.setUsername(username);
+        existingDosen.setEmail(email);
+        if (password != null && !password.isEmpty()) {
+            existingDosen.setPasswordHash(password);
         }
         dosenRepository.save(existingDosen);
-        return "redirect:/dosen"; // Redirect to the list after updating
+        return "redirect:/dosen";
     }
 
     @PostMapping("/dosen/hapus")
     public String deleteDosen(@RequestParam Integer id) {
-        dosenRepository.findById(id).ifPresent(dosen -> dosenRepository.save(new Dosen(id, dosen.getNip(), dosen.getNama(), dosen.getUserId(), null))); // Ensure userId is handled correctly
-        dosenRepository.deleteById(id); // Call deleteById method to remove the dosen
-        return "redirect:/dosen"; // Redirect to the list after deleting
+        dosenRepository.deleteById(id);
+        return "redirect:/dosen";
     }
 }

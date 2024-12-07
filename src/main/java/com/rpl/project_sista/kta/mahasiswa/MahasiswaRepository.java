@@ -10,4 +10,5 @@ public interface MahasiswaRepository {
     List<Mahasiswa> findByName(String name);
     List<Mahasiswa> findPaginated(int page, int size, String filter);
     int count(String filter);
+    void deleteById(Integer id);
 }
