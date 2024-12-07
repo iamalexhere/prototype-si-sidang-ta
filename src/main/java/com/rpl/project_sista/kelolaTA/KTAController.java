@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class KTAController {
     
@@ -34,5 +36,11 @@ public class KTAController {
     @GetMapping("/kta/kelolaTA/hapusPeserta")
     public String hapusPesertaView() {
         return "/kta/hapus-peserta";
+    }
+
+    @GetMapping("/kta/logout")
+    public String logout(HttpSession httpSession) {
+        httpSession.removeAttribute("email");
+        return "redirect:/";
     }
 }

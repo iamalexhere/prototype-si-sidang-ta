@@ -52,7 +52,7 @@
                         </svg>
                         Bobot Nilai</a></li>
 
-                    <li class="mt-6"><a href="index.html" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
+                    <li class="mt-6"><a href="/kta/logout" class="flex items-center hover:bg-purple-700 p-2 rounded transition-colors duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                         Log Out</a></li>
                 </ul>
@@ -78,33 +78,45 @@
                </div>
 
                <div id="containerTambahPeserta">
-                    <h1>Data  Peserta TA</h1>
+                    <div id="isiContainer">
+                        <h1>Data  Peserta TA</h1>
 
-                    <div id="data">
-                        <form action="" method="">
-                            <input type="text" name="npm" placeholder="NPM" required>
-                            <input type="text" name="nama" placeholder="Nama" required>
-                            <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
-                            <input type="text" name="pembimbing" placeholder="Pembimbing" required>
-                            <input type="text" name="penguji1" placeholder="Penguji 1" required>
-                            <input type="text" name="penguji2" placeholder="Penguji 2" required>
-                            <input type="button" name="submitData" value="Tambah Peserta" onclick="popUpKonfirmasi">
-                        </form>
-                    </div>
+                        <div id="data">
+                            <form action="" method="">
+                                <input type="text" name="npm" placeholder="NPM" required>
+                                <input type="text" name="nama" placeholder="Nama" required>
+                                <input type="text" name="judulSkripsi" placeholder="Judul Skripsi" required>
+                                <input type="text" name="topik" placeholder="Topik TA">
+                                <input type="text" name="pembimbing" placeholder="Pembimbing" required>
+                                <div id="select">
+                                    <label for="Tahun Ajaran">Tahun Ajaran:</label>
+                                    <select name="Tahun Ajaran">
+                                        <option value="2023/2024">2023/2024</option>
+                                    </select>
+                                    <label for="Tahun Ajaran">Periode:</label>
+                                    <select name="periode">
+                                        <option value="ganjil">ganjil</option>
+                                        <option value="ganjil">genap</option>
+                                    </select>
+                                </div>
+                                <input type="button" name="submitData" value="Tambah Peserta" onclick="popUpKonfirmasi">
+                            </form>
+                        </div>
 
-                    <div id="popupKonfirmasi" style="display: none;">
-                        <p>Apakah Data Peserta Sudah Benar?</p>
-                        
-                        <input type="submit" value="Tidak">
-                        <input type="submit" value="Ya">
-                   </div>
-                   
+                        <div id="popupKonfirmasi" style="display: none;">
+                            <p>Apakah Data Peserta Sudah Benar?</p>
+                            
+                            <input type="submit" value="Tidak">
+                            <input type="submit" value="Ya">
+                        </div>
+                    
 
-                   <div id="pesanBerhasil" style="display: none;">
-                        <p>Data Peserta berhasil ditambah!</p>
-                        <div id="ok">
-                            <input type="submit" value="OK">
-                        </div> 
+                        <div id="pesanBerhasil" style="display: none;">
+                            <p>Data Peserta berhasil ditambah!</p>
+                            <div id="ok">
+                                <input type="submit" value="OK">
+                            </div> 
+                        </div>
                     </div>
                </div>
             </div>
