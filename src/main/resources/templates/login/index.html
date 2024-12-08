@@ -31,7 +31,7 @@
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
-                    <input id="password" name="password" type="password" th:field="*{password}" placeholder="Enter your password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <input id="password" name="password" type="password" th:field="*{password}" placeholder="Enter your password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                     <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red;">password error</p>
                 </div>
                 <div class="flex items-center justify-center">

@@ -24,7 +24,13 @@ public class LoginController {
             model.addAttribute("user", new User(null, null));
             return "/login/index";
         }else {
-            return "redirect:/kta";
+            if(email.equals("kta@unpar.ac.id")) {
+                return "redirect:/kta";
+            }else if(email.contains("@unpar")) {
+                return "redirect:/dosen";
+            }else {
+                return "redirect:/mahasiswa";
+            }
         }   
     }
 

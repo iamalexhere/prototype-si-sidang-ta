@@ -1,4 +1,4 @@
-package com.rpl.project_sista.kelolaTA;
+package com.rpl.project_sista.kta;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,28 +14,12 @@ import jakarta.servlet.http.HttpSession;
 public class KTAController {
     
     @GetMapping("/kta")
-    public String ktaView() {
-        return "/kta/index";
-    }
-
-    @GetMapping("/kta/kelolaTA")
-    public String kelolaView() {
-        return "/kta/kelola-ta";
-    }
-
-    @GetMapping("/kta/kelolaTA/tambahPeserta")
-    public String tambahPesertaView() {
-        return "/kta/tambah-peserta";
-    }
-
-    @GetMapping("/kta/kelolaTA/ubahPeserta")
-    public String ubahPesertaView() {
-        return "/kta/ubah-peserta";
-    }
-
-    @GetMapping("/kta/kelolaTA/hapusPeserta")
-    public String hapusPesertaView() {
-        return "/kta/hapus-peserta";
+    public String ktaView(HttpSession httpSession) {
+        if(httpSession.getAttribute("email") != null) {
+            return "/kta/index";
+        }else {
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/kta/logout")

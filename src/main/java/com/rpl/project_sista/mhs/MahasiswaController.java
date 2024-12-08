@@ -15,8 +15,12 @@ import org.springframework.validation.BindingResult;
 public class MahasiswaController {
     
     @GetMapping("/mahasiswa")
-    public String mhsView() {
-        return "/mhs/index";
+    public String mhsView(HttpSession httpSession) {
+        if(httpSession.getAttribute("email") != null) {
+            return "/mhs/index";
+        }else {
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/mahasiswa/logout")

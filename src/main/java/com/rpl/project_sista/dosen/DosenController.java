@@ -15,8 +15,12 @@ import org.springframework.validation.BindingResult;
 public class DosenController {
     
     @GetMapping("/dosen")
-    public String dosenView() {
-        return "/dosen/index";
+    public String dosenView(HttpSession httpSession) {
+        if(httpSession.getAttribute("email") != null) {
+            return "/dosen/index";
+        }else {
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/dosen/logout")
