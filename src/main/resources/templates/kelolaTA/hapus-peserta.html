@@ -90,7 +90,7 @@
                     <div class="peserta" th:each="row : ${listmhs}">
                         <header>
                             <h1 th:text="${row.namaMhs}"></h1>
-                            <p th:text="${row.namapem}"></p>
+                            <p>Pembimbing: </p><p th:text="${row.namapem}"></p>
                         </header>
 
                         <div id="content">
