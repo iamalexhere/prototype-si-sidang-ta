@@ -12,9 +12,9 @@
             <h1 class="text-2xl font-bold">SISTA</h1>
             <nav class="mt-6">
                 <ul class="space-y-4">
-                    <li><a th:href="@{/dashboard-kta}" class="hover:bg-purple-700 p-2 rounded">Dashboard</a></li>
-                    <li><a th:href="@{/kelola-ta}" class="hover:bg-purple-700 p-2 rounded">Data Mahasiswa TA</a></li>
-                    <li><a th:href="@{/atur-sidang}" class="hover:bg-purple-700 p-2 rounded">Atur Sidang</a></li>
+                    <li><a th:href="@{/kta/dashboard-kta}" class="hover:bg-purple-700 p-2 rounded">Dashboard</a></li>
+                    <li><a th:href="@{/kta/kelola-ta}" class="hover:bg-purple-700 p-2 rounded">Data Mahasiswa TA</a></li>
+                    <li><a th:href="@{/kta/atur-sidang}" class="hover:bg-purple-700 p-2 rounded">Atur Sidang</a></li>
                 </ul>
             </nav>
         </aside>
@@ -22,9 +22,9 @@
             <div class="max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-3xl font-bold" th:text="${title}">Ubah Data Dosen</h1>
-                    <a th:href="@{/dosen}" class="text-purple-600 hover:text-purple-800">← Kembali</a>
+                    <a th:href="@{/kta/dosen}" class="text-purple-600 hover:text-purple-800">← Kembali</a>
                 </div>
-                <form th:action="@{/dosen/ubah}" method="post" class="bg-white rounded-xl shadow-lg p-8">
+                <form th:action="@{/kta/dosen/ubah}" method="post" class="bg-white rounded-xl shadow-lg p-8">
                     <input type="hidden" name="id" th:value="${dosen.userId}">
                     <div class="mb-4">
                         <label for="nip" class="block text-gray-700 font-medium mb-2">NIP</label>
@@ -56,7 +56,7 @@
                                class="border border-gray-300 rounded-md w-full px-4 py-2 focus:border-purple-500 focus:ring-1 focus:ring-purple-500">
                     </div>
                     <div class="flex justify-end gap-4">
-                        <a th:href="@{/dosen}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</a>
+                        <a th:href="@{/kta/dosen}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</a>
                         <button type="submit" class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                             Simpan Perubahan
                         </button>

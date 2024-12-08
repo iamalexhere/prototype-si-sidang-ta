@@ -18,19 +18,19 @@
                 <nav class="p-4">
                     <ul class="space-y-2">
                         <li>
-                            <a th:href="@{/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-home w-5"></i>
                                 <span class="ml-3">Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-graduation-cap w-5"></i>
                                 <span class="ml-3">Data Mahasiswa TA</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-calendar-alt w-5"></i>
                                 <span class="ml-3">Atur Sidang</span>
                             </a>
@@ -52,7 +52,7 @@
                 </div>
 
                 <!-- Form -->
-                <form th:action="@{/mahasiswa/tambah}" method="post" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
+                <form th:action="@{/kta/mahasiswa/tambah}" method="post" class="bg-white rounded-lg shadow-sm p-6 space-y-6">
                     <!-- NPM -->
                     <div>
                         <label for="npm" class="block text-sm font-medium text-gray-700 mb-1">NPM</label>
@@ -120,7 +120,7 @@
 
                     <!-- Buttons -->
                     <div class="flex items-center justify-end space-x-4 pt-4">
-                        <a th:href="@{/mahasiswa}"
+                        <a th:href="@{/kta/mahasiswa}"
                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                             Batal
                         </a>

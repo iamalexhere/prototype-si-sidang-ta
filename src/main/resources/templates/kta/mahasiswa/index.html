@@ -18,19 +18,19 @@
                 <nav class="p-4">
                     <ul class="space-y-2">
                         <li>
-                            <a th:href="@{/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-home w-5"></i>
                                 <span class="ml-3">Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-graduation-cap w-5"></i>
                                 <span class="ml-3">Data Mahasiswa TA</span>
                             </a>
                         </li>
                         <li>
-                            <a th:href="@{/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <a th:href="@{/kta/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
                                 <i class="fas fa-calendar-alt w-5"></i>
                                 <span class="ml-3">Atur Sidang</span>
                             </a>
@@ -47,7 +47,7 @@
                 <div class="mb-8">
                     <div class="flex justify-between items-center mb-4">
                         <h1 class="text-3xl font-bold text-gray-800" th:text="${title}">Data Mahasiswa</h1>
-                        <a th:href="@{/mahasiswa/tambah}" 
+                        <a th:href="@{/kta/mahasiswa/tambah}" 
                            class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
                             <i class="fas fa-plus mr-2"></i>
                             Tambah Mahasiswa
@@ -124,11 +124,11 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                                         <div class="flex justify-center space-x-2">
-                                            <a th:href="@{/mahasiswa/ubah(id=${mahasiswa.userId})}" 
+                                            <a th:href="@{/kta/mahasiswa/ubah/{id}(id=${mahasiswa.userId})}" 
                                                class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form th:action="@{/mahasiswa/hapus}" method="post" class="inline" 
+                                            <form th:action="@{/kta/mahasiswa/hapus/{id}(id=${mahasiswa.userId})}" method="post" class="inline" 
                                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?');">
                                                 <input type="hidden" name="id" th:value="${mahasiswa.userId}">
                                                 <button type="submit" 

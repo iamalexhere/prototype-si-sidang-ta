@@ -15,12 +15,12 @@ import com.rpl.project_sista.repository.MahasiswaRepository;
 import java.util.List;
 
 @Controller
-@RequestMapping("/kta")
+@RequestMapping("/kta/mahasiswa")
 public class ManajemenMahasiswaController {
     @Autowired
     private MahasiswaRepository mahasiswaRepository;
 
-    @GetMapping("/mahasiswa")
+    @GetMapping
     public String listMahasiswa(Model model) {
         List<Mahasiswa> mahasiswaList = mahasiswaRepository.findAll();
         model.addAttribute("mahasiswaList", mahasiswaList);
@@ -28,24 +28,24 @@ public class ManajemenMahasiswaController {
         return "kta/mahasiswa/index";
     }
 
-    @GetMapping("/mahasiswa/tambah")
+    @GetMapping("/tambah")
     public String showAddMahasiswaForm(Model model) {
         model.addAttribute("mahasiswa", new Mahasiswa());
         model.addAttribute("title", "Tambah Mahasiswa");
         return "kta/mahasiswa/tambah-peserta";
     }
 
-    @PostMapping("/mahasiswa/tambah")
+    @PostMapping("/tambah")
     public String addMahasiswa(@RequestParam String npm, @RequestParam String nama,
                              @RequestParam String username, @RequestParam String email,
                              @RequestParam String password) {
         Mahasiswa newMahasiswa = new Mahasiswa(npm, nama, StatusTA.draft,
                                              username, email, password);
         mahasiswaRepository.save(newMahasiswa);
-        return "redirect:/mahasiswa";
+        return "redirect:/kta/mahasiswa";
     }
 
-    @GetMapping("/mahasiswa/ubah")
+    @GetMapping("/ubah")
     public String showUpdateMahasiswaForm(@RequestParam Integer id, Model model) {
         Mahasiswa mahasiswa = mahasiswaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mahasiswa not found"));
@@ -55,7 +55,7 @@ public class ManajemenMahasiswaController {
         return "kta/mahasiswa/ubah-peserta";
     }
 
-    @PostMapping("/mahasiswa/ubah")
+    @PostMapping("/ubah")
     public String updateMahasiswa(@RequestParam Integer id, @RequestParam String npm,
                                 @RequestParam String nama, @RequestParam String username,
                                 @RequestParam String email, @RequestParam(required = false) String password,
@@ -71,12 +71,12 @@ public class ManajemenMahasiswaController {
             existingMahasiswa.setPasswordHash(password);
         }
         mahasiswaRepository.save(existingMahasiswa);
-        return "redirect:/mahasiswa";
+        return "redirect:/kta/mahasiswa";
     }
 
-    @PostMapping("/mahasiswa/hapus")
+    @PostMapping("/hapus")
     public String deleteMahasiswa(@RequestParam Integer id) {
         mahasiswaRepository.deleteById(id);
-        return "redirect:/mahasiswa";
+        return "redirect:/kta/mahasiswa";
     }
 }

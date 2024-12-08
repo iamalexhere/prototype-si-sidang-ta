@@ -14,35 +14,35 @@ import com.rpl.project_sista.repository.DosenRepository;
 import java.util.List;
 
 @Controller
-@RequestMapping("/kta")
+@RequestMapping("/kta/dosen")
 public class ManajemenDosenController {
     @Autowired
     private DosenRepository dosenRepository;
 
-    @GetMapping("/dosen")
+    @GetMapping
     public String listDosen(Model model) {
         List<Dosen> dosenList = dosenRepository.findAll();
         model.addAttribute("dosenList", dosenList);
         return "kta/dosen/index";
     }
 
-    @GetMapping("/dosen/tambah")
+    @GetMapping("/tambah")
     public String showAddDosenForm(Model model) {
         model.addAttribute("dosen", new Dosen());
         model.addAttribute("title", "Tambah Dosen");
         return "kta/dosen/tambah-dosen";
     }
 
-    @PostMapping("/dosen/tambah")
+    @PostMapping("/tambah")
     public String addDosen(@RequestParam String nip, @RequestParam String nama,
                           @RequestParam String username, @RequestParam String email,
                           @RequestParam String password) {
         Dosen newDosen = new Dosen(nip, nama, username, email, password);
         dosenRepository.save(newDosen);
-        return "redirect:/dosen";
+        return "redirect:/kta/dosen";
     }
 
-    @GetMapping("/dosen/ubah")
+    @GetMapping("/ubah")
     public String showUpdateDosenForm(@RequestParam Integer id, Model model) {
         Dosen dosen = dosenRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Dosen not found"));
@@ -51,7 +51,7 @@ public class ManajemenDosenController {
         return "kta/dosen/ubah-dosen";
     }
 
-    @PostMapping("/dosen/ubah")
+    @PostMapping("/ubah")
     public String updateDosen(@RequestParam Integer id, @RequestParam String nip,
                             @RequestParam String nama, @RequestParam String username,
                             @RequestParam String email, @RequestParam(required = false) String password) {
@@ -65,12 +65,12 @@ public class ManajemenDosenController {
             existingDosen.setPasswordHash(password);
         }
         dosenRepository.save(existingDosen);
-        return "redirect:/dosen";
+        return "redirect:/kta/dosen";
     }
 
-    @PostMapping("/dosen/hapus")
+    @PostMapping("/hapus")
     public String deleteDosen(@RequestParam Integer id) {
         dosenRepository.deleteById(id);
-        return "redirect:/dosen";
+        return "redirect:/kta/dosen";
     }
 }
