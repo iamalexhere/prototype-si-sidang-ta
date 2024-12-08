@@ -14,6 +14,12 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.ArrayList;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.rpl.project_sista.model.entity.Dosen;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/kta/sidang")
@@ -51,6 +57,28 @@ public class ManajemenSidangController {
             model.addAttribute("dosenList", dosenRepository.findAll());
         });
         return "kta/sidang/manajamen-sidang";
+    }
+
+    @GetMapping("/detail/{id}")
+    public String showSidangDetail(@PathVariable Integer id, Model model) {
+        sidangRepository.findById(id).ifPresentOrElse(
+            sidang -> {
+                model.addAttribute("sidang", sidang);
+                model.addAttribute("tugasAkhir", sidang.getTugasAkhir());
+                
+                // Fetch penguji details
+                List<Dosen> pengujiList = new ArrayList<>();
+                if (sidang.getPenguji() != null) {
+                    pengujiList.addAll(sidang.getPenguji());
+                }
+                model.addAttribute("pengujiList", pengujiList);
+            },
+            () -> {
+                // Handle case when sidang is not found
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sidang not found");
+            }
+        );
+        return "kta/sidang/detail-sidang";
     }
 
     @PostMapping("/save")

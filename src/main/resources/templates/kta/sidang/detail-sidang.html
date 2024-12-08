@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detail Sidang</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
+                <h1 class="text-2xl font-bold text-purple-800 mb-6">Detail Sidang</h1>
+
+                <!-- Mahasiswa Information -->
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Informasi Mahasiswa</h2>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p><strong>Nama:</strong> <span th:text="${sidang.tugasAkhir.mahasiswa.nama}">Nama Mahasiswa</span></p>
+                            <p><strong>NPM:</strong> <span th:text="${sidang.tugasAkhir.mahasiswa.npm}">NPM</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Tugas Akhir Information -->
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2">Informasi Tugas Akhir</h2>
+                        <div class="bg-gray-100 p-4 rounded-lg">
+                            <p><strong>Judul:</strong> <span th:text="${sidang.tugasAkhir.judul}">Judul Tugas Akhir</span></p>
+                            <p><strong>Status:</strong> <span th:text="${sidang.tugasAkhir.status}">Status TA</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidang Details -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Detail Sidang</h2>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <p><strong>Tanggal:</strong> <span th:text="${#temporals.format(sidang.jadwal, 'dd MMMM yyyy')}">Tanggal Sidang</span></p>
+                        <p><strong>Waktu:</strong> <span th:text="${#temporals.format(sidang.jadwal, 'HH:mm')}">Waktu Sidang</span></p>
+                        <p><strong>Ruangan:</strong> <span th:text="${sidang.ruangan}">Ruangan</span></p>
+                        <p><strong>Status Sidang:</strong> <span th:text="${sidang.statusSidang}">Status Sidang</span></p>
+                    </div>
+                </div>
+
+                <!-- Penguji Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Tim Penguji</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div th:each="penguji, stat : ${pengujiList}" class="bg-gray-100 p-4 rounded-lg">
+                            <h3 class="font-semibold mb-2" th:text="${'Penguji ' + (stat.index + 1)}">Penguji</h3>
+                            <p><strong>Nama:</strong> <span th:text="${penguji.nama}">Nama Dosen</span></p>
+                            <p><strong>NIP:</strong> <span th:text="${penguji.nip}">NIP</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 flex space-x-4">
+                    <a th:href="@{/kta/sidang/edit/{id}(id=${sidang.sidangId})}" 
+                       class="flex-1 text-center bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-edit mr-2"></i>Edit Sidang
+                    </a>
+                    <a th:href="@{/kta/sidang}" 
+                       class="flex-1 text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar Sidang
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
