@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -51,10 +52,36 @@ public class TugasAkhir {
         joinColumns = @JoinColumn(name = "ta_id"),
         inverseJoinColumns = @JoinColumn(name = "dosen_id")
     )
-    private Set<Dosen> pembimbing;
+    private Set<Dosen> pembimbing = new HashSet<>();
+
+    public TugasAkhir(Long taId, Mahasiswa mahasiswa, Semester semester, String judul, String topik, JenisTA jenisTA, StatusTA status, LocalDateTime createdAt) {
+        this.taId = taId;
+        this.mahasiswa = mahasiswa;
+        this.semester = semester;
+        this.judul = judul;
+        this.topik = topik;
+        this.jenisTA = jenisTA;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    // Helper method to add a pembimbing
+    public void addPembimbing(Dosen dosen) {
+        if (this.pembimbing == null) {
+            this.pembimbing = new HashSet<>();
+        }
+        this.pembimbing.add(dosen);
+    }
+
+    // Helper method to remove a pembimbing
+    public void removePembimbing(Dosen dosen) {
+        if (this.pembimbing != null) {
+            this.pembimbing.remove(dosen);
+        }
     }
 }
