@@ -1,6 +1,10 @@
-package com.rpl.project_sista.kta.mahasiswa;
+package com.rpl.project_sista.jdbcrepository;
 
-import com.rpl.project_sista.kta.users.UserRole;
+import com.rpl.project_sista.model.entity.Mahasiswa;
+import com.rpl.project_sista.model.enums.StatusTA;
+import com.rpl.project_sista.model.enums.UserRole;
+import com.rpl.project_sista.repository.MahasiswaRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

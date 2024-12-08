@@ -1,4 +1,4 @@
-package com.rpl.project_sista.kta.users;
+package com.rpl.project_sista.model.entity;
 
 
 import jakarta.persistence.*;
@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+
+import com.rpl.project_sista.model.enums.UserRole;
 
 @Data
 @NoArgsConstructor

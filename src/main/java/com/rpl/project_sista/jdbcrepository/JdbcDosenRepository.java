@@ -1,9 +1,12 @@
-package com.rpl.project_sista.kta.dosen;
+package com.rpl.project_sista.jdbcrepository;
 
-import com.rpl.project_sista.kta.users.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.rpl.project_sista.model.entity.Dosen;
+import com.rpl.project_sista.model.enums.UserRole;
+import com.rpl.project_sista.repository.DosenRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

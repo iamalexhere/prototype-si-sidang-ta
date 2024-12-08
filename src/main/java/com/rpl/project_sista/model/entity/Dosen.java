@@ -1,7 +1,7 @@
-package com.rpl.project_sista.kta.dosen;
+package com.rpl.project_sista.model.entity;
 
-import com.rpl.project_sista.kta.users.Users;
-import com.rpl.project_sista.kta.users.UserRole;
+import com.rpl.project_sista.model.enums.UserRole;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.rpl.project_sista.kta.mahasiswa;
+package com.rpl.project_sista.controllers.kta;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -6,6 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.rpl.project_sista.model.entity.Mahasiswa;
+import com.rpl.project_sista.model.enums.StatusTA;
+import com.rpl.project_sista.repository.MahasiswaRepository;
 
 import java.util.List;
 

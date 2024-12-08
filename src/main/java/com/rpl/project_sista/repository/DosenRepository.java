@@ -1,7 +1,9 @@
-package com.rpl.project_sista.kta.dosen;
+package com.rpl.project_sista.repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.rpl.project_sista.model.entity.Dosen;
 
 public interface DosenRepository {
     List<Dosen> findAll();
