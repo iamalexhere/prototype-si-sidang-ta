@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rpl.project_sista.model.entity.Mahasiswa;
@@ -14,7 +15,8 @@ import com.rpl.project_sista.repository.MahasiswaRepository;
 import java.util.List;
 
 @Controller
-public class MahasiswaController {
+@RequestMapping("/kta")
+public class ManajemenMahasiswaController {
     @Autowired
     private MahasiswaRepository mahasiswaRepository;
 
