@@ -41,6 +41,7 @@ public class ManajemenTugasAkhirController {
 
     @GetMapping
     public String listTugasAkhir(Model model) {
+        model.addAttribute("pageTitle", "Manajemen Tugas Akhir");
         List<TugasAkhir> tugasAkhirList = tugasAkhirRepository.findAll();
         model.addAttribute("tugasAkhirList", tugasAkhirList);
         return "kta/tugas-akhir/list-tugas-akhir";
@@ -48,6 +49,7 @@ public class ManajemenTugasAkhirController {
 
     @GetMapping("/tambah")
     public String showAddForm(Model model) {
+        model.addAttribute("pageTitle", "Tambah Tugas Akhir");
         model.addAttribute("tugasAkhir", new TugasAkhir());
         model.addAttribute("mahasiswaList", mahasiswaRepository.findAll());
         model.addAttribute("dosenList", dosenRepository.findAll());
@@ -59,6 +61,7 @@ public class ManajemenTugasAkhirController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("pageTitle", "Edit Tugas Akhir");
         tugasAkhirRepository.findById(id.intValue()).ifPresent(tugasAkhir -> {
             model.addAttribute("tugasAkhir", tugasAkhir);
             model.addAttribute("mahasiswaList", mahasiswaRepository.findAll());
@@ -99,6 +102,7 @@ public class ManajemenTugasAkhirController {
 
     @GetMapping("/detail/{id}")
     public String showTugasAkhirDetail(@PathVariable Long id, Model model) {
+        model.addAttribute("pageTitle", "Detail Tugas Akhir");
         tugasAkhirRepository.findById(id.intValue()).ifPresentOrElse(
             tugasAkhir -> {
                 logger.info("Tugas Akhir found: {}", tugasAkhir);

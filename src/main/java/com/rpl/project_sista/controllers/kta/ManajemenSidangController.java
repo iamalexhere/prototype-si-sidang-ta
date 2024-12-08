@@ -41,6 +41,7 @@ public class ManajemenSidangController {
 
     @GetMapping
     public String listSidang(Model model) {
+        model.addAttribute("pageTitle", "Manajemen Sidang");
         List<Sidang> sidangList = sidangRepository.findAll();
         model.addAttribute("sidangList", sidangList);
         return "kta/sidang/list-sidang";
@@ -48,6 +49,7 @@ public class ManajemenSidangController {
 
     @GetMapping("/tambah")
     public String showAddForm(Model model) {
+        model.addAttribute("pageTitle", "Tambah Jadwal Sidang");
         model.addAttribute("sidang", new Sidang());
         model.addAttribute("tugasAkhirList", tugasAkhirRepository.findAll());
         model.addAttribute("dosenList", dosenRepository.findAll());
@@ -56,6 +58,7 @@ public class ManajemenSidangController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
+        model.addAttribute("pageTitle", "Edit Jadwal Sidang");
         sidangRepository.findById(id).ifPresent(sidang -> {
             model.addAttribute("sidang", sidang);
             model.addAttribute("tugasAkhirList", tugasAkhirRepository.findAll());
@@ -66,6 +69,7 @@ public class ManajemenSidangController {
 
     @GetMapping("/detail/{id}")
     public String showSidangDetail(@PathVariable Integer id, Model model) {
+        model.addAttribute("pageTitle", "Detail Sidang");
         sidangRepository.findById(id).ifPresentOrElse(
             sidang -> {
                 logger.info("Sidang found: {}", sidang);
