@@ -10,35 +10,7 @@
 <body class="bg-gray-50 font-sans min-h-screen">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-purple-600 text-white">
-            <div class="fixed w-64 h-full">
-                <div class="flex items-center justify-between p-4 border-b border-purple-500">
-                    <h1 class="text-2xl font-bold tracking-wider">SISTA</h1>
-                </div>
-                <nav class="p-4">
-                    <ul class="space-y-2">
-                        <li>
-                            <a th:href="@{/kta/dashboard-kta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <i class="fas fa-home w-5"></i>
-                                <span class="ml-3">Dashboard</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a th:href="@{/kta/kelola-ta}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <i class="fas fa-graduation-cap w-5"></i>
-                                <span class="ml-3">Data Mahasiswa TA</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a th:href="@{/kta/atur-sidang}" class="flex items-center p-3 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <i class="fas fa-calendar-alt w-5"></i>
-                                <span class="ml-3">Atur Sidang</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </aside>
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
 
         <!-- Main Content -->
         <main class="flex-1 p-8 ml-64">

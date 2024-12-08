@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Daftar Tugas Akhir</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -9,7 +7,8 @@
 </head>
 <body class="bg-gray-50 font-sans">
     <div class="min-h-screen flex">
-        <!-- Sidebar will be included from layout -->
+        <!-- Sidebar -->
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
 
         <!-- Main Content -->
         <div class="flex-1 p-8">

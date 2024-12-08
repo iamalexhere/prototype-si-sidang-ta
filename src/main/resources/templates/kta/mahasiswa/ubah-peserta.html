@@ -9,16 +9,7 @@
 <body class="bg-gray-100 font-sans h-screen">
     <div class="flex h-full">
         <!-- Sidebar -->
-        <aside class="w-64 bg-purple-600 text-white p-6">
-            <h1 class="text-2xl font-bold">SISTA</h1>
-            <nav class="mt-6">
-                <ul class="space-y-4">
-                    <li><a th:href="@{/kta/dashboard-kta}" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Dashboard</a></li>
-                    <li><a th:href="@{/kta/kelola-ta}" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Data Mahasiswa TA</a></li>
-                    <li><a th:href="@{/kta/atur-sidang}" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Atur Sidang</a></li>
-                </ul>
-            </nav>
-        </aside>
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
         <main class="flex-1 p-6">
             <div class="max-w-4xl mx-auto">
                 <h1 class="text-3xl font-bold mb-6">Ubah Mahasiswa</h1>
