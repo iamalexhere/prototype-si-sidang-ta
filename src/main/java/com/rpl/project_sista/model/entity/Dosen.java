@@ -39,4 +39,78 @@ public class Dosen extends Users {
         this.nama = nama;
         this.createdAt = LocalDateTime.now();
     }
+
+    public Integer getDosenId() {
+        return super.getUserId();
+    }
+
+    public void setDosenId(Integer dosenId) {
+        super.setUserId(dosenId);
+    }
+
+    // Additional getter and setter methods
+    public String getNip() {
+        return nip;
+    }
+
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // Delegate methods for Users properties
+    public String getUsername() {
+        return super.getUsername();
+    }
+
+    public void setUsername(String username) {
+        super.setUsername(username);
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
+
+    public String getPasswordHash() {
+        return super.getPasswordHash();
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        super.setPasswordHash(passwordHash);
+    }
+
+    public UserRole getRole() {
+        return super.getRole();
+    }
+
+    public void setRole(UserRole role) {
+        super.setRole(role);
+    }
+
+    public Boolean getIsActive() {
+        return super.getIsActive();
+    }
+
+    public void setIsActive(Boolean isActive) {
+        super.setIsActive(isActive);
+    }
 }

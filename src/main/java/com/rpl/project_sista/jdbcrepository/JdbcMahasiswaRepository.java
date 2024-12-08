@@ -40,7 +40,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
 
     @Override
     public Mahasiswa save(Mahasiswa mahasiswa) {
-        if (mahasiswa.getUserId() != null) {
+        if (mahasiswa.getMahasiswaId() != null) {
             // Update existing mahasiswa
             jdbcTemplate.update(
                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
@@ -49,7 +49,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 mahasiswa.getPasswordHash(),
                 mahasiswa.getRole().toString().toLowerCase(),
                 mahasiswa.getIsActive(),
-                mahasiswa.getUserId()
+                mahasiswa.getMahasiswaId()
             );
             
             jdbcTemplate.update(
@@ -57,7 +57,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 mahasiswa.getNpm(),
                 mahasiswa.getNama(),
                 mahasiswa.getStatusTa().toString(),
-                mahasiswa.getUserId()
+                mahasiswa.getMahasiswaId()
             );
         } else {
             // Insert new mahasiswa
@@ -85,7 +85,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 mahasiswa.getStatusTa().toString()
             );
             
-            mahasiswa.setUserId(userId);
+            mahasiswa.setMahasiswaId(userId);
         }
         return mahasiswa;
     }
@@ -136,7 +136,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
 
     private Mahasiswa mapRowToMahasiswa(ResultSet rs, int rowNum) throws SQLException {
         Mahasiswa mahasiswa = new Mahasiswa();
-        mahasiswa.setUserId(rs.getInt("user_id"));
+        mahasiswa.setMahasiswaId(rs.getInt("user_id"));
         mahasiswa.setNpm(rs.getString("npm"));
         mahasiswa.setNama(rs.getString("nama"));
         mahasiswa.setStatusTa(StatusTA.valueOf(rs.getString("status_ta")));

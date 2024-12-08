@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atur Sidang - SISTA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-900">Daftar Sidang Tugas Akhir</h1>
+                    <a th:href="@{/kta/sidang/tambah}" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                        Jadwalkan Sidang
+                    </a>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="mb-6 flex gap-4">
+                    <div class="flex-1">
+                        <input type="text" id="searchInput" placeholder="Cari berdasarkan nama/NPM..." 
+                               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <select id="statusFilter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="">Semua Status</option>
+                        <option th:each="status : ${T(com.rpl.project_sista.model.enums.StatusSidang).values()}"
+                                th:value="${status}" th:text="${#strings.capitalize(#strings.toLowerCase(status))}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Table -->
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul TA</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jadwal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr th:each="sidang : ${sidangList}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900" th:text="${sidang.tugasAkhir.mahasiswa.nama}">Nama Mahasiswa</div>
+                                    <div class="text-sm text-gray-500" th:text="${sidang.tugasAkhir.mahasiswa.npm}">NPM</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900" th:text="${sidang.tugasAkhir.judul}">Judul TA</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900" th:text="${#temporals.format(sidang.jadwal, 'dd MMM yyyy')}">Tanggal</div>
+                                    <div class="text-sm text-gray-500" th:text="${#temporals.format(sidang.jadwal, 'HH:mm')}">Waktu</div>
+                                    <div class="text-sm text-gray-500" th:text="${sidang.ruangan}">Ruangan</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                          th:classappend="${sidang.statusSidang.name() == 'terjadwal' ? 'bg-yellow-100 text-yellow-800' : 
+                                                          sidang.statusSidang.name() == 'berlangsung' ? 'bg-blue-100 text-blue-800' :
+                                                          sidang.statusSidang.name() == 'selesai' ? 'bg-green-100 text-green-800' : 
+                                                          'bg-red-100 text-red-800'}"
+                                          th:text="${#strings.capitalize(#strings.toLowerCase(sidang.statusSidang))}">
+                                        Status
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a th:href="@{/kta/sidang/detail/{id}(id=${sidang.sidangId})}" class="text-purple-600 hover:text-purple-900 mr-3">Detail</a>
+                                    <a th:href="@{/kta/sidang/edit/{id}(id=${sidang.sidangId})}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                    <a th:href="@{/kta/sidang/delete/{id}(id=${sidang.sidangId})}" 
+                                       onclick="return confirm('Apakah Anda yakin ingin menghapus jadwal sidang ini?')"
+                                       class="text-red-600 hover:text-red-900">Hapus</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(sidangList)}">
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    Belum ada jadwal sidang yang terdaftar
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const tableRows = document.querySelectorAll('tbody tr');
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusTerm = statusFilter.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                const nama = row.querySelector('td:first-child div:first-child')?.textContent.toLowerCase() || '';
+                const npm = row.querySelector('td:first-child div:last-child')?.textContent.toLowerCase() || '';
+                const status = row.querySelector('td:nth-child(4) span')?.textContent.toLowerCase() || '';
+
+                const matchesSearch = nama.includes(searchTerm) || npm.includes(searchTerm);
+                const matchesStatus = !statusTerm || status.includes(statusTerm);
+
+                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+    </script>
+</body>
+</html>

@@ -47,4 +47,86 @@ public class Mahasiswa extends Users {
         this.statusTa = statusTa;
         this.createdAt = LocalDateTime.now();
     }
+
+    public Integer getMahasiswaId() {
+        return super.getUserId();
+    }
+
+    public void setMahasiswaId(Integer mahasiswaId) {
+        super.setUserId(mahasiswaId);
+    }
+
+    // Additional getter and setter methods
+    public String getNpm() {
+        return npm;
+    }
+
+    public void setNpm(String npm) {
+        this.npm = npm;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public StatusTA getStatusTa() {
+        return statusTa;
+    }
+
+    public void setStatusTa(StatusTA statusTa) {
+        this.statusTa = statusTa;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // Delegate methods for Users properties
+    public String getUsername() {
+        return super.getUsername();
+    }
+
+    public void setUsername(String username) {
+        super.setUsername(username);
+    }
+
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    public void setEmail(String email) {
+        super.setEmail(email);
+    }
+
+    public String getPasswordHash() {
+        return super.getPasswordHash();
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        super.setPasswordHash(passwordHash);
+    }
+
+    public UserRole getRole() {
+        return super.getRole();
+    }
+
+    public void setRole(UserRole role) {
+        super.setRole(role);
+    }
+
+    public Boolean getIsActive() {
+        return super.getIsActive();
+    }
+
+    public void setIsActive(Boolean isActive) {
+        super.setIsActive(isActive);
+    }
 }

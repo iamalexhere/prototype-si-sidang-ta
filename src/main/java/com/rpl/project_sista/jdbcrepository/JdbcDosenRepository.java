@@ -39,7 +39,7 @@ public class JdbcDosenRepository implements DosenRepository {
 
     @Override
     public Dosen save(Dosen dosen) {
-        if (dosen.getUserId() != null) {
+        if (dosen.getDosenId() != null) {
             // Update existing dosen
             jdbcTemplate.update(
                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
@@ -48,14 +48,14 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getPasswordHash(),
                 dosen.getRole().toString().toLowerCase(),
                 dosen.getIsActive(),
-                dosen.getUserId()
+                dosen.getDosenId()
             );
             
             jdbcTemplate.update(
                 "UPDATE dosen SET nip = ?, nama = ? WHERE user_id = ?",
                 dosen.getNip(),
                 dosen.getNama(),
-                dosen.getUserId()
+                dosen.getDosenId()
             );
         } else {
             // Insert new dosen
@@ -82,7 +82,7 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getNama()
             );
             
-            dosen.setUserId(userId);
+            dosen.setDosenId(userId);
         }
         return dosen;
     }
@@ -133,7 +133,7 @@ public class JdbcDosenRepository implements DosenRepository {
 
     private Dosen mapRowToDosen(ResultSet rs, int rowNum) throws SQLException {
         Dosen dosen = new Dosen();
-        dosen.setUserId(rs.getInt("user_id"));
+        dosen.setDosenId(rs.getInt("user_id"));
         dosen.setNip(rs.getString("nip"));
         dosen.setNama(rs.getString("nama"));
         dosen.setUsername(rs.getString("username"));
