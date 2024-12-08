@@ -21,9 +21,14 @@ import org.springframework.web.server.ResponseStatusException;
 import com.rpl.project_sista.model.entity.Dosen;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Controller
 @RequestMapping("/kta/sidang")
 public class ManajemenSidangController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ManajemenSidangController.class);
 
     @Autowired
     private SidangRepository sidangRepository;
@@ -63,6 +68,11 @@ public class ManajemenSidangController {
     public String showSidangDetail(@PathVariable Integer id, Model model) {
         sidangRepository.findById(id).ifPresentOrElse(
             sidang -> {
+                logger.info("Sidang found: {}", sidang);
+                logger.info("Tugas Akhir: {}", sidang.getTugasAkhir());
+                logger.info("Tugas Akhir Topik: {}", sidang.getTugasAkhir().getTopik());
+                logger.info("Pembimbing: {}", sidang.getTugasAkhir().getPembimbing());
+                
                 model.addAttribute("sidang", sidang);
                 model.addAttribute("tugasAkhir", sidang.getTugasAkhir());
                 
@@ -75,6 +85,7 @@ public class ManajemenSidangController {
             },
             () -> {
                 // Handle case when sidang is not found
+                logger.error("Sidang not found with ID: {}", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sidang not found");
             }
         );
