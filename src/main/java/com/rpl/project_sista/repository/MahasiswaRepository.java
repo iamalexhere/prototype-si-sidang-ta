@@ -8,6 +8,7 @@ import com.rpl.project_sista.model.entity.Mahasiswa;
 public interface MahasiswaRepository {
     List<Mahasiswa> findAll();
     Optional<Mahasiswa> findById(Integer id);
+    Optional<Mahasiswa> findByUserId(Integer userId);
     Mahasiswa save(Mahasiswa mahasiswa);
     List<Mahasiswa> findByName(String name);
     List<Mahasiswa> findPaginated(int page, int size, String filter);

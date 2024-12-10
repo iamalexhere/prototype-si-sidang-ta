@@ -78,6 +78,21 @@ public class ManajemenTugasAkhirController {
                             @RequestParam(required = false) List<Integer> pembimbingIds,
                             RedirectAttributes redirectAttributes) {
         try {
+            // Validate mahasiswa exists
+            if (tugasAkhir.getMahasiswa() == null || tugasAkhir.getMahasiswa().getMahasiswaId() == null) {
+                throw new RuntimeException("Mahasiswa harus dipilih");
+            }
+
+            // Store mahasiswa ID before the lambda
+            Integer mahasiswaId = tugasAkhir.getMahasiswa().getMahasiswaId();
+
+            // Get the mahasiswa from the database using the mahasiswa_id from the form
+            Mahasiswa mahasiswa = mahasiswaRepository.findById(mahasiswaId)
+                .orElseThrow(() -> new RuntimeException("Mahasiswa dengan ID " + mahasiswaId + " tidak ditemukan"));
+            
+            // Set the complete mahasiswa object
+            tugasAkhir.setMahasiswa(mahasiswa);
+
             // Set pembimbing
             if (pembimbingIds != null && !pembimbingIds.isEmpty()) {
                 Set<Dosen> pembimbing = new HashSet<>();
@@ -85,6 +100,11 @@ public class ManajemenTugasAkhirController {
                     dosenRepository.findById(dosenId).ifPresent(pembimbing::add);
                 }
                 tugasAkhir.setPembimbing(pembimbing);
+            }
+
+            // Set created_at if it's a new tugas akhir
+            if (tugasAkhir.getTaId() == null) {
+                tugasAkhir.setCreatedAt(LocalDateTime.now());
             }
 
             // Save Tugas Akhir

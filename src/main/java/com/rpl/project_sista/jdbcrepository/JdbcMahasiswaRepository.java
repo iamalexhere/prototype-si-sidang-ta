@@ -31,7 +31,10 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
     @Override
     public Optional<Mahasiswa> findById(Integer id) {
         List<Mahasiswa> results = jdbcTemplate.query(
-            "SELECT m.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM mahasiswa m JOIN users u ON m.user_id = u.user_id WHERE m.user_id = ?",
+            "SELECT m.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active " +
+            "FROM mahasiswa m " +
+            "JOIN users u ON m.user_id = u.user_id " +
+            "WHERE m.mahasiswa_id = ?",
             this::mapRowToMahasiswa,
             id
         );
@@ -134,9 +137,22 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         jdbcTemplate.update("DELETE FROM users WHERE user_id = ?", id);
     }
 
+    @Override
+    public Optional<Mahasiswa> findByUserId(Integer userId) {
+        List<Mahasiswa> results = jdbcTemplate.query(
+            "SELECT m.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active " +
+            "FROM mahasiswa m " +
+            "JOIN users u ON m.user_id = u.user_id " +
+            "WHERE u.user_id = ?",
+            this::mapRowToMahasiswa,
+            userId
+        );
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+    }
+
     private Mahasiswa mapRowToMahasiswa(ResultSet rs, int rowNum) throws SQLException {
         Mahasiswa mahasiswa = new Mahasiswa();
-        mahasiswa.setMahasiswaId(rs.getInt("user_id"));
+        mahasiswa.setMahasiswaId(rs.getInt("mahasiswa_id"));
         mahasiswa.setNpm(rs.getString("npm"));
         mahasiswa.setNama(rs.getString("nama"));
         mahasiswa.setStatusTa(StatusTA.valueOf(rs.getString("status_ta")));

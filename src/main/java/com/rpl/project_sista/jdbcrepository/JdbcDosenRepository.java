@@ -30,7 +30,7 @@ public class JdbcDosenRepository implements DosenRepository {
     @Override
     public Optional<Dosen> findById(Integer id) {
         List<Dosen> results = jdbcTemplate.query(
-            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.user_id = ?",
+            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.dosen_id = ?",
             this::mapRowToDosen,
             id
         );
@@ -133,7 +133,7 @@ public class JdbcDosenRepository implements DosenRepository {
 
     private Dosen mapRowToDosen(ResultSet rs, int rowNum) throws SQLException {
         Dosen dosen = new Dosen();
-        dosen.setDosenId(rs.getInt("user_id"));
+        dosen.setDosenId(rs.getInt("dosen_id"));
         dosen.setNip(rs.getString("nip"));
         dosen.setNama(rs.getString("nama"));
         dosen.setUsername(rs.getString("username"));
