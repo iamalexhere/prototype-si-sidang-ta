@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Controller
 @RequestMapping("/kta/sidang")
 public class ManajemenSidangController {
@@ -50,7 +53,7 @@ public class ManajemenSidangController {
     @GetMapping("/tambah")
     public String showAddForm(Model model) {
         model.addAttribute("pageTitle", "Tambah Jadwal Sidang");
-        model.addAttribute("sidang", new Sidang());
+        model.addAttribute("sidangForm", new SidangForm());
         model.addAttribute("tugasAkhirList", tugasAkhirRepository.findAll());
         model.addAttribute("dosenList", dosenRepository.findAll());
         return "kta/sidang/manajamen-sidang";
@@ -59,11 +62,27 @@ public class ManajemenSidangController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Integer id, Model model) {
         model.addAttribute("pageTitle", "Edit Jadwal Sidang");
+        
         sidangRepository.findById(id).ifPresent(sidang -> {
-            model.addAttribute("sidang", sidang);
+            SidangForm form = new SidangForm();
+            form.setSidangId(sidang.getSidangId().intValue());
+            form.setTugasAkhirId(sidang.getTugasAkhir().getTaId().intValue());
+            form.setRuangan(sidang.getRuangan());
+            form.setJadwalTanggal(sidang.getJadwal().toLocalDate());
+            form.setJadwalWaktu(sidang.getJadwal().toLocalTime());
+            
+            // Set penguji IDs if available
+            if (sidang.getPenguji() != null && sidang.getPenguji().size() >= 2) {
+                Object[] pengujiArray = sidang.getPenguji().toArray();
+                form.setPenguji1Id(((Dosen)pengujiArray[0]).getDosenId());
+                form.setPenguji2Id(((Dosen)pengujiArray[1]).getDosenId());
+            }
+            
+            model.addAttribute("sidangForm", form);
             model.addAttribute("tugasAkhirList", tugasAkhirRepository.findAll());
             model.addAttribute("dosenList", dosenRepository.findAll());
         });
+        
         return "kta/sidang/manajamen-sidang";
     }
 
@@ -74,21 +93,18 @@ public class ManajemenSidangController {
             sidang -> {
                 logger.info("Sidang found: {}", sidang);
                 logger.info("Tugas Akhir: {}", sidang.getTugasAkhir());
-                logger.info("Tugas Akhir Topik: {}", sidang.getTugasAkhir().getTopik());
                 logger.info("Pembimbing: {}", sidang.getTugasAkhir().getPembimbing());
+                logger.info("Penguji: {}", sidang.getPenguji());
                 
                 model.addAttribute("sidang", sidang);
                 model.addAttribute("tugasAkhir", sidang.getTugasAkhir());
                 
-                // Fetch penguji details
-                List<Dosen> pengujiList = new ArrayList<>();
-                if (sidang.getPenguji() != null) {
-                    pengujiList.addAll(sidang.getPenguji());
-                }
+                // Convert penguji set to ordered list
+                List<Dosen> pengujiList = new ArrayList<>(sidang.getPenguji());
+                // Sort penguji if needed (they should already be ordered by peran_penguji from the repository)
                 model.addAttribute("pengujiList", pengujiList);
             },
             () -> {
-                // Handle case when sidang is not found
                 logger.error("Sidang not found with ID: {}", id);
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sidang not found");
             }
@@ -118,22 +134,31 @@ public class ManajemenSidangController {
                 sidang.setStatusSidang(StatusSidang.terjadwal);
             }
 
-            // Save sidang first to get ID
-            sidang = sidangRepository.save(sidang);
-
             // Set penguji
-            Dosen penguji1 = dosenRepository.findById(form.getPenguji1Id()).orElseThrow();
-            Dosen penguji2 = dosenRepository.findById(form.getPenguji2Id()).orElseThrow();
+            Set<Dosen> pengujiSet = new HashSet<>();
+            Dosen penguji1 = dosenRepository.findById(form.getPenguji1Id()).orElseThrow(() -> 
+                new IllegalArgumentException("Penguji 1 tidak ditemukan"));
+            Dosen penguji2 = dosenRepository.findById(form.getPenguji2Id()).orElseThrow(() -> 
+                new IllegalArgumentException("Penguji 2 tidak ditemukan"));
+            
+            // Validate penguji are different
+            if (penguji1.getDosenId().equals(penguji2.getDosenId())) {
+                throw new IllegalArgumentException("Penguji 1 dan Penguji 2 tidak boleh sama");
+            }
+            
+            pengujiSet.add(penguji1);
+            pengujiSet.add(penguji2);
+            sidang.setPenguji(pengujiSet);
 
-            // Save penguji assignments
-            // Note: This should be handled by a separate PengujiSidangRepository in a real implementation
-            // For now, we'll assume it's handled within SidangRepository
+            // Save sidang with penguji
+            sidang = sidangRepository.save(sidang);
 
             redirectAttributes.addFlashAttribute("successMessage", 
                 "Sidang berhasil " + (form.getSidangId() != null ? "diperbarui" : "dijadwalkan"));
             return "redirect:/kta/sidang";
 
         } catch (Exception e) {
+            logger.error("Error saving sidang: ", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Terjadi kesalahan: " + e.getMessage());
             return "redirect:/kta/sidang/tambah";
         }

@@ -145,6 +145,9 @@ public class JdbcSidangRepository implements SidangRepository {
                 LocalDateTime.now(),
                 sidang.getSidangId()
             );
+            
+            // Delete existing penguji
+            jdbcTemplate.update("DELETE FROM penguji_sidang WHERE sidang_id = ?", sidang.getSidangId());
         } else {
             // Insert new sidang
             jdbcTemplate.update(
@@ -159,14 +162,33 @@ public class JdbcSidangRepository implements SidangRepository {
             );
             
             Integer sidangId = jdbcTemplate.queryForObject(
-                "SELECT sidang_id FROM sidang WHERE ta_id = ? AND jadwal = ?",
-                Integer.class,
-                sidang.getTugasAkhir().getTaId(),
-                sidang.getJadwal()
+                "SELECT currval('sidang_sidang_id_seq')",
+                Integer.class
             );
             
             sidang.setSidangId(Long.valueOf(sidangId));
         }
+
+        // Save penguji assignments if they exist
+        if (sidang.getPenguji() != null && !sidang.getPenguji().isEmpty()) {
+            Object[] pengujiArray = sidang.getPenguji().toArray();
+            if (pengujiArray.length >= 2) {
+                // Save Penguji 1
+                jdbcTemplate.update(
+                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji1'::peran_penguji)",
+                    sidang.getSidangId(),
+                    ((Dosen)pengujiArray[0]).getDosenId()
+                );
+                
+                // Save Penguji 2
+                jdbcTemplate.update(
+                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji2'::peran_penguji)",
+                    sidang.getSidangId(),
+                    ((Dosen)pengujiArray[1]).getDosenId()
+                );
+            }
+        }
+
         return sidang;
     }
 
@@ -196,29 +218,47 @@ public class JdbcSidangRepository implements SidangRepository {
         return pembimbing;
     }
 
+    private List<Dosen> fetchPengujiForSidang(Long sidangId) {
+        String sql = "SELECT d.dosen_id, d.nama, d.nip, ps.peran_penguji " +
+                    "FROM penguji_sidang ps " +
+                    "JOIN dosen d ON ps.dosen_id = d.dosen_id " +
+                    "WHERE ps.sidang_id = ? " +
+                    "ORDER BY ps.peran_penguji"; // This will order by penguji1, penguji2
+        
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Dosen dosen = new Dosen();
+            dosen.setDosenId(rs.getInt("dosen_id"));
+            dosen.setNama(rs.getString("nama"));
+            dosen.setNip(rs.getString("nip"));
+            return dosen;
+        }, sidangId);
+    }
+
     private Sidang mapRowToSidang(ResultSet rs, int rowNum) throws SQLException {
         Sidang sidang = new Sidang();
         sidang.setSidangId(rs.getLong("sidang_id"));
+        sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
+        sidang.setRuangan(rs.getString("ruangan"));
+        sidang.setStatusSidang(StatusSidang.valueOf(rs.getString("status_sidang")));
         
+        // Set TugasAkhir
         TugasAkhir ta = new TugasAkhir();
         ta.setTaId(rs.getLong("ta_id"));
         ta.setJudul(rs.getString("judul"));
         ta.setTopik(rs.getString("topik"));
         ta.setStatus(StatusTA.valueOf(rs.getString("status")));
         
-        // Fetch Mahasiswa details
+        // Set Mahasiswa
         Mahasiswa mahasiswa = new Mahasiswa();
-        mahasiswa.setNama(rs.getString("mahasiswa_nama"));
         mahasiswa.setNpm(rs.getString("npm"));
-        
+        mahasiswa.setNama(rs.getString("mahasiswa_nama"));
         ta.setMahasiswa(mahasiswa);
+        
         sidang.setTugasAkhir(ta);
         
-        sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
-        sidang.setRuangan(rs.getString("ruangan"));
-        sidang.setStatusSidang(StatusSidang.valueOf(rs.getString("status_sidang")));
-        sidang.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        sidang.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+        // Fetch and set penguji
+        List<Dosen> penguji = fetchPengujiForSidang(sidang.getSidangId());
+        sidang.setPenguji(new HashSet<>(penguji));
         
         return sidang;
     }
