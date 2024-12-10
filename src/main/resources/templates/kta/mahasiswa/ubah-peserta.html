@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubah Mahasiswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
+        <main class="flex-1 p-6">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-3xl font-bold mb-6">Ubah Mahasiswa</h1>
+                <form th:action="@{/kta/mahasiswa/ubah}" method="post" class="bg-white rounded-xl shadow-lg p-8">
+                    <input type="hidden" name="id" th:value="${mahasiswa.mahasiswaId}">
+                    <div class="mb-4">
+                        <label for="npm" class="block text-gray-700">NPM</label>
+                        <input type="text" id="npm" name="npm" th:value="${mahasiswa.npm}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="nama" class="block text-gray-700">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" th:value="${mahasiswa.nama}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" th:value="${mahasiswa.email}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="judulSkripsi" class="block text-gray-700">Judul Skripsi</label>
+                        <input type="text" id="judulSkripsi" name="judulSkripsi" th:value="${mahasiswa.judulSkripsi}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="pembimbing" class="block text-gray-700">Pembimbing</label>
+                        <input type="text" id="pembimbing" name="pembimbing" th:value="${mahasiswa.pembimbing}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="penguji1" class="block text-gray-700">Penguji 1</label>
+                        <input type="text" id="penguji1" name="penguji1" th:value="${mahasiswa.penguji1}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="mb-4">
+                        <label for="penguji2" class="block text-gray-700">Penguji 2</label>
+                        <input type="text" id="penguji2" name="penguji2" th:value="${mahasiswa.penguji2}" required class="border border-gray-300 rounded-md w-full px-4 py-2">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <a th:href="@{/kta/mahasiswa}" class="text-gray-600 hover:underline">Batal</a>
+                        <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded-md">Update</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

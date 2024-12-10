@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Peserta TA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-purple-600 text-white p-6">
+            <h1 class="text-2xl font-bold">SISTA</h1>
+            <nav class="mt-6">
+                <ul class="space-y-4">
+                    <li><a href="dashboard-kta.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Dashboard</a></li>
+                    <li><a href="kelola-ta.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Data Mahasiswa TA</a></li>
+                    <li><a href="atur-sidang.html" class="hover:bg-purple-700 p-2 rounded transition-colors duration-200">Atur Sidang</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="flex-1 p-6">
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+                <h1 class="text-3xl font-bold mb-6">Tambah Peserta Tugas Akhir</h1>
+                <form id="tambahPesertaForm" class="space-y-6">
+                    <div>
+                        <label for="npm" class="block text-sm font-medium text-gray-700">NPM</label>
+                        <input type="text" id="npm" name="npm" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200" placeholder="Masukkan NPM">
+                    </div>
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200" placeholder="Masukkan Nama Lengkap">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200" placeholder="Masukkan Email">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200" placeholder="Masukkan Password">
+                    </div>
+                    <div>
+                        <label for="jenisTA" class="block text-sm font-medium text-gray-700">Jenis Tugas Akhir</label>
+                        <select id="jenisTA" name="jenisTA" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="ta1">TA 1</option>
+                            <option value="ta2">TA 2</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="topik" class="block text-sm font-medium text-gray-700">Topik</label>
+                        <select id="topik" name="topik" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Topik</option>
+                            <option value="topik1">Topik 1</option>
+                            <option value="topik2">Topik 2</option>
+                            <option value="topik3">Topik 3</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="judul" class="block text-sm font-medium text-gray-700">Judul Tugas Akhir</label>
+                        <input type="text" id="judul" name="judul" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200" placeholder="Masukkan Judul TA">
+                    </div>
+                    <div>
+                        <label for="pembimbing" class="block text-sm font-medium text-gray-700">Dosen Pembimbing</label>
+                        <select id="pembimbing" name="pembimbing" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-purple-500 focus:ring focus:ring-purple-200">
+                            <option value="">Pilih Dosen Pembimbing</option>
+                            <!-- Options for pembimbing will be populated dynamically -->
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">Simpan Peserta</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
