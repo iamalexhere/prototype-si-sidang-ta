@@ -120,6 +120,28 @@ public class ManajemenTugasAkhirController {
         }
     }
 
+    @PostMapping("/delete/{taId}")
+    public String deleteTugasAkhir(@PathVariable Integer taId, RedirectAttributes redirectAttributes) {
+        try {
+            // First, check if the Tugas Akhir exists
+            tugasAkhirRepository.findById(taId).ifPresentOrElse(
+                existingTa -> {
+                    // Delete the Tugas Akhir
+                    tugasAkhirRepository.deleteById(taId);
+                    redirectAttributes.addFlashAttribute("successMessage", "Tugas Akhir berhasil dihapus.");
+                },
+                () -> {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Tugas Akhir tidak ditemukan.");
+                }
+            );
+        } catch (Exception e) {
+            logger.error("Error deleting Tugas Akhir with id: {}", taId, e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal menghapus Tugas Akhir: " + e.getMessage());
+        }
+        
+        return "redirect:/kta/tugas-akhir";
+    }
+
     @GetMapping("/detail/{id}")
     public String showTugasAkhirDetail(@PathVariable Long id, Model model) {
         model.addAttribute("pageTitle", "Detail Tugas Akhir");

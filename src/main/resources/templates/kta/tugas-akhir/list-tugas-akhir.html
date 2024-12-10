@@ -124,28 +124,61 @@
                                            class="text-blue-600 hover:text-blue-900">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        <form th:action="@{/kta/tugas-akhir/delete/{id}(id=${tugasAkhir.taId})}" 
+                                              method="post" 
+                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus Tugas Akhir ini?');">
+                                            <button type="submit" 
+                                                    class="text-red-600 hover:text-red-900 focus:outline-none">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <p id="resultCount"></p>
+                    <p id="noResultsMessage" style="display: none;">Tidak ada hasil yang ditemukan.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Search functionality
+        // Advanced search functionality
         const searchInput = document.getElementById('searchInput');
         const tableRows = document.querySelectorAll('tbody tr');
 
         function filterTable() {
-            const searchTerm = searchInput.value.toLowerCase();
+            const searchTerm = searchInput.value.toLowerCase().trim();
 
             tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+                const columns = row.querySelectorAll('td');
+                const searchableText = Array.from(columns)
+                    .slice(0, 5)  // exclude the actions column
+                    .map(col => col.textContent.toLowerCase())
+                    .join(' ');
+
+                row.style.display = searchableText.includes(searchTerm) ? '' : 'none';
             });
+
+            // Update result count or show "No results" message
+            updateResultCount();
+        }
+
+        function updateResultCount() {
+            const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
+            const resultCountEl = document.getElementById('resultCount');
+            
+            if (resultCountEl) {
+                resultCountEl.textContent = `${visibleRows.length} hasil`;
+            }
+
+            // Optional: Show/hide "No results" message
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            if (noResultsMessage) {
+                noResultsMessage.style.display = visibleRows.length === 0 ? 'block' : 'none';
+            }
         }
 
         searchInput.addEventListener('input', filterTable);

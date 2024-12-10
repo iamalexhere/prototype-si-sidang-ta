@@ -179,10 +179,23 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
 
     @Override
     public void deleteById(Integer id) {
-        // Delete pembimbing first due to foreign key constraint
-        jdbcTemplate.update("DELETE FROM pembimbing_ta WHERE ta_id = ?", id);
-        // Then delete the tugas akhir
-        jdbcTemplate.update("DELETE FROM tugas_akhir WHERE ta_id = ?", id);
+        try {
+            // First, delete related records in pembimbing_ta
+            jdbcTemplate.update("DELETE FROM pembimbing_ta WHERE ta_id = ?", id);
+            
+            // Then delete the tugas akhir record
+            int deletedRows = jdbcTemplate.update("DELETE FROM tugas_akhir WHERE ta_id = ?", id);
+            
+            if (deletedRows == 0) {
+                logger.warn("No tugas akhir found with id: {}", id);
+                throw new DataAccessException("No tugas akhir found with id: " + id) {};
+            }
+            
+            logger.info("Successfully deleted tugas akhir with id: {}", id);
+        } catch (DataAccessException e) {
+            logger.error("Error deleting tugas akhir with id: {}", id, e);
+            throw e;
+        }
     }
 
     private TugasAkhir mapBasicTugasAkhir(ResultSet rs) throws SQLException {
