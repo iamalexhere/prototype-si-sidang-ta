@@ -85,25 +85,35 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const sidangId = 1; // Ganti dengan ID sidang yang sesuai
-        const textarea = document.querySelector("#catatanSidang");
+    const textarea = document.querySelector("#catatanSidang");
 
-        fetch(`/mahasiswa/catatan/sidang/${sidangId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-                return response.json();
-            })
-            .then(data => {
-                const catatanText = data.map(catatan => `- ${catatan.isiCatatan}`).join("\n\n");
-                textarea.value = catatanText;
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                textarea.value = "Gagal memuat catatan.";
-            });
-    });
+    // Fetch the latest sidangId for the logged-in user
+    fetch("/mahasiswa/sidang/latest")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch sidangId");
+            }
+            return response.json();
+        })
+        .then(latestSidangId => {
+            // Use the latest sidangId to fetch catatan
+            return fetch(`/mahasiswa/sidang/${latestSidangId}`);
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch catatan");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const catatanText = data.map(catatan => `- ${catatan.isiCatatan}`).join("\n\n");
+            textarea.value = catatanText;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            textarea.value = "Gagal memuat catatan.";
+        });
+});
 </script>
 
 </html>

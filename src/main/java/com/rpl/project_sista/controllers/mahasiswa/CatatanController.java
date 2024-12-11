@@ -31,7 +31,7 @@ public class CatatanController {
     }
 
     // Get catatan by sidang ID
-    @GetMapping("/sidang/{sidangId}")
+    @GetMapping("/mahasiswa/sidang/{sidangId}")
     @ResponseBody
     public List<CatatanRevisi> getCatatanBySidangId(@PathVariable Long sidangId) {
         return catatanRepository.findBySidangId(sidangId);
