@@ -2,117 +2,146 @@ package com.rpl.project_sista.jdbcrepository;
 
 import com.rpl.project_sista.model.entity.KomponenNilai;
 import com.rpl.project_sista.model.entity.Semester;
+import com.rpl.project_sista.model.enums.Periode;
 import com.rpl.project_sista.model.enums.TipePenilai;
 import com.rpl.project_sista.repository.KomponenNilaiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
+    
+    private final JdbcTemplate jdbcTemplate;
+    private final SemesterRowMapper semesterRowMapper;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private final RowMapper<KomponenNilai> rowMapper = (rs, rowNum) -> {
-        KomponenNilai komponenNilai = new KomponenNilai();
-        komponenNilai.setKomponenId(rs.getLong("komponen_id"));
-        
-        Semester semester = new Semester();
-        semester.setSemesterId(rs.getLong("semester_id"));
-        komponenNilai.setSemester(semester);
-        
-        komponenNilai.setNamaKomponen(rs.getString("nama_komponen"));
-        komponenNilai.setBobot(rs.getFloat("bobot"));
-        komponenNilai.setTipePenilai(TipePenilai.valueOf(rs.getString("tipe_penilai")));
-        komponenNilai.setDeskripsi(rs.getString("deskripsi"));
-        komponenNilai.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        return komponenNilai;
-    };
-
-    @Override
-    public List<KomponenNilai> findAll() {
-        String sql = "SELECT * FROM komponen_nilai ORDER BY created_at DESC";
-        return jdbcTemplate.query(sql, rowMapper);
+    public JdbcKomponenNilaiRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.semesterRowMapper = new SemesterRowMapper();
     }
 
     @Override
-    public List<KomponenNilai> findBySemester(Semester semester) {
-        String sql = "SELECT * FROM komponen_nilai WHERE semester_id = ? ORDER BY created_at DESC";
-        return jdbcTemplate.query(sql, rowMapper, semester.getSemesterId());
+    public List<KomponenNilai> findAll() {
+        String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
+                    "JOIN semester s ON kn.semester_id = s.semester_id";
+        return jdbcTemplate.query(sql, new KomponenNilaiRowMapper());
     }
 
     @Override
     public Optional<KomponenNilai> findById(Long id) {
-        String sql = "SELECT * FROM komponen_nilai WHERE komponen_id = ?";
-        List<KomponenNilai> results = jdbcTemplate.query(sql, rowMapper, id);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
+        String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
+                    "JOIN semester s ON kn.semester_id = s.semester_id " +
+                    "WHERE kn.komponen_id = ?";
+        try {
+            KomponenNilai komponenNilai = jdbcTemplate.queryForObject(
+                sql, new KomponenNilaiRowMapper(), id);
+            return Optional.ofNullable(komponenNilai);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public List<KomponenNilai> findBySemester(Semester semester) {
+        String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
+                    "JOIN semester s ON kn.semester_id = s.semester_id " +
+                    "WHERE kn.semester_id = ?";
+        return jdbcTemplate.query(sql, new KomponenNilaiRowMapper(), semester.getSemesterId());
+    }
+
+    @Override
+    public List<KomponenNilai> findBySemesterAndTipePenilai(Semester semester, TipePenilai tipePenilai) {
+        String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
+                    "JOIN semester s ON kn.semester_id = s.semester_id " +
+                    "WHERE kn.semester_id = ? AND kn.tipe_penilai = ?::tipe_penilai";
+        return jdbcTemplate.query(sql, new KomponenNilaiRowMapper(), 
+                                semester.getSemesterId(), tipePenilai.toString().toLowerCase());
     }
 
     @Override
     public KomponenNilai save(KomponenNilai komponenNilai) {
-        if (komponenNilai.getKomponenId() == null) {
-            return insert(komponenNilai);
+        if (komponenNilai.getKomponenId() != null) {
+            // Update
+            String sql = "UPDATE komponen_nilai SET semester_id = ?, nama_komponen = ?, " +
+                        "bobot = ?, tipe_penilai = ?::tipe_penilai, deskripsi = ? " +
+                        "WHERE komponen_id = ?";
+            jdbcTemplate.update(sql,
+                komponenNilai.getSemester().getSemesterId(),
+                komponenNilai.getNamaKomponen(),
+                komponenNilai.getBobot(),
+                komponenNilai.getTipePenilai().name(),
+                komponenNilai.getDeskripsi(),
+                komponenNilai.getKomponenId()
+            );
+        } else {
+            // Insert with RETURNING clause
+            String sql = "INSERT INTO komponen_nilai (semester_id, nama_komponen, bobot, " +
+                        "tipe_penilai, deskripsi, created_at) " +
+                        "VALUES (?, ?, ?, ?::tipe_penilai, ?, ?) RETURNING komponen_id";
+            
+            Long generatedId = jdbcTemplate.queryForObject(sql,
+                Long.class,
+                komponenNilai.getSemester().getSemesterId(),
+                komponenNilai.getNamaKomponen(),
+                komponenNilai.getBobot(),
+                komponenNilai.getTipePenilai().name(),
+                komponenNilai.getDeskripsi(),
+                LocalDateTime.now()
+            );
+            
+            komponenNilai.setKomponenId(generatedId);
         }
-        return update(komponenNilai);
-    }
-
-    private KomponenNilai insert(KomponenNilai komponenNilai) {
-        String sql = "INSERT INTO komponen_nilai (semester_id, nama_komponen, bobot, tipe_penilai, deskripsi, created_at) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
-        
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, komponenNilai.getSemester().getSemesterId());
-            ps.setString(2, komponenNilai.getNamaKomponen());
-            ps.setFloat(3, komponenNilai.getBobot());
-            ps.setString(4, komponenNilai.getTipePenilai().name());
-            ps.setString(5, komponenNilai.getDeskripsi());
-            ps.setTimestamp(6, Timestamp.valueOf(komponenNilai.getCreatedAt()));
-            return ps;
-        }, keyHolder);
-
-        komponenNilai.setKomponenId(Objects.requireNonNull(keyHolder.getKey()).longValue());
-        return komponenNilai;
-    }
-
-    private KomponenNilai update(KomponenNilai komponenNilai) {
-        String sql = "UPDATE komponen_nilai SET semester_id = ?, nama_komponen = ?, bobot = ?, " +
-                    "tipe_penilai = ?, deskripsi = ? WHERE komponen_id = ?";
-        
-        jdbcTemplate.update(sql,
-            komponenNilai.getSemester().getSemesterId(),
-            komponenNilai.getNamaKomponen(),
-            komponenNilai.getBobot(),
-            komponenNilai.getTipePenilai().name(),
-            komponenNilai.getDeskripsi(),
-            komponenNilai.getKomponenId()
-        );
-        
         return komponenNilai;
     }
 
     @Override
     public void deleteById(Long id) {
-        String sql = "DELETE FROM komponen_nilai WHERE komponen_id = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update("DELETE FROM komponen_nilai WHERE komponen_id = ?", id);
     }
 
     @Override
-    public int count() {
-        String sql = "SELECT COUNT(*) FROM komponen_nilai";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
+    public long count() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM komponen_nilai", Long.class);
+    }
+
+    private class KomponenNilaiRowMapper implements RowMapper<KomponenNilai> {
+        @Override
+        public KomponenNilai mapRow(ResultSet rs, int rowNum) throws SQLException {
+            KomponenNilai komponenNilai = new KomponenNilai();
+            komponenNilai.setKomponenId(rs.getLong("komponen_id"));
+            komponenNilai.setNamaKomponen(rs.getString("nama_komponen"));
+            komponenNilai.setBobot(rs.getFloat("bobot"));
+            komponenNilai.setTipePenilai(TipePenilai.valueOf(rs.getString("tipe_penilai")));
+            komponenNilai.setDeskripsi(rs.getString("deskripsi"));
+            komponenNilai.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            
+            // Map the semester
+            Semester semester = semesterRowMapper.mapRow(rs, rowNum);
+            komponenNilai.setSemester(semester);
+            
+            return komponenNilai;
+        }
+    }
+
+    private static class SemesterRowMapper implements RowMapper<Semester> {
+        @Override
+        public Semester mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Semester semester = new Semester();
+            semester.setSemesterId(rs.getLong("semester_id"));
+            semester.setTahunAjaran(rs.getString("tahun_ajaran"));
+            semester.setPeriode(Periode.valueOf(rs.getString("periode").toLowerCase()));
+            semester.setIsActive(rs.getBoolean("is_active"));
+            semester.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            return semester;
+        }
     }
 }
