@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 3px solid #4b5563;
+        }
+        
+        .header .logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-right: 1rem; /* Ensure space between logo and text */
+        }
+        
+        .header .font-semibold {
+            line-height: 1.5;
+        }
+        
+        .header .text-xl {
+            font-size: 1.5rem;
+        }
+        
+        .header .text-lg {
+            font-size: 1.125rem;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .text-container {
+            font-weight: 600;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Change to a font that Flying Saucer supports */
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        
+               
+    </style>
+
+</head>
+    <body style="background-color: #f3f4f6; color: #1f2937;">
+        <!-- BAGIAN ATAS  -->
+        <div style="display: flex; align-items: center; padding: 1rem; background-color: white; border-bottom: 3px solid #4b5563;">
+            <img src="http://localhost:8080/Gambar/Logo_unpar_kecil.png" alt="logo Universitas" class="logo" />
+            <div style="font-weight: 600; margin-left: 1rem;">
+                <p style="font-size: 1.25rem;">Program Studi Teknik Informatika</p>
+                <p style="font-size: 1.125rem;">Fakultas Teknologi Informasi dan Sains</p>
+                <p style="font-size: 1.125rem;">Universitas Katolik Parahyangan</p>
+            </div>
+        </div>
+        
+
+        <!-- JUDUL DI TENGAH -->
+        <div style="text-align: center;">
+            <h1 style="font-size: 1.875rem; font-weight: 700;">Berita Acara Pelaksanaan</h1>
+            <h2 style="font-size: 1.5rem; font-weight: 600;">Sidang Skripsi</h2>
+            <h2 style="font-size: 1.25rem; font-weight: 500;">
+                <span th:text="${semester}" style="display: inline-block; margin-right: 0.5rem;">Semester: Ganjil</span>
+                <span th:text="${tahunAkademik}" style="display: inline-block;">2024/2025</span>
+            </h2>
+        </div>
+        
+        
+
+        <!-- ISI KAYA NPM NAMA TOPIK  -->
+        <div style="margin-left: auto; margin-right: auto; background-color: white; border-radius: 0.375rem; margin-bottom: 0.25rem; padding: 0.25rem;">
+            <p style="margin-bottom: 1rem; font-size: 1.125rem; font-weight: 600;">Telah diselenggarakan Review untuk kuliah AIF18002-05 Skripsi 2 bagi:</p>
+            <div style="display: flex; flex-direction: column; margin-bottom: 1rem;">
+                <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem;">Npm: <span style="color: #6b7280; font-weight: 400;" th:text="${NPM}"></span></p>
+                <p style="font-size: 1.125rem; font-weight: 600;">Nama: <span style="color: #6b7280; font-weight: 400;" th:text="${Nama}"></span></p>
+            </div>            
+            <p style="font-size: 1.125rem; font-weight: 600; margin-bottom: 1rem;">Topik: <span style="color: #6b7280; font-weight: 400;" th:text="${Topik}">Topik akan muncul di sini</span></p>
+        </div>
+        
+        
+        <!--TABEL PENGUJI  NAMA PERAN  -->
+        <div style="padding: 0.25rem; border-radius: 0.375rem; margin-bottom: 0.25rem;">
+            <p style="font-size: 1.125rem; font-weight: 600;">Dengan pembimbing dan penguji:</p>
+            <table style="border-collapse: collapse; width: 100%; border: 2px solid black; text-align: left; font-size: 1rem;">
+                <tr>
+                    <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 40%;">Peran</th>
+                    <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 60%;">Nama</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 0.5rem;">Pembimbing Tunggal</td>
+                    <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PembimbingTunggal}"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 0.5rem;">Pembimbing Pendamping</td>
+                    <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PembimbingPendamping}"> </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 0.5rem;">Ketua Tim Penguji</td>
+                    <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PengujiKetua}"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black; padding: 0.5rem;">Anggota Tim Penguji</td>
+                    <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PengujiDosen}"></td>
+                </tr>
+            </table>
+        </div>
+        
+
+        <!-- REKAP NILAI DAN TABEL NILAINYA -->
+        <div style="font-size: 1rem; margin-bottom: 1.25rem; padding: 0.25rem;">
+            <p style="font-size: 1.125rem; font-weight: 600;">Rekapitulasi nilai Sidang Skripsi 2 yang diberikan oleh pembimbing, penguji dan koordinator skripsi:</p>
+            <div>
+                <table style="border-collapse: collapse; width: 100%; border: 2px solid black; text-align: left; font-size: 1rem; margin: 0 auto 1.75rem;">
+                    <tr>
+                        <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 5%;">Nomor</th>
+                        <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 30%;">Pembimbing/Penguji</th>
+                        <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 10%;">Nilai</th>
+                        <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 10%;">Bobot</th>
+                        <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 10%;">Nilai Akhir</th>
+                    </tr>
+                    <tr style="font-weight: 600;">
+                        <td style="border: 1px solid black; padding: 0.5rem;">1</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;">Ketua Tim Penguji</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KetuaNilai}">80.90</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KetuaBobot}">35%</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KetuaNa}">28,315</td>
+                    </tr>
+        
+                    <tr>
+                        <td style="border: 1px solid black; padding: 0.5rem;">2</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;">Anggota Tim Penguji</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PengujiNilai}">80.90</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PengujiBobot}">35%</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PengujiNa}">28,315</td>
+                    </tr>
+        
+                    <tr>
+                        <td style="border: 1px solid black; padding: 0.5rem;">3</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;">Pembimbing</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PembimbingNilai}">80.90</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PembimbingBobot}">20%</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${PembimbingNa}">28,315</td>
+                    </tr>
+        
+                    <tr>
+                        <td style="border: 1px solid black; padding: 0.5rem;">4</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;">Koordinator Skripsi</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KoorNilai}">80.90</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KoorBobot}">10%</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KoorNa}">28,315</td>
+                    </tr>
+        
+                    <tr>
+                        <td style="border: 1px solid black; padding: 0.5rem; background-color: black;"></td>
+                        <td style="border: 1px solid black; padding: 0.5rem;">Total</td>
+                        <td style="border: 1px solid black; padding: 0.5rem; background-color: black;"></td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${bobotTotal}">100%</td>
+                        <td style="border: 1px solid black; padding: 0.5rem;" th:text="${NaTotal}">80.12</td>
+                    </tr>
+                </table>
+            </div>
+        </div>        
+
+        <!-- WAKTU SIDANG?ATAU WAKTU PENGUMUMAN INTINYA MAH -->
+        <div style="display: flex; align-items: center; padding: 0.25rem; margin-bottom: 0.25rem;">
+            <p style="font-size: 1.125rem; font-weight: 600; margin-right: 2rem;">Ditetapkan di Bandung:</p>
+            <table style="border-collapse: collapse; border: 1px solid #D1D5DB; text-align: left; font-size: 1rem;">
+                <tr>
+                    <td th:text="${fullDate}" style="padding: 0.5rem;">Tanggal</td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        
+        <!-- TABEL ISI TTD  -->
+        <div style="font-size: 1rem; display: flex; flex-direction: column; gap: 0.125rem; padding: 0.25rem; margin-bottom: 1.75rem;">
+            <table style="border-collapse: collapse; border: 2px solid black; text-align: left; font-size: 1rem; margin: auto;">
+                <tr>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Ketua Tim Penguji</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Anggota Tim Penguji</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Pembimbing</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Mahasiswa</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Koordinator Skripsi</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #D1D5DB; padding: 0.5rem;">Isi tanda tangan</td>
+                    <td style="border: 1px solid #D1D5DB; padding: 0.5rem;">Isi tanda tangan</td>
+                    <td style="border: 1px solid #D1D5DB; padding: 0.5rem;">Isi tanda tangan</td>
+                    <td style="border: 1px solid #D1D5DB; padding: 0.5rem;">Isi tanda tangan</td>
+                    <td style="border: 1px solid #D1D5DB; padding: 0.5rem;">Isi tanda tangan</td>
+                </tr>
+            </table>
+        </div>
+        
+        
+    </body>
+</html>
