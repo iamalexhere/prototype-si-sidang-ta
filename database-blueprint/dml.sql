@@ -47,29 +47,17 @@ INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES
 (2, 1, 'penguji2'),
 (3, 2, 'penguji1');
 
--- Insert data into 'komponen_nilai'
+-- Insert data into 'komponen_nilai' for PENGUJI
 INSERT INTO komponen_nilai (semester_id, nama_komponen, bobot, tipe_penilai, deskripsi) VALUES
-(1, 'Proposal Presentation', 40, 'pembimbing', 'Assessment of the proposal presentation'),
-(1, 'Final Report', 60, 'penguji', 'Assessment of the final report quality');
+(1, 'Tata tulis laporan', 15, 'penguji', 'Penilaian tata tulis dan format laporan'),
+(1, 'Kelengkapan materi', 20, 'penguji', 'Penilaian kelengkapan isi materi'),
+(1, 'Pencapaian tujuan', 25, 'penguji', 'Penilaian pencapaian tujuan penelitian'),
+(1, 'Penguasaan materi', 30, 'penguji', 'Penilaian penguasaan materi oleh mahasiswa'),
+(1, 'Presentasi', 10, 'penguji', 'Penilaian kemampuan presentasi');
 
--- Insert data into 'nilai_sidang'
-INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai) VALUES
-(1, 1, 1, 85),
-(1, 2, 1, 90),
-(2, 1, 2, 80),
-(2, 2, 2, 88);
-
--- Insert data into 'catatan_revisi'
-INSERT INTO catatan_revisi (sidang_id, dosen_id, isi_catatan) VALUES
-(1, 1, 'Clarify the methodology in section 3.'),
-(2, 2, 'Revise the conclusion for better clarity.');
-
--- Insert data into 'bap'
-INSERT INTO bap (sidang_id, catatan_tambahan) VALUES
-(1, 'Overall good work, minor revisions needed.'),
-(2, 'Well-documented, but requires additional references.');
-
--- Insert data into 'persetujuan_bap'
-INSERT INTO persetujuan_bap (bap_id, user_id, is_approved, approved_at) VALUES
-(1, 1, true, '2024-01-16 10:00:00'),
-(2, 5, true, '2024-01-16 11:00:00');
+-- Insert data into 'komponen_nilai' for PEMBIMBING
+INSERT INTO komponen_nilai (semester_id, nama_komponen, bobot, tipe_penilai, deskripsi) VALUES
+(1, 'Tata tulis laporan', 20, 'pembimbing', 'Penilaian tata tulis dan format laporan'),
+(1, 'Kelengkapan materi', 20, 'pembimbing', 'Penilaian kelengkapan isi materi'),
+(1, 'Proses bimbingan', 30, 'pembimbing', 'Penilaian proses bimbingan dan progress'),
+(1, 'Penguasaan materi', 30, 'pembimbing', 'Penilaian penguasaan materi oleh mahasiswa');
