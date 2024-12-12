@@ -14,11 +14,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+// Repository untuk mengelola data dosen menggunakan JDBC.
 @Repository
 public class JdbcDosenRepository implements DosenRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Mengambil semua data dosen dari database.
     @Override
     public List<Dosen> findAll() {
         return jdbcTemplate.query(
@@ -27,6 +29,7 @@ public class JdbcDosenRepository implements DosenRepository {
         );
     }
 
+    // Mengambil data dosen berdasarkan ID.
     @Override
     public Optional<Dosen> findById(Integer id) {
         List<Dosen> results = jdbcTemplate.query(
@@ -37,10 +40,11 @@ public class JdbcDosenRepository implements DosenRepository {
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
+    // Menyimpan atau memperbarui data dosen.
     @Override
     public Dosen save(Dosen dosen) {
         if (dosen.getDosenId() != null) {
-            // Update existing dosen
+            // Memperbarui data dosen yang sudah ada
             jdbcTemplate.update(
                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
                 dosen.getUsername(),
@@ -58,7 +62,7 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getDosenId()
             );
         } else {
-            // Insert new dosen
+            // Menyimpan data dosen baru
             jdbcTemplate.update(
                 "INSERT INTO users (username, email, password_hash, role, created_at, is_active) VALUES (?, ?, ?, ?::user_role, ?, ?)",
                 dosen.getUsername(),
@@ -87,14 +91,16 @@ public class JdbcDosenRepository implements DosenRepository {
         return dosen;
     }
 
+    // Menghapus data dosen berdasarkan ID.
     @Override
     public void deleteById(Integer id) {
-        // First delete from dosen table
+        // Hapus dari tabel dosen terlebih dahulu
         jdbcTemplate.update("DELETE FROM dosen WHERE user_id = ?", id);
-        // Then delete from users table
+        // Kemudian hapus dari tabel users
         jdbcTemplate.update("DELETE FROM users WHERE user_id = ?", id);
     }
 
+    // Mencari dosen berdasarkan nama.
     @Override
     public List<Dosen> findByName(String name) {
         return jdbcTemplate.query(
@@ -104,6 +110,7 @@ public class JdbcDosenRepository implements DosenRepository {
         );
     }
 
+    // Mencari dosen secara terpaginasi.
     @Override
     public List<Dosen> findPaginated(int page, int size, String filter) {
         int offset = (page - 1) * size;
@@ -118,6 +125,7 @@ public class JdbcDosenRepository implements DosenRepository {
         );
     }
 
+    // Menghitung jumlah dosen.
     @Override
     public int count(String filter) {
         String query = filter.isEmpty()
@@ -131,6 +139,7 @@ public class JdbcDosenRepository implements DosenRepository {
         );
     }
 
+    // Mapping data ResultSet ke objek Dosen.
     private Dosen mapRowToDosen(ResultSet rs, int rowNum) throws SQLException {
         Dosen dosen = new Dosen();
         dosen.setDosenId(rs.getInt("dosen_id"));

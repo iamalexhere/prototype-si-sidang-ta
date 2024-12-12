@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.HashSet;
 import java.util.Set;
 
+// Repository untuk mengelola data Tugas Akhir menggunakan JDBC.
 @Repository
 public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
     private static final Logger logger = LoggerFactory.getLogger(JdbcTugasAkhirRepository.class);
@@ -31,6 +32,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Mengambil semua data Tugas Akhir dari database.
     @Override
     public List<TugasAkhir> findAll() {
         String sql = "SELECT DISTINCT ta.*, m.npm, m.nama as mahasiswa_nama, " +
@@ -55,6 +57,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         return tugasAkhirList;
     }
 
+    // Mengambil data Tugas Akhir berdasarkan ID.
     @Override
     public Optional<TugasAkhir> findById(Integer id) {
         String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
@@ -76,6 +79,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }
     }
 
+    // Mengambil data Tugas Akhir berdasarkan ID mahasiswa.
     @Override
     public List<TugasAkhir> findByMahasiswaId(Integer mahasiswaId) {
         String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
@@ -92,34 +96,36 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }, mahasiswaId);
     }
 
+    // Memvalidasi transisi status Tugas Akhir.
     private boolean isValidStatusTransition(StatusTA currentStatus, StatusTA newStatus) {
         if (currentStatus == null && newStatus == StatusTA.draft) {
-            return true; // New TA can be created as draft
+            return true; // Tugas Akhir baru dapat dibuat sebagai draft
         }
 
-        // Define valid transitions
+        // Mendefinisikan transisi yang valid
         switch (currentStatus) {
             case draft:
                 return newStatus == StatusTA.diajukan;
             case diajukan:
                 return newStatus == StatusTA.diterima || newStatus == StatusTA.ditolak;
             case ditolak:
-                return newStatus == StatusTA.draft; // Can resubmit after rejection
+                return newStatus == StatusTA.draft; // Dapat dikirim ulang setelah penolakan
             case diterima:
                 return newStatus == StatusTA.dalam_pengerjaan;
             case dalam_pengerjaan:
                 return newStatus == StatusTA.selesai;
             case selesai:
-                return false; // Final state, no further transitions
+                return false; // Status final, tidak ada transisi selanjutnya
             default:
                 return false;
         }
     }
 
+    // Menyimpan atau memperbarui data Tugas Akhir.
     @Override
     public TugasAkhir save(TugasAkhir tugasAkhir) {
         if (tugasAkhir.getTaId() != null) {
-            // For existing TA, validate status transition
+            // Untuk Tugas Akhir yang sudah ada, validasi transisi status
             Optional<TugasAkhir> existingTA = findById(tugasAkhir.getTaId().intValue());
             if (existingTA.isPresent()) {
                 StatusTA currentStatus = existingTA.get().getStatus();
@@ -131,7 +137,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
                 }
             }
 
-            // Update existing tugas akhir
+            // Memperbarui Tugas Akhir yang sudah ada
             jdbcTemplate.update(
                 "UPDATE tugas_akhir SET mahasiswa_id = ?, semester_id = ?, judul = ?, " +
                 "topik = ?, jenis_ta = ?::jenis_ta, status = ?::status_ta, " +
@@ -147,15 +153,15 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
                 tugasAkhir.getTaId()
             );
 
-            // Update pembimbing
+            // Memperbarui data pembimbing
             updatePembimbing(tugasAkhir);
         } else {
-            // For new TA, only allow draft status
+            // Untuk Tugas Akhir baru, hanya status draft yang diizinkan
             if (tugasAkhir.getStatus() != StatusTA.draft) {
                 throw new IllegalStateException("New Tugas Akhir must be created with draft status");
             }
 
-            // Insert new tugas akhir
+            // Menyimpan Tugas Akhir baru
             tugasAkhir.setCreatedAt(LocalDateTime.now());
             jdbcTemplate.update(
                 "INSERT INTO tugas_akhir (mahasiswa_id, semester_id, judul, topik, " +
@@ -181,7 +187,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
             
             tugasAkhir.setTaId(taId != null ? Long.valueOf(taId) : null);
 
-            // Insert pembimbing for new tugas akhir
+            // Menyimpan data pembimbing untuk Tugas Akhir baru
             if (tugasAkhir.getTaId() != null) {
                 updatePembimbing(tugasAkhir);
             }
@@ -189,11 +195,12 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         return tugasAkhir;
     }
 
+    // Memperbarui data pembimbing Tugas Akhir.
     private void updatePembimbing(TugasAkhir tugasAkhir) {
-        // Delete existing pembimbing
+        // Hapus data pembimbing yang sudah ada
         jdbcTemplate.update("DELETE FROM pembimbing_ta WHERE ta_id = ?", tugasAkhir.getTaId());
 
-        // Insert new pembimbing
+        // Simpan data pembimbing baru
         if (tugasAkhir.getPembimbing() != null && !tugasAkhir.getPembimbing().isEmpty()) {
             for (Dosen pembimbing : tugasAkhir.getPembimbing()) {
                 jdbcTemplate.update(
@@ -206,6 +213,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }
     }
 
+    // Mengambil data pembimbing berdasarkan ID Tugas Akhir.
     private Set<Dosen> findPembimbingByTaId(Long taId) {
         String sql = "SELECT d.* FROM dosen d " +
                     "JOIN pembimbing_ta pt ON d.dosen_id = pt.dosen_id " +
@@ -222,13 +230,14 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         return new HashSet<>(pembimbingList);
     }
 
+    // Menghapus data Tugas Akhir berdasarkan ID.
     @Override
     public void deleteById(Integer id) {
         try {
-            // First, delete related records in pembimbing_ta
+            // Hapus relasi di tabel pembimbing_ta terlebih dahulu
             jdbcTemplate.update("DELETE FROM pembimbing_ta WHERE ta_id = ?", id);
             
-            // Then delete the tugas akhir record
+            // Kemudian hapus data Tugas Akhir
             int deletedRows = jdbcTemplate.update("DELETE FROM tugas_akhir WHERE ta_id = ?", id);
             
             if (deletedRows == 0) {
@@ -243,6 +252,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }
     }
 
+    // Memperbarui status Tugas Akhir.
     @Override
     public boolean updateStatus(Long taId, StatusTA newStatus) {
         try {
@@ -266,6 +276,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }
     }
 
+    // Mengambil data Tugas Akhir berdasarkan status.
     @Override
     public List<TugasAkhir> findByStatus(StatusTA status) {
         String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
@@ -283,6 +294,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }, status.toString().toLowerCase());
     }
 
+    // Mengambil data Tugas Akhir berdasarkan ID mahasiswa dan status.
     @Override
     public List<TugasAkhir> findByMahasiswaIdAndStatus(Integer mahasiswaId, StatusTA status) {
         String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
@@ -300,6 +312,7 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }, mahasiswaId, status.toString().toLowerCase());
     }
 
+    // Mapping data ResultSet ke objek TugasAkhir (data dasar).
     private TugasAkhir mapBasicTugasAkhir(ResultSet rs) throws SQLException {
         TugasAkhir ta = new TugasAkhir();
         ta.setTaId(rs.getLong("ta_id"));

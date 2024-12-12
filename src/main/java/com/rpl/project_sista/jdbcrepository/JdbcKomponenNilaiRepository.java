@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+// Repository untuk mengelola komponen nilai menggunakan JDBC.
 @Repository
 public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
     
@@ -29,6 +30,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         this.semesterRowMapper = new SemesterRowMapper();
     }
 
+    // Mengambil semua komponen nilai dari database.
     @Override
     public List<KomponenNilai> findAll() {
         String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
@@ -36,6 +38,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         return jdbcTemplate.query(sql, new KomponenNilaiRowMapper());
     }
 
+    // Mengambil komponen nilai berdasarkan ID.
     @Override
     public Optional<KomponenNilai> findById(Long id) {
         String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
@@ -50,6 +53,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         }
     }
 
+    // Mengambil komponen nilai berdasarkan data Semester.
     @Override
     public List<KomponenNilai> findBySemester(Semester semester) {
         String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
@@ -58,6 +62,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         return jdbcTemplate.query(sql, new KomponenNilaiRowMapper(), semester.getSemesterId());
     }
 
+    // Mengambil komponen nilai berdasarkan data Semester dan TipePenilai.
     @Override
     public List<KomponenNilai> findBySemesterAndTipePenilai(Semester semester, TipePenilai tipePenilai) {
         String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
@@ -67,10 +72,11 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
                                 semester.getSemesterId(), tipePenilai.toString().toLowerCase());
     }
 
+    // Menyimpan atau memperbarui komponen nilai.
     @Override
     public KomponenNilai save(KomponenNilai komponenNilai) {
         if (komponenNilai.getKomponenId() != null) {
-            // Update
+            // Memperbarui komponen nilai yang sudah ada
             String sql = "UPDATE komponen_nilai SET semester_id = ?, nama_komponen = ?, " +
                         "bobot = ?, tipe_penilai = ?::tipe_penilai, deskripsi = ? " +
                         "WHERE komponen_id = ?";
@@ -83,7 +89,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
                 komponenNilai.getKomponenId()
             );
         } else {
-            // Insert with RETURNING clause
+            // Menyimpan komponen nilai baru dengan klausa RETURNING
             String sql = "INSERT INTO komponen_nilai (semester_id, nama_komponen, bobot, " +
                         "tipe_penilai, deskripsi, created_at) " +
                         "VALUES (?, ?, ?, ?::tipe_penilai, ?, ?) RETURNING komponen_id";
@@ -103,16 +109,19 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         return komponenNilai;
     }
 
+    // Menghapus komponen nilai berdasarkan ID.
     @Override
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM komponen_nilai WHERE komponen_id = ?", id);
     }
 
+    // Menghitung jumlah komponen nilai.
     @Override
     public long count() {
         return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM komponen_nilai", Long.class);
     }
 
+    // Class untuk mapping data ResultSet ke objek KomponenNilai.
     private class KomponenNilaiRowMapper implements RowMapper<KomponenNilai> {
         @Override
         public KomponenNilai mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -124,7 +133,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
             komponenNilai.setDeskripsi(rs.getString("deskripsi"));
             komponenNilai.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
             
-            // Map the semester
+            // Mapping data semester
             Semester semester = semesterRowMapper.mapRow(rs, rowNum);
             komponenNilai.setSemester(semester);
             
@@ -132,6 +141,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
         }
     }
 
+    // Class untuk mapping data ResultSet ke objek Semester.
     private static class SemesterRowMapper implements RowMapper<Semester> {
         @Override
         public Semester mapRow(ResultSet rs, int rowNum) throws SQLException {

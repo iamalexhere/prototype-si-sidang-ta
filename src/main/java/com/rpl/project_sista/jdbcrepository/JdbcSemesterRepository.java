@@ -18,11 +18,13 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+// Repository untuk mengelola data semester menggunakan JDBC.
 @Repository
 public class JdbcSemesterRepository implements SemesterRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    // RowMapper untuk memetakan ResultSet ke objek Semester.
     private final RowMapper<Semester> rowMapper = (rs, rowNum) -> {
         Semester semester = new Semester();
         semester.setSemesterId(rs.getLong("semester_id"));
@@ -38,12 +40,14 @@ public class JdbcSemesterRepository implements SemesterRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // Mengambil semua data semester dari database.
     @Override
     public List<Semester> findAll() {
         String sql = "SELECT * FROM semester ORDER BY tahun_ajaran DESC, periode DESC";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    // Mengambil data semester berdasarkan ID.
     @Override
     public Optional<Semester> findById(Long id) {
         String sql = "SELECT * FROM semester WHERE semester_id = ?";
@@ -55,6 +59,7 @@ public class JdbcSemesterRepository implements SemesterRepository {
         }
     }
 
+    // Menyimpan atau memperbarui data semester.
     @Override
     public Semester save(Semester semester) {
         if (semester.getSemesterId() == null) {
@@ -63,6 +68,7 @@ public class JdbcSemesterRepository implements SemesterRepository {
         return update(semester);
     }
 
+    // Menyimpan data semester baru ke database.
     private Semester insert(Semester semester) {
         String sql = "INSERT INTO semester (tahun_ajaran, periode, is_active, created_at) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -80,6 +86,7 @@ public class JdbcSemesterRepository implements SemesterRepository {
         return semester;
     }
 
+    // Memperbarui data semester yang sudah ada di database.
     private Semester update(Semester semester) {
         String sql = "UPDATE semester SET tahun_ajaran = ?, periode = ?, is_active = ? WHERE semester_id = ?";
         jdbcTemplate.update(sql,
@@ -90,12 +97,14 @@ public class JdbcSemesterRepository implements SemesterRepository {
         return semester;
     }
 
+    // Menghapus data semester berdasarkan ID.
     @Override
     public void deleteById(Long id) {
         String sql = "DELETE FROM semester WHERE semester_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
+    // Mengambil data semester aktif.
     @Override
     public Optional<Semester> findActiveSemester() {
         String sql = "SELECT * FROM semester WHERE is_active = true";

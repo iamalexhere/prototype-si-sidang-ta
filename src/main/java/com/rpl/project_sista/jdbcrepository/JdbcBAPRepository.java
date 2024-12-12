@@ -14,12 +14,14 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+// Repository untuk mengelola data BAP (Berita Acara Sidang) menggunakan JDBC.
 @Repository
 public class JdbcBAPRepository implements BAPRepository {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Mengambil semua data BAP dari database.
     @Override
     public List<BAP> findAll() {
         String sql = "SELECT b.*, s.*, pb.user_id, pb.is_approved, pb.approved_at " +
@@ -41,7 +43,7 @@ public class JdbcBAPRepository implements BAPRepository {
                     }
                 });
                 
-                // Add persetujuan if exists
+                // Menambahkan persetujuan jika ada
                 Integer userId = rs.getInt("user_id");
                 if (!rs.wasNull()) {
                     Users user = new Users();
@@ -56,6 +58,7 @@ public class JdbcBAPRepository implements BAPRepository {
         return new ArrayList<>(bapMap.values());
     }
 
+    // Mengambil data BAP berdasarkan ID.
     @Override
     public Optional<BAP> findById(Long id) {
         try {
@@ -66,7 +69,7 @@ public class JdbcBAPRepository implements BAPRepository {
             BAP bap = jdbcTemplate.queryForObject(sql, this::mapRowToBAP, id);
             
             if (bap != null) {
-                // Load persetujuan
+                // Memuat data persetujuan
                 String persetujuanSql = "SELECT u.* FROM persetujuan_bap pb " +
                                       "JOIN users u ON pb.user_id = u.user_id " +
                                       "WHERE pb.bap_id = ?";
@@ -80,6 +83,7 @@ public class JdbcBAPRepository implements BAPRepository {
         }
     }
 
+    // Mengambil data BAP berdasarkan data Sidang.
     @Override
     public Optional<BAP> findBySidang(Sidang sidang) {
         try {
@@ -90,7 +94,7 @@ public class JdbcBAPRepository implements BAPRepository {
             BAP bap = jdbcTemplate.queryForObject(sql, this::mapRowToBAP, sidang.getSidangId());
             
             if (bap != null) {
-                // Load persetujuan
+                // Memuat data persetujuan
                 String persetujuanSql = "SELECT u.* FROM persetujuan_bap pb " +
                                       "JOIN users u ON pb.user_id = u.user_id " +
                                       "WHERE pb.bap_id = ?";
@@ -104,11 +108,12 @@ public class JdbcBAPRepository implements BAPRepository {
         }
     }
 
+    // Menyimpan atau memperbarui data BAP.
     @Override
     @Transactional
     public BAP save(BAP bap) {
         if (bap.getBapId() != null) {
-            // Update existing BAP
+            // Memperbarui data BAP yang sudah ada
             jdbcTemplate.update(
                 "UPDATE bap SET sidang_id = ?, catatan_tambahan = ? WHERE bap_id = ?",
                 bap.getSidang().getSidangId(),
@@ -116,7 +121,7 @@ public class JdbcBAPRepository implements BAPRepository {
                 bap.getBapId()
             );
         } else {
-            // Insert new BAP
+            // Menyimpan data BAP baru
             jdbcTemplate.update(
                 "INSERT INTO bap (sidang_id, catatan_tambahan, created_at) VALUES (?, ?, ?)",
                 bap.getSidang().getSidangId(),
@@ -131,12 +136,12 @@ public class JdbcBAPRepository implements BAPRepository {
             bap.setBapId(generatedId);
         }
         
-        // Update persetujuan if provided
+        // Memperbarui data persetujuan jika ada
         if (bap.getPersetujuan() != null && !bap.getPersetujuan().isEmpty()) {
-            // First delete existing persetujuan
+            // Hapus data persetujuan yang sudah ada
             jdbcTemplate.update("DELETE FROM persetujuan_bap WHERE bap_id = ?", bap.getBapId());
             
-            // Then insert new ones
+            // Simpan data persetujuan baru
             for (Users user : bap.getPersetujuan()) {
                 jdbcTemplate.update(
                     "INSERT INTO persetujuan_bap (bap_id, user_id, is_approved, approved_at) VALUES (?, ?, ?, ?)",
@@ -151,18 +156,20 @@ public class JdbcBAPRepository implements BAPRepository {
         return bap;
     }
 
+    // Menghapus data BAP berdasarkan ID.
     @Override
     @Transactional
     public void deleteById(Long id) {
-        // First delete persetujuan
+        // Hapus data persetujuan terlebih dahulu
         jdbcTemplate.update("DELETE FROM persetujuan_bap WHERE bap_id = ?", id);
-        // Then delete BAP
+        // Kemudian hapus data BAP
         jdbcTemplate.update("DELETE FROM bap WHERE bap_id = ?", id);
     }
 
+    // Mencari pengguna yang perlu melakukan persetujuan.
     @Override
     public Set<Users> findRequiredApprovers(BAP bap) {
-        // Get all users who need to approve: koordinator, penguji, pembimbing, and mahasiswa
+        // Mendapatkan semua pengguna yang perlu menyetujui: koordinator, penguji, pembimbing, dan mahasiswa
         String sql = "SELECT DISTINCT u.* FROM users u " +
                     "WHERE u.user_id IN ( " +
                     "    SELECT user_id FROM users WHERE role = 'admin' " + // Koordinator
@@ -191,6 +198,7 @@ public class JdbcBAPRepository implements BAPRepository {
         return new HashSet<>(users);
     }
 
+    // Mencari pengguna yang sudah melakukan persetujuan.
     @Override
     public Set<Users> findApprovers(BAP bap) {
         String sql = "SELECT u.* FROM users u " +
@@ -201,6 +209,7 @@ public class JdbcBAPRepository implements BAPRepository {
         return new HashSet<>(approvers);
     }
 
+    // Mengecek apakah semua persetujuan sudah lengkap.
     @Override
     public boolean isFullyApproved(BAP bap) {
         Set<Users> requiredApprovers = findRequiredApprovers(bap);
@@ -208,15 +217,16 @@ public class JdbcBAPRepository implements BAPRepository {
         return requiredApprovers.size() == actualApprovers.size();
     }
 
+    // Menambahkan atau memperbarui persetujuan pengguna.
     @Override
     @Transactional
     public void addApprover(BAP bap, Users user) {
-        // Check if persetujuan exists
+        // Periksa apakah persetujuan sudah ada
         String checkSql = "SELECT COUNT(*) FROM persetujuan_bap WHERE bap_id = ? AND user_id = ?";
         int count = jdbcTemplate.queryForObject(checkSql, Integer.class, bap.getBapId(), user.getUserId());
         
         if (count == 0) {
-            // Insert new persetujuan
+            // Tambahkan persetujuan baru
             jdbcTemplate.update(
                 "INSERT INTO persetujuan_bap (bap_id, user_id, is_approved, approved_at) VALUES (?, ?, true, ?)",
                 bap.getBapId(),
@@ -224,7 +234,7 @@ public class JdbcBAPRepository implements BAPRepository {
                 LocalDateTime.now()
             );
         } else {
-            // Update existing persetujuan
+            // Perbarui persetujuan yang sudah ada
             jdbcTemplate.update(
                 "UPDATE persetujuan_bap SET is_approved = true, approved_at = ? WHERE bap_id = ? AND user_id = ?",
                 LocalDateTime.now(),
@@ -234,6 +244,7 @@ public class JdbcBAPRepository implements BAPRepository {
         }
     }
 
+    // Menghapus persetujuan pengguna.
     @Override
     @Transactional
     public void removeApprover(BAP bap, Users user) {
@@ -244,13 +255,14 @@ public class JdbcBAPRepository implements BAPRepository {
         );
     }
 
+    // Mapping data ResultSet ke objek BAP.
     private BAP mapRowToBAP(ResultSet rs, int rowNum) throws SQLException {
         BAP bap = new BAP();
         bap.setBapId(rs.getLong("bap_id"));
         bap.setCatatanTambahan(rs.getString("catatan_tambahan"));
         bap.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         
-        // Map Sidang
+        // Mapping data Sidang
         Sidang sidang = new Sidang();
         sidang.setSidangId(rs.getLong("sidang_id"));
         bap.setSidang(sidang);
@@ -260,6 +272,7 @@ public class JdbcBAPRepository implements BAPRepository {
         return bap;
     }
 
+    // Mapping data ResultSet ke objek Users.
     private Users mapRowToUsers(ResultSet rs, int rowNum) throws SQLException {
         Users user = new Users();
         user.setUserId(rs.getInt("user_id")); 

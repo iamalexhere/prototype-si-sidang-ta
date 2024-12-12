@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+// Repository untuk mengelola data sidang menggunakan JDBC.
 @Repository
 public class JdbcSidangRepository implements SidangRepository {
 
@@ -30,6 +31,7 @@ public class JdbcSidangRepository implements SidangRepository {
     
     private static final Logger logger = LoggerFactory.getLogger(JdbcSidangRepository.class);
 
+    // Mengambil semua data sidang dari database.
     @Override
     public List<Sidang> findAll() {
         String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
@@ -40,6 +42,7 @@ public class JdbcSidangRepository implements SidangRepository {
         return jdbcTemplate.query(sql, this::mapRowToSidang);
     }
 
+    // Mengambil data sidang berdasarkan ID.
     @Override
     public Optional<Sidang> findById(Integer id) {
         try {
@@ -57,6 +60,7 @@ public class JdbcSidangRepository implements SidangRepository {
         }
     }
 
+    // Mengambil data sidang berdasarkan ID Tugas Akhir.
     @Override
     public Optional<Sidang> findByTugasAkhirId(Integer taId) {
         try {
@@ -74,6 +78,7 @@ public class JdbcSidangRepository implements SidangRepository {
         }
     }
 
+    // Mengambil data sidang berdasarkan ID dosen penguji.
     @Override
     public List<Sidang> findByDosenPengujiId(Integer dosenId) {
         String sql = "SELECT DISTINCT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
@@ -87,10 +92,11 @@ public class JdbcSidangRepository implements SidangRepository {
         return jdbcTemplate.query(sql, this::mapRowToSidang, dosenId);
     }
 
+    // Menyimpan atau memperbarui data sidang.
     @Override
     public Sidang save(Sidang sidang) {
         if (sidang.getSidangId() != null) {
-            // Update
+            // Memperbarui data sidang yang sudah ada
             String sql = "UPDATE sidang SET " +
                         "ta_id = ?, jadwal = ?, ruangan = ?, status_sidang = ?::status_sidang, " +
                         "updated_at = ? " +
@@ -105,7 +111,7 @@ public class JdbcSidangRepository implements SidangRepository {
                 sidang.getSidangId()
             );
         } else {
-            // Insert
+            // Menyimpan data sidang baru
             String sql = "INSERT INTO sidang " +
                         "(ta_id, jadwal, ruangan, status_sidang, created_at, updated_at) " +
                         "VALUES (?, ?, ?, ?::status_sidang, ?, ?) RETURNING sidang_id";
@@ -123,12 +129,14 @@ public class JdbcSidangRepository implements SidangRepository {
         return sidang;
     }
 
+    // Menghapus data sidang berdasarkan ID.
     @Override
     public void deleteById(Integer id) {
         String sql = "DELETE FROM sidang WHERE sidang_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
+    // Mengecek ketersediaan jadwal sidang.
     @Override
     public boolean isJadwalAvailable(LocalDateTime waktuMulai, LocalDateTime waktuSelesai, String ruangan) {
         String sql = "SELECT COUNT(*) FROM sidang " +
@@ -147,6 +155,7 @@ public class JdbcSidangRepository implements SidangRepository {
         return overlappingCount != null && overlappingCount == 0;
     }
 
+    // Mengecek ketersediaan dosen pada jadwal sidang.
     @Override
     public boolean isDosenAvailable(Dosen dosen, LocalDateTime waktuMulai, LocalDateTime waktuSelesai) {
         if (dosen == null || dosen.getDosenId() == null) {
@@ -170,6 +179,7 @@ public class JdbcSidangRepository implements SidangRepository {
         return overlappingCount != null && overlappingCount == 0;
     }
 
+    // Mencari data sidang yang bentrok jadwalnya.
     @Override
     public List<Sidang> findOverlappingSidang(LocalDateTime waktuMulai, LocalDateTime waktuSelesai, String ruangan) {
         String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
@@ -190,6 +200,7 @@ public class JdbcSidangRepository implements SidangRepository {
         );
     }
 
+    // Mencari data sidang yang bentrok jadwalnya dengan dosen tertentu.
     @Override
     public List<Sidang> findDosenOverlappingSidang(Dosen dosen, LocalDateTime waktuMulai, LocalDateTime waktuSelesai) {
         if (dosen == null || dosen.getDosenId() == null) {
@@ -215,9 +226,10 @@ public class JdbcSidangRepository implements SidangRepository {
         );
     }
 
+    // Memperbarui status sidang.
     @Override
     public boolean updateStatus(Long sidangId, StatusSidang newStatus) {
-        // Validate status transition
+        // Validasi transisi status
         Optional<Sidang> existingSidang = findById(sidangId.intValue());
         if (existingSidang.isEmpty()) {
             return false;
@@ -240,6 +252,7 @@ public class JdbcSidangRepository implements SidangRepository {
         return updatedRows > 0;
     }
 
+    // Mengambil data sidang berdasarkan status.
     @Override
     public List<Sidang> findByStatus(StatusSidang status) {
         String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
@@ -254,6 +267,7 @@ public class JdbcSidangRepository implements SidangRepository {
         );
     }
 
+    // Memvalidasi transisi status sidang.
     private boolean isValidStatusTransition(StatusSidang currentStatus, StatusSidang newStatus) {
         if (currentStatus == null) {
             return newStatus == StatusSidang.terjadwal;
@@ -265,14 +279,15 @@ public class JdbcSidangRepository implements SidangRepository {
             case berlangsung:
                 return newStatus == StatusSidang.selesai;
             case selesai:
-                return false; // Final state
+                return false; // Status final
             case dibatalkan:
-                return newStatus == StatusSidang.terjadwal; // Can be rescheduled
+                return newStatus == StatusSidang.terjadwal; // Dapat dijadwal ulang
             default:
                 return false;
         }
     }
 
+    // Mengambil data dosen penguji untuk sidang tertentu.
     private List<Dosen> fetchPengujiForSidang(Long sidangId) {
         String sql = "SELECT d.* FROM dosen d " +
                     "JOIN penguji_sidang ps ON d.dosen_id = ps.dosen_id " +
@@ -287,16 +302,17 @@ public class JdbcSidangRepository implements SidangRepository {
         }, sidangId);
     }
 
+    // Mapping data ResultSet ke objek Sidang.
     private Sidang mapRowToSidang(ResultSet rs, int rowNum) throws SQLException {
         Sidang sidang = new Sidang();
         sidang.setSidangId(rs.getLong("sidang_id"));
         
-        // Map TugasAkhir
+        // Mapping data TugasAkhir
         TugasAkhir ta = new TugasAkhir();
         ta.setTaId(rs.getLong("ta_id"));
         ta.setJudul(rs.getString("judul"));
         
-        // Map Mahasiswa
+        // Mapping data Mahasiswa
         Mahasiswa mahasiswa = new Mahasiswa();
         mahasiswa.setNpm(rs.getString("npm"));
         mahasiswa.setNama(rs.getString("mahasiswa_nama"));
@@ -304,7 +320,7 @@ public class JdbcSidangRepository implements SidangRepository {
         
         sidang.setTugasAkhir(ta);
         
-        // Map other fields
+        // Mapping field lainnya
         sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
         sidang.setRuangan(rs.getString("ruangan"));
         sidang.setStatusSidang(StatusSidang.valueOf(rs.getString("status_sidang").toUpperCase()));
@@ -319,7 +335,7 @@ public class JdbcSidangRepository implements SidangRepository {
             sidang.setUpdatedAt(updatedAt.toLocalDateTime());
         }
         
-        // Fetch and set penguji
+        // Mengambil dan menetapkan penguji
         List<Dosen> penguji = fetchPengujiForSidang(sidang.getSidangId());
         sidang.setPenguji(new HashSet<>(penguji));
         

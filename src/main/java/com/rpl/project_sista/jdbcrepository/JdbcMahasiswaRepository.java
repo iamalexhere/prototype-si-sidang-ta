@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+// Repository untuk mengelola data mahasiswa menggunakan JDBC.
 @Repository
 public class JdbcMahasiswaRepository implements MahasiswaRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    // Mengambil semua data mahasiswa dari database.
     @Override
     public List<Mahasiswa> findAll() {
         return jdbcTemplate.query(
@@ -28,6 +30,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         );
     }
 
+    // Mengambil data mahasiswa berdasarkan ID.
     @Override
     public Optional<Mahasiswa> findById(Integer id) {
         List<Mahasiswa> results = jdbcTemplate.query(
@@ -41,10 +44,11 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
+    // Menyimpan atau memperbarui data mahasiswa.
     @Override
     public Mahasiswa save(Mahasiswa mahasiswa) {
         if (mahasiswa.getMahasiswaId() != null) {
-            // Update existing mahasiswa
+            // Memperbarui data mahasiswa yang sudah ada
             jdbcTemplate.update(
                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
                 mahasiswa.getUsername(),
@@ -63,7 +67,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 mahasiswa.getMahasiswaId()
             );
         } else {
-            // Insert new mahasiswa
+            // Menyimpan data mahasiswa baru
             jdbcTemplate.update(
                 "INSERT INTO users (username, email, password_hash, role, created_at, is_active) VALUES (?, ?, ?, ?::user_role, ?, ?)",
                 mahasiswa.getUsername(),
@@ -93,6 +97,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         return mahasiswa;
     }
 
+    // Mencari mahasiswa berdasarkan nama.
     @Override
     public List<Mahasiswa> findByName(String name) {
         return jdbcTemplate.query(
@@ -102,6 +107,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         );
     }
 
+    // Mencari mahasiswa secara terpaginasi.
     @Override
     public List<Mahasiswa> findPaginated(int page, int size, String filter) {
         int offset = (page - 1) * size;
@@ -116,6 +122,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         );
     }
 
+    // Menghitung jumlah mahasiswa.
     @Override
     public int count(String filter) {
         String query = filter.isEmpty() 
@@ -129,14 +136,16 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         );
     }
 
+    // Menghapus data mahasiswa berdasarkan ID.
     @Override
     public void deleteById(Integer id) {
-        // First delete from mahasiswa table
+        // Hapus dari tabel mahasiswa terlebih dahulu
         jdbcTemplate.update("DELETE FROM mahasiswa WHERE user_id = ?", id);
-        // Then delete from users table
+        // Kemudian hapus dari tabel users
         jdbcTemplate.update("DELETE FROM users WHERE user_id = ?", id);
     }
 
+    // Mengambil data mahasiswa berdasarkan user ID.
     @Override
     public Optional<Mahasiswa> findByUserId(Integer userId) {
         List<Mahasiswa> results = jdbcTemplate.query(
@@ -150,6 +159,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
+    // Mapping data ResultSet ke objek Mahasiswa.
     private Mahasiswa mapRowToMahasiswa(ResultSet rs, int rowNum) throws SQLException {
         Mahasiswa mahasiswa = new Mahasiswa();
         mahasiswa.setMahasiswaId(rs.getInt("mahasiswa_id"));
