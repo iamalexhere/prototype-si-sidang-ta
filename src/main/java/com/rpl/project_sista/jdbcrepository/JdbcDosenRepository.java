@@ -30,7 +30,7 @@ public class JdbcDosenRepository implements DosenRepository {
     @Override
     public Optional<Dosen> findById(Integer id) {
         List<Dosen> results = jdbcTemplate.query(
-            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.dosen_id = ?",
+            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.user_id = ?",
             this::mapRowToDosen,
             id
         );
@@ -106,15 +106,21 @@ public class JdbcDosenRepository implements DosenRepository {
 
     @Override
     public List<Dosen> findPaginated(int page, int size, String filter) {
-        int offset = (page - 1) * size;
-        String query = filter.isEmpty()
-            ? "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id LIMIT ? OFFSET ?"
-            : "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.nama ILIKE ? LIMIT ? OFFSET ?";
-        
-        return jdbcTemplate.query(
-            query,
+        int offset = Math.max(0, page) * Math.max(1, size);
+        String sql = "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id";
+        if (filter != null && !filter.trim().isEmpty()) {
+            sql += " WHERE LOWER(d.nama) LIKE LOWER(?)";
+            return jdbcTemplate.query(sql + " LIMIT ? OFFSET ?", 
+                this::mapRowToDosen,
+                "%" + filter + "%",
+                size,
+                offset
+            );
+        }
+        return jdbcTemplate.query(sql + " LIMIT ? OFFSET ?", 
             this::mapRowToDosen,
-            filter.isEmpty() ? new Object[]{size, offset} : new Object[]{"%" + filter + "%", size, offset}
+            size,
+            offset
         );
     }
 

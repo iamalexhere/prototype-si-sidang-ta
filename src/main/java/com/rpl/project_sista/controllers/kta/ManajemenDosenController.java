@@ -39,11 +39,13 @@ public class ManajemenDosenController {
     @GetMapping("/ubah")
     public String showUpdateDosenForm(@RequestParam Integer id, Model model) {
         model.addAttribute("pageTitle", "Ubah Data Dosen");
-        Dosen dosen = dosenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Dosen not found"));
-        model.addAttribute("dosen", dosen);
-        model.addAttribute("title", "Ubah Data Dosen");
-        return "kta/dosen/ubah-dosen";
+        return dosenRepository.findById(id)
+                .map(dosen -> {
+                    model.addAttribute("dosen", dosen);
+                    model.addAttribute("title", "Ubah Data Dosen");
+                    return "kta/dosen/ubah-dosen";
+                })
+                .orElse("redirect:/kta/dosen?error=Dosen tidak ditemukan");
     }
 
     @PostMapping("/tambah")
