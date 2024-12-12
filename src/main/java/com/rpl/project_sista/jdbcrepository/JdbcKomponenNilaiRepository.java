@@ -78,7 +78,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
                 komponenNilai.getSemester().getSemesterId(),
                 komponenNilai.getNamaKomponen(),
                 komponenNilai.getBobot(),
-                komponenNilai.getTipePenilai().name(),
+                komponenNilai.getTipePenilai().toString().toLowerCase(),
                 komponenNilai.getDeskripsi(),
                 komponenNilai.getKomponenId()
             );
@@ -93,7 +93,7 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
                 komponenNilai.getSemester().getSemesterId(),
                 komponenNilai.getNamaKomponen(),
                 komponenNilai.getBobot(),
-                komponenNilai.getTipePenilai().name(),
+                komponenNilai.getTipePenilai().toString().toLowerCase(),
                 komponenNilai.getDeskripsi(),
                 LocalDateTime.now()
             );
