@@ -29,25 +29,29 @@ public class JdbcBAPRepository implements BAPRepository {
         
         Map<Long, BAP> bapMap = new HashMap<>();
         
-        jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Long bapId = rs.getLong("bap_id");
-            BAP bap = bapMap.get(bapId);
-            
-            if (bap == null) {
-                bap = mapRowToBAP(rs, rowNum);
-                bapMap.put(bapId, bap);
+        jdbcTemplate.query(
+            sql,
+            (RowMapper<BAP>) (rs, rowNum) -> {
+                Long bapId = rs.getLong("bap_id");
+                BAP bap = bapMap.computeIfAbsent(bapId, k -> {
+                    try {
+                        return mapRowToBAP(rs, rowNum);
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Error mapping BAP row", e);
+                    }
+                });
+                
+                // Add persetujuan if exists
+                Integer userId = rs.getInt("user_id");
+                if (!rs.wasNull()) {
+                    Users user = new Users();
+                    user.setUserId(userId);
+                    bap.getPersetujuan().add(user);
+                }
+                
+                return bap;
             }
-            
-            // Add persetujuan if exists
-            Integer userId = rs.getInt("user_id");
-            if (!rs.wasNull()) {
-                Users user = new Users();
-                user.setUserId(userId);
-                bap.getPersetujuan().add(user);
-            }
-            
-            return bap;
-        });
+        );
         
         return new ArrayList<>(bapMap.values());
     }

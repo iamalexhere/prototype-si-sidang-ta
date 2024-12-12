@@ -1,4 +1,4 @@
-package com.rpl.project_sista;
+package com.rpl.project_sista.jdbcrepository;
 
 import com.rpl.project_sista.jdbcrepository.JdbcKomponenNilaiRepository;
 import com.rpl.project_sista.model.entity.KomponenNilai;

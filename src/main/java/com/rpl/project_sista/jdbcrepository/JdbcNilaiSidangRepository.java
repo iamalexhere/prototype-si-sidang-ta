@@ -76,7 +76,7 @@ public class JdbcNilaiSidangRepository implements NilaiSidangRepository {
         Map<TipePenilai, Float> averages = new HashMap<>();
         
         for (Map<String, Object> row : results) {
-            TipePenilai tipePenilai = TipePenilai.valueOf(((String) row.get("tipe_penilai")).toUpperCase());
+            TipePenilai tipePenilai = TipePenilai.valueOf(((String) row.get("tipe_penilai")).toLowerCase());
             Float avgNilai = ((Double) row.get("avg_nilai")).floatValue();
             averages.put(tipePenilai, avgNilai);
         }
