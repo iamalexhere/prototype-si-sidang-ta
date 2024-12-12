@@ -1,18 +1,22 @@
+// src/main/java/com/rpl/project_sista/jdbcrepository/JdbcDosenRepository.java
 package com.rpl.project_sista.jdbcrepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.model.enums.UserRole;
 import com.rpl.project_sista.repository.DosenRepository;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
 
 // Repository untuk mengelola data dosen menggunakan JDBC.
 @Repository
@@ -41,56 +45,63 @@ public class JdbcDosenRepository implements DosenRepository {
     }
 
     // Menyimpan atau memperbarui data dosen.
-    @Override
-    public Dosen save(Dosen dosen) {
-        if (dosen.getDosenId() != null) {
-            // Memperbarui data dosen yang sudah ada
-            jdbcTemplate.update(
-                "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
-                dosen.getUsername(),
-                dosen.getEmail(),
-                dosen.getPasswordHash(),
-                dosen.getRole().toString().toLowerCase(),
-                dosen.getIsActive(),
-                dosen.getDosenId()
-            );
-            
-            jdbcTemplate.update(
-                "UPDATE dosen SET nip = ?, nama = ? WHERE user_id = ?",
-                dosen.getNip(),
-                dosen.getNama(),
-                dosen.getDosenId()
-            );
-        } else {
-            // Menyimpan data dosen baru
-            jdbcTemplate.update(
-                "INSERT INTO users (username, email, password_hash, role, created_at, is_active) VALUES (?, ?, ?, ?::user_role, ?, ?)",
-                dosen.getUsername(),
-                dosen.getEmail(),
-                dosen.getPasswordHash(),
-                dosen.getRole().toString().toLowerCase(),
-                LocalDateTime.now(),
-                true
-            );
-            
-            Integer userId = jdbcTemplate.queryForObject(
-                "SELECT user_id FROM users WHERE username = ?",
-                Integer.class,
-                dosen.getUsername()
-            );
-            
-            jdbcTemplate.update(
-                "INSERT INTO dosen (user_id, nip, nama) VALUES (?, ?, ?)",
-                userId,
-                dosen.getNip(),
-                dosen.getNama()
-            );
-            
-            dosen.setDosenId(userId);
-        }
-        return dosen;
-    }
+   @Override
+     public Dosen save(Dosen dosen) {
+         if (dosen.getDosenId() == null) {
+            return insert(dosen);
+         } else {
+             update(dosen);
+             return dosen;
+          }
+     }
+ 
+     private Dosen insert(Dosen dosen) {
+       KeyHolder keyHolder = new GeneratedKeyHolder();
+         jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                 "INSERT INTO users (username, email, password_hash, role, created_at, is_active) VALUES (?, ?, ?, ?::user_role, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS
+              );
+            ps.setString(1, dosen.getUsername());
+            ps.setString(2, dosen.getEmail());
+            ps.setString(3, dosen.getPasswordHash());
+            ps.setString(4, dosen.getRole().toString().toLowerCase());
+             ps.setObject(5, LocalDateTime.now());
+              ps.setBoolean(6, true);
+            return ps;
+         }, keyHolder);
+        
+      Integer userId = keyHolder.getKey().intValue();
 
+       jdbcTemplate.update(
+             "INSERT INTO dosen (user_id, nip, nama) VALUES (?, ?, ?)",
+            userId,
+            dosen.getNip(),
+             dosen.getNama()
+        );
+         
+       dosen.setDosenId(userId);
+         return dosen;
+     }
+ 
+     private void update(Dosen dosen) {
+            jdbcTemplate.update(
+                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
+                dosen.getUsername(),
+                dosen.getEmail(),
+                 dosen.getPasswordHash(),
+                dosen.getRole().toString().toLowerCase(),
+                 dosen.getIsActive(),
+                 dosen.getDosenId()
+            );
+             
+         jdbcTemplate.update(
+                 "UPDATE dosen SET nip = ?, nama = ? WHERE user_id = ?",
+                dosen.getNip(),
+                 dosen.getNama(),
+                 dosen.getDosenId()
+         );
+     }
     // Menghapus data dosen berdasarkan ID.
     @Override
     public void deleteById(Integer id) {

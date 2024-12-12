@@ -9,10 +9,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -57,7 +63,7 @@ class JdbcNilaiSidangRepositoryTest {
 
         sampleKomponenNilai = new KomponenNilai();
         sampleKomponenNilai.setKomponenId(1L);
-        sampleKomponenNilai.setTipePenilai(TipePenilai.penguji);
+        sampleKomponenNilai.setTipePenilai(TipePenilai.PENGUJI);
 
         sampleDosen = new Dosen();
         sampleDosen.setDosenId(1);
@@ -150,16 +156,20 @@ class JdbcNilaiSidangRepositoryTest {
     @Test
     void getAverageNilaiBySidang_ShouldReturnAveragesMap() {
         // Arrange
-        Map<String, Object> row1 = new HashMap<>();
-        row1.put("tipe_penilai", "penguji");  // Using lowercase to match enum
-        row1.put("avg_nilai", 85.5);
+        List<Map<String, Object>> mockResults = new ArrayList<>();
+        
+        Map<String, Object> pengujiResult = new HashMap<>();
+        pengujiResult.put("tipe_penilai", "PENGUJI"); 
+        pengujiResult.put("avg_nilai", new BigDecimal("85.5")); 
+        mockResults.add(pengujiResult);
 
-        Map<String, Object> row2 = new HashMap<>();
-        row2.put("tipe_penilai", "pembimbing");  // Using lowercase to match enum
-        row2.put("avg_nilai", 90.0);
+        Map<String, Object> pembimbingResult = new HashMap<>();
+        pembimbingResult.put("tipe_penilai", "PEMBIMBING"); 
+        pembimbingResult.put("avg_nilai", new BigDecimal("90.0")); 
+        mockResults.add(pembimbingResult);
 
-        when(jdbcTemplate.queryForList(anyString(), anyLong()))
-                .thenReturn(Arrays.asList(row1, row2));
+        when(jdbcTemplate.queryForList(anyString(), eq(sampleSidang.getSidangId())))
+                .thenReturn(mockResults);
 
         // Act
         Map<TipePenilai, Float> result = repository.getAverageNilaiBySidang(sampleSidang);
@@ -167,29 +177,33 @@ class JdbcNilaiSidangRepositoryTest {
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals(85.5f, result.get(TipePenilai.penguji));
-        assertEquals(90.0f, result.get(TipePenilai.pembimbing));
+        assertEquals(85.5f, result.get(TipePenilai.PENGUJI), 0.001f);
+        assertEquals(90.0f, result.get(TipePenilai.PEMBIMBING), 0.001f);
     }
 
     @Test
     void getFinalNilaiBySidang_ShouldReturnAverageOfPengujiAndPembimbing() {
         // Arrange
-        Map<String, Object> row1 = new HashMap<>();
-        row1.put("tipe_penilai", "penguji");  // Using lowercase to match enum
-        row1.put("avg_nilai", 80.0);
+        List<Map<String, Object>> mockResults = new ArrayList<>();
+        
+        Map<String, Object> pengujiResult = new HashMap<>();
+        pengujiResult.put("tipe_penilai", "PENGUJI"); 
+        pengujiResult.put("avg_nilai", new BigDecimal("80.0")); 
+        mockResults.add(pengujiResult);
 
-        Map<String, Object> row2 = new HashMap<>();
-        row2.put("tipe_penilai", "pembimbing");  // Using lowercase to match enum
-        row2.put("avg_nilai", 90.0);
+        Map<String, Object> pembimbingResult = new HashMap<>();
+        pembimbingResult.put("tipe_penilai", "PEMBIMBING"); 
+        pembimbingResult.put("avg_nilai", new BigDecimal("90.0")); 
+        mockResults.add(pembimbingResult);
 
-        when(jdbcTemplate.queryForList(anyString(), anyLong()))
-                .thenReturn(Arrays.asList(row1, row2));
+        when(jdbcTemplate.queryForList(anyString(), eq(sampleSidang.getSidangId())))
+                .thenReturn(mockResults);
 
         // Act
         Float result = repository.getFinalNilaiBySidang(sampleSidang);
 
         // Assert
-        assertEquals(85.0f, result);
+        assertEquals(85.0f, result, 0.001f);
     }
 
     @Test
@@ -200,9 +214,21 @@ class JdbcNilaiSidangRepositoryTest {
         newNilaiSidang.setKomponenNilai(sampleKomponenNilai);
         newNilaiSidang.setDosen(sampleDosen);
         newNilaiSidang.setNilai(85.5f);
+        newNilaiSidang.setCreatedAt(LocalDateTime.now());
+        newNilaiSidang.setUpdatedAt(LocalDateTime.now());
 
-        when(jdbcTemplate.queryForObject(eq("SELECT currval('nilai_sidang_nilai_id_seq')"), eq(Long.class)))
-                .thenReturn(1L);
+        // Mock the key holder behavior
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        Map<String, Object> keyMap = new HashMap<>();
+        keyMap.put("nilai_id", 1L);
+        keyHolder.getKeyList().add(keyMap);
+
+        doAnswer(invocation -> {
+            PreparedStatementCreator psc = invocation.getArgument(0);
+            KeyHolder kh = invocation.getArgument(1);
+            kh.getKeyList().addAll(keyHolder.getKeyList());
+            return 1;
+        }).when(jdbcTemplate).update(any(PreparedStatementCreator.class), any(KeyHolder.class));
 
         // Act
         NilaiSidang result = repository.save(newNilaiSidang);
@@ -210,7 +236,7 @@ class JdbcNilaiSidangRepositoryTest {
         // Assert
         assertNotNull(result);
         assertEquals(1L, result.getNilaiId());
-        verify(jdbcTemplate).update(anyString(), any(Object[].class));
+        assertEquals(85.5f, result.getNilai());
     }
 
     @Test
@@ -225,41 +251,45 @@ class JdbcNilaiSidangRepositoryTest {
     }
 
     @Test
-    void deleteById_ShouldExecuteDeleteQuery() {
+    void deleteById_ShouldDeleteNilaiSidang() {
         // Act
         repository.deleteById(1L);
 
-        // Assert
-        verify(jdbcTemplate).update(eq("DELETE FROM nilai_sidang WHERE nilai_id = ?"), eq(1L));
-    }
-
-    @Test
-    void hasDosenCompletedPenilaian_WhenCompleted_ShouldReturnTrue() {
-        // Arrange
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), any(), any(), any()))
-                .thenReturn(3); // Total components
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), any(), any()))
-                .thenReturn(3); // Completed components
-
-        // Act
-        boolean result = repository.hasDosenCompletedPenilaian(sampleSidang, sampleDosen);
-
-        // Assert
-        assertTrue(result);
+        // Verify
+        verify(jdbcTemplate).update("DELETE FROM nilai_sidang WHERE nilai_id = ?", 1L);
     }
 
     @Test
     void hasDosenCompletedPenilaian_WhenNotCompleted_ShouldReturnFalse() {
         // Arrange
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), any(), any(), any()))
-                .thenReturn(3); // Total components
-        when(jdbcTemplate.queryForObject(anyString(), eq(Integer.class), any(), any()))
-                .thenReturn(2); // Completed components
+        when(jdbcTemplate.queryForObject(contains("SELECT UPPER(role::TEXT)"), eq(String.class), anyInt()))
+                .thenReturn("PENGUJI");
+        when(jdbcTemplate.queryForObject(contains("SELECT COUNT(DISTINCT kn.komponen_id)"), eq(Integer.class), anyLong(), anyString()))
+                .thenReturn(3); // Total required components
+        when(jdbcTemplate.queryForObject(contains("SELECT COUNT(*) FROM nilai_sidang"), eq(Integer.class), anyLong(), anyInt()))
+                .thenReturn(2); // Only 2 components rated
 
         // Act
         boolean result = repository.hasDosenCompletedPenilaian(sampleSidang, sampleDosen);
 
         // Assert
         assertFalse(result);
+    }
+
+    @Test
+    void hasDosenCompletedPenilaian_WhenCompleted_ShouldReturnTrue() {
+        // Arrange
+        when(jdbcTemplate.queryForObject(contains("SELECT UPPER(role::TEXT)"), eq(String.class), anyInt()))
+                .thenReturn("PENGUJI");
+        when(jdbcTemplate.queryForObject(contains("SELECT COUNT(DISTINCT kn.komponen_id)"), eq(Integer.class), anyLong(), anyString()))
+                .thenReturn(3); // Total required components
+        when(jdbcTemplate.queryForObject(contains("SELECT COUNT(*) FROM nilai_sidang"), eq(Integer.class), anyLong(), anyInt()))
+                .thenReturn(3); // All components rated
+
+        // Act
+        boolean result = repository.hasDosenCompletedPenilaian(sampleSidang, sampleDosen);
+
+        // Assert
+        assertTrue(result);
     }
 }

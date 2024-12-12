@@ -49,7 +49,7 @@ class JdbcKomponenNilaiRepositoryTest {
         sampleKomponenNilai.setSemester(sampleSemester);
         sampleKomponenNilai.setNamaKomponen("Presentasi");
         sampleKomponenNilai.setBobot(0.4f);
-        sampleKomponenNilai.setTipePenilai(TipePenilai.pembimbing);
+        sampleKomponenNilai.setTipePenilai(TipePenilai.PEMBIMBING);
         sampleKomponenNilai.setDeskripsi("Penilaian presentasi");
         sampleKomponenNilai.setCreatedAt(LocalDateTime.now());
     }
@@ -112,12 +112,12 @@ class JdbcKomponenNilaiRepositoryTest {
 
         // Act
         List<KomponenNilai> result = repository.findBySemesterAndTipePenilai(
-                sampleSemester, TipePenilai.pembimbing);
+                sampleSemester, TipePenilai.PEMBIMBING);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(TipePenilai.pembimbing, result.get(0).getTipePenilai());
+        assertEquals(TipePenilai.PEMBIMBING, result.get(0).getTipePenilai());
         verify(jdbcTemplate).query(anyString(), any(RowMapper.class), eq(1L), anyString());
     }
 
@@ -128,7 +128,7 @@ class JdbcKomponenNilaiRepositoryTest {
         newKomponen.setSemester(sampleSemester);
         newKomponen.setNamaKomponen("New Komponen");
         newKomponen.setBobot(0.3f);
-        newKomponen.setTipePenilai(TipePenilai.penguji);
+        newKomponen.setTipePenilai(TipePenilai.PENGUJI);
         newKomponen.setDeskripsi("New Description");
 
         when(jdbcTemplate.queryForObject(

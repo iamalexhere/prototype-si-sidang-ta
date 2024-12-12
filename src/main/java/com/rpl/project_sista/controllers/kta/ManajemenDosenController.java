@@ -7,23 +7,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.rpl.project_sista.model.entity.Dosen;
-import com.rpl.project_sista.repository.DosenRepository;
+import com.rpl.project_sista.service.DosenService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/kta/dosen")
 public class ManajemenDosenController {
 
     @Autowired
-    private DosenRepository dosenRepository;
+    private DosenService dosenService;
 
     @GetMapping
     public String listDosen(Model model) {
         model.addAttribute("pageTitle", "Manajemen Dosen");
-        List<Dosen> dosenList = dosenRepository.findAll();
+        List < Dosen > dosenList = dosenService.findAllDosen();
         model.addAttribute("dosenList", dosenList);
         return "kta/dosen/index";
     }
@@ -39,42 +42,51 @@ public class ManajemenDosenController {
     @GetMapping("/ubah")
     public String showUpdateDosenForm(@RequestParam Integer id, Model model) {
         model.addAttribute("pageTitle", "Ubah Data Dosen");
-        Dosen dosen = dosenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Dosen not found"));
-        model.addAttribute("dosen", dosen);
-        model.addAttribute("title", "Ubah Data Dosen");
-        return "kta/dosen/ubah-dosen";
+        Optional < Dosen > dosen = dosenService.findDosenById(id);
+
+        if (dosen.isPresent()) {
+            model.addAttribute("dosen", dosen.get());
+            model.addAttribute("title", "Ubah Data Dosen");
+            return "kta/dosen/ubah-dosen";
+        } else {
+            return "redirect:/kta/dosen";
+        }
+
     }
 
     @PostMapping("/tambah")
-    public String addDosen(@RequestParam String nip, @RequestParam String nama,
-                      @RequestParam String username, @RequestParam String email,
-                      @RequestParam String password) {
-        Dosen newDosen = new Dosen(nip, nama, username, email, password);
-        dosenRepository.save(newDosen);
+    public String addDosen(@ModelAttribute Dosen dosen, RedirectAttributes redirectAttributes) {
+        try {
+            dosenService.saveDosen(dosen);
+            redirectAttributes.addFlashAttribute("successMessage", "Dosen berhasil ditambahkan.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal menambahkan Dosen.");
+            return "redirect:/kta/dosen/tambah";
+        }
         return "redirect:/kta/dosen";
     }
+
 
     @PostMapping("/ubah")
-    public String updateDosen(@RequestParam Integer id, @RequestParam String nip,
-                        @RequestParam String nama, @RequestParam String username,
-                        @RequestParam String email, @RequestParam(required = false) String password) {
-        Dosen existingDosen = dosenRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Dosen not found"));
-        existingDosen.setNip(nip);
-        existingDosen.setNama(nama);
-        existingDosen.setUsername(username);
-        existingDosen.setEmail(email);
-        if (password != null && !password.isEmpty()) {
-            existingDosen.setPasswordHash(password);
+    public String updateDosen(@ModelAttribute Dosen dosen, RedirectAttributes redirectAttributes) {
+        try {
+            dosenService.saveDosen(dosen);
+            redirectAttributes.addFlashAttribute("successMessage", "Dosen berhasil diubah.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal mengubah dosen");
         }
-        dosenRepository.save(existingDosen);
         return "redirect:/kta/dosen";
     }
 
+
     @PostMapping("/hapus")
-    public String deleteDosen(@RequestParam Integer id) {
-        dosenRepository.deleteById(id);
+    public String deleteDosen(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            dosenService.deleteDosen(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Dosen berhasil dihapus.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Gagal menghapus dosen");
+        }
         return "redirect:/kta/dosen";
     }
 }
