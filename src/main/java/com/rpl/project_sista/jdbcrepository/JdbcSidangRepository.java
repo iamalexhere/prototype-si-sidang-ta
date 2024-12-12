@@ -1,81 +1,57 @@
 package com.rpl.project_sista.jdbcrepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-
 import com.rpl.project_sista.model.entity.Sidang;
-import com.rpl.project_sista.model.entity.TugasAkhir;
 import com.rpl.project_sista.model.entity.Dosen;
+import com.rpl.project_sista.model.entity.TugasAkhir;
 import com.rpl.project_sista.model.entity.Mahasiswa;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.repository.SidangRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class JdbcSidangRepository implements SidangRepository {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
+    
     private static final Logger logger = LoggerFactory.getLogger(JdbcSidangRepository.class);
 
     @Override
     public List<Sidang> findAll() {
-        String sql = "SELECT s.sidang_id, s.ta_id, ta.judul, ta.topik, ta.status, " +
-                     "m.nama AS mahasiswa_nama, m.npm, " +
-                     "s.jadwal, s.ruangan, s.status_sidang, s.created_at, s.updated_at " +
-                     "FROM sidang s " +
-                     "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
-                     "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-                     "ORDER BY s.jadwal DESC";
-        
-        List<Sidang> sidangList = jdbcTemplate.query(sql, this::mapRowToSidang);
-        
-        // Fetch pembimbing for each Sidang
-        for (Sidang sidang : sidangList) {
-            if (sidang.getTugasAkhir() != null) {
-                List<Dosen> pembimbing = fetchPembimbingForTugasAkhir(sidang.getTugasAkhir().getTaId());
-                sidang.getTugasAkhir().setPembimbing(new HashSet<>(pembimbing));
-            }
-        }
-        
-        return sidangList;
+        String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                    "FROM sidang s " +
+                    "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                    "JOIN mahasiswa m ON ta.npm = m.npm " +
+                    "ORDER BY s.jadwal";
+        return jdbcTemplate.query(sql, this::mapRowToSidang);
     }
 
     @Override
     public Optional<Sidang> findById(Integer id) {
-        String sql = "SELECT s.sidang_id, s.ta_id, ta.judul, ta.topik, ta.status, " +
-                     "m.nama AS mahasiswa_nama, m.npm, " +
-                     "s.jadwal, s.ruangan, s.status_sidang, s.created_at, s.updated_at " +
-                     "FROM sidang s " +
-                     "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
-                     "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-                     "WHERE s.sidang_id = ?";
-        
         try {
+            String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                        "FROM sidang s " +
+                        "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                        "JOIN mahasiswa m ON ta.npm = m.npm " +
+                        "WHERE s.sidang_id = ?";
+            
             Sidang sidang = jdbcTemplate.queryForObject(sql, this::mapRowToSidang, id);
-            
-            // Fetch pembimbing
-            if (sidang != null && sidang.getTugasAkhir() != null) {
-                List<Dosen> pembimbing = fetchPembimbingForTugasAkhir(sidang.getTugasAkhir().getTaId());
-                sidang.getTugasAkhir().setPembimbing(new HashSet<>(pembimbing));
-                
-                logger.info("Sidang details: {}", sidang);
-                logger.info("Tugas Akhir details: {}", sidang.getTugasAkhir());
-            }
-            
             return Optional.ofNullable(sidang);
-        } catch (DataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             logger.error("Error finding Sidang by ID {}: {}", id, e.getMessage());
             return Optional.empty();
         }
@@ -83,153 +59,230 @@ public class JdbcSidangRepository implements SidangRepository {
 
     @Override
     public Optional<Sidang> findByTugasAkhirId(Integer taId) {
-        List<Sidang> results = jdbcTemplate.query(
-            "SELECT s.*, ta.judul, ta.topik, ta.status, ta.mahasiswa_id, m.npm, m.nama as mahasiswa_nama " +
-            "FROM sidang s " +
-            "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
-            "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-            "WHERE s.ta_id = ?",
-            this::mapRowToSidang,
-            taId
-        );
-        
-        Optional<Sidang> sidangOptional = results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
-        
-        // Fetch pembimbing if sidang exists
-        sidangOptional.ifPresent(sidang -> {
-            if (sidang.getTugasAkhir() != null) {
-                List<Dosen> pembimbing = fetchPembimbingForTugasAkhir(sidang.getTugasAkhir().getTaId());
-                sidang.getTugasAkhir().setPembimbing(new HashSet<>(pembimbing));
-            }
-        });
-        
-        return sidangOptional;
+        try {
+            String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                        "FROM sidang s " +
+                        "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                        "JOIN mahasiswa m ON ta.npm = m.npm " +
+                        "WHERE s.ta_id = ?";
+            
+            Sidang sidang = jdbcTemplate.queryForObject(sql, this::mapRowToSidang, taId);
+            return Optional.ofNullable(sidang);
+        } catch (DataAccessException e) {
+            logger.error("Error finding Sidang by TA ID {}: {}", taId, e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<Sidang> findByDosenPengujiId(Integer dosenId) {
-        List<Sidang> sidangList = jdbcTemplate.query(
-            "SELECT DISTINCT s.*, ta.judul, ta.topik, ta.status, ta.mahasiswa_id, m.npm, m.nama as mahasiswa_nama " +
-            "FROM sidang s " +
-            "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
-            "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-            "JOIN penguji_sidang ps ON s.sidang_id = ps.sidang_id " +
-            "WHERE ps.dosen_id = ?",
-            this::mapRowToSidang,
-            dosenId
-        );
+        String sql = "SELECT DISTINCT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                    "FROM sidang s " +
+                    "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                    "JOIN mahasiswa m ON ta.npm = m.npm " +
+                    "JOIN penguji_sidang ps ON s.sidang_id = ps.sidang_id " +
+                    "WHERE ps.dosen_id = ? " +
+                    "ORDER BY s.jadwal";
         
-        // Fetch pembimbing for each Sidang
-        for (Sidang sidang : sidangList) {
-            if (sidang.getTugasAkhir() != null) {
-                List<Dosen> pembimbing = fetchPembimbingForTugasAkhir(sidang.getTugasAkhir().getTaId());
-                sidang.getTugasAkhir().setPembimbing(new HashSet<>(pembimbing));
-            }
-        }
-        
-        return sidangList;
+        return jdbcTemplate.query(sql, this::mapRowToSidang, dosenId);
     }
 
     @Override
     public Sidang save(Sidang sidang) {
         if (sidang.getSidangId() != null) {
-            // Update existing sidang
-            jdbcTemplate.update(
-                "UPDATE sidang SET ta_id = ?, jadwal = ?, ruangan = ?, " +
-                "status_sidang = ?::status_sidang, updated_at = ? " +
-                "WHERE sidang_id = ?",
+            // Update
+            String sql = "UPDATE sidang SET " +
+                        "ta_id = ?, jadwal = ?, ruangan = ?, status_sidang = ?::status_sidang, " +
+                        "updated_at = ? " +
+                        "WHERE sidang_id = ?";
+            
+            jdbcTemplate.update(sql,
                 sidang.getTugasAkhir().getTaId(),
                 sidang.getJadwal(),
                 sidang.getRuangan(),
-                sidang.getStatusSidang().toString().toLowerCase(),
+                sidang.getStatusSidang().name().toLowerCase(),
                 LocalDateTime.now(),
                 sidang.getSidangId()
             );
-            
-            // Delete existing penguji
-            jdbcTemplate.update("DELETE FROM penguji_sidang WHERE sidang_id = ?", sidang.getSidangId());
         } else {
-            // Insert new sidang
-            jdbcTemplate.update(
-                "INSERT INTO sidang (ta_id, jadwal, ruangan, status_sidang, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?::status_sidang, ?, ?)",
+            // Insert
+            String sql = "INSERT INTO sidang " +
+                        "(ta_id, jadwal, ruangan, status_sidang, created_at, updated_at) " +
+                        "VALUES (?, ?, ?, ?::status_sidang, ?, ?) RETURNING sidang_id";
+            
+            Long id = jdbcTemplate.queryForObject(sql, Long.class,
                 sidang.getTugasAkhir().getTaId(),
                 sidang.getJadwal(),
                 sidang.getRuangan(),
-                sidang.getStatusSidang().toString().toLowerCase(),
+                sidang.getStatusSidang().name().toLowerCase(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
             );
-            
-            Integer sidangId = jdbcTemplate.queryForObject(
-                "SELECT currval('sidang_sidang_id_seq')",
-                Integer.class
-            );
-            
-            sidang.setSidangId(Long.valueOf(sidangId));
+            sidang.setSidangId(id);
         }
-
-        // Save penguji assignments if they exist
-        if (sidang.getPenguji() != null && !sidang.getPenguji().isEmpty()) {
-            Object[] pengujiArray = sidang.getPenguji().toArray();
-            if (pengujiArray.length >= 2) {
-                // Save Penguji 1
-                jdbcTemplate.update(
-                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji1'::peran_penguji)",
-                    sidang.getSidangId(),
-                    ((Dosen)pengujiArray[0]).getDosenId()
-                );
-                
-                // Save Penguji 2
-                jdbcTemplate.update(
-                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji2'::peran_penguji)",
-                    sidang.getSidangId(),
-                    ((Dosen)pengujiArray[1]).getDosenId()
-                );
-            }
-        }
-
         return sidang;
     }
 
     @Override
     public void deleteById(Integer id) {
-        // First delete related records in penguji_sidang
-        jdbcTemplate.update("DELETE FROM penguji_sidang WHERE sidang_id = ?", id);
-        // Then delete the sidang
-        jdbcTemplate.update("DELETE FROM sidang WHERE sidang_id = ?", id);
+        String sql = "DELETE FROM sidang WHERE sidang_id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
-    private List<Dosen> fetchPembimbingForTugasAkhir(Long taId) {
-        String sql = "SELECT d.dosen_id, d.nama, d.nip " +
-                     "FROM pembimbing_ta pt " +
-                     "JOIN dosen d ON pt.dosen_id = d.dosen_id " +
-                     "WHERE pt.ta_id = ?";
+    @Override
+    public boolean isJadwalAvailable(LocalDateTime waktuMulai, LocalDateTime waktuSelesai, String ruangan) {
+        String sql = "SELECT COUNT(*) FROM sidang " +
+                    "WHERE ruangan = ? AND status_sidang != 'dibatalkan' AND " +
+                    "((waktu_mulai <= ? AND waktu_selesai >= ?) OR " +
+                    "(waktu_mulai <= ? AND waktu_selesai >= ?) OR " +
+                    "(waktu_mulai >= ? AND waktu_selesai <= ?))";
         
-        List<Dosen> pembimbing = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Dosen dosen = new Dosen();
-            dosen.setDosenId(rs.getInt("dosen_id"));
-            dosen.setNama(rs.getString("nama"));
-            dosen.setNip(rs.getString("nip"));
-            return dosen;
-        }, taId);
+        Integer overlappingCount = jdbcTemplate.queryForObject(sql, Integer.class,
+            ruangan, 
+            waktuMulai, waktuMulai,
+            waktuSelesai, waktuSelesai,
+            waktuMulai, waktuSelesai
+        );
+        
+        return overlappingCount != null && overlappingCount == 0;
+    }
 
-        logger.info("Fetched pembimbing for TA {}: {}", taId, pembimbing);
-        return pembimbing;
+    @Override
+    public boolean isDosenAvailable(Dosen dosen, LocalDateTime waktuMulai, LocalDateTime waktuSelesai) {
+        if (dosen == null || dosen.getDosenId() == null) {
+            return false;
+        }
+
+        String sql = "SELECT COUNT(*) FROM sidang s " +
+                    "JOIN penguji_sidang ps ON s.sidang_id = ps.sidang_id " +
+                    "WHERE ps.dosen_id = ? AND s.status_sidang != 'dibatalkan' AND " +
+                    "((s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai >= ? AND s.waktu_selesai <= ?))";
+        
+        Integer overlappingCount = jdbcTemplate.queryForObject(sql, Integer.class,
+            dosen.getDosenId(),
+            waktuMulai, waktuMulai,
+            waktuSelesai, waktuSelesai,
+            waktuMulai, waktuSelesai
+        );
+        
+        return overlappingCount != null && overlappingCount == 0;
+    }
+
+    @Override
+    public List<Sidang> findOverlappingSidang(LocalDateTime waktuMulai, LocalDateTime waktuSelesai, String ruangan) {
+        String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                    "FROM sidang s " +
+                    "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                    "JOIN mahasiswa m ON ta.npm = m.npm " +
+                    "WHERE s.ruangan = ? AND s.status_sidang != 'dibatalkan' AND " +
+                    "((s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai >= ? AND s.waktu_selesai <= ?)) " +
+                    "ORDER BY s.jadwal";
+        
+        return jdbcTemplate.query(sql, this::mapRowToSidang,
+            ruangan,
+            waktuMulai, waktuMulai,
+            waktuSelesai, waktuSelesai,
+            waktuMulai, waktuSelesai
+        );
+    }
+
+    @Override
+    public List<Sidang> findDosenOverlappingSidang(Dosen dosen, LocalDateTime waktuMulai, LocalDateTime waktuSelesai) {
+        if (dosen == null || dosen.getDosenId() == null) {
+            return List.of();
+        }
+
+        String sql = "SELECT DISTINCT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                    "FROM sidang s " +
+                    "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                    "JOIN mahasiswa m ON ta.npm = m.npm " +
+                    "JOIN penguji_sidang ps ON s.sidang_id = ps.sidang_id " +
+                    "WHERE ps.dosen_id = ? AND s.status_sidang != 'dibatalkan' AND " +
+                    "((s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai <= ? AND s.waktu_selesai >= ?) OR " +
+                    "(s.waktu_mulai >= ? AND s.waktu_selesai <= ?)) " +
+                    "ORDER BY s.jadwal";
+        
+        return jdbcTemplate.query(sql, this::mapRowToSidang,
+            dosen.getDosenId(),
+            waktuMulai, waktuMulai,
+            waktuSelesai, waktuSelesai,
+            waktuMulai, waktuSelesai
+        );
+    }
+
+    @Override
+    public boolean updateStatus(Long sidangId, StatusSidang newStatus) {
+        // Validate status transition
+        Optional<Sidang> existingSidang = findById(sidangId.intValue());
+        if (existingSidang.isEmpty()) {
+            return false;
+        }
+
+        StatusSidang currentStatus = existingSidang.get().getStatusSidang();
+        if (!isValidStatusTransition(currentStatus, newStatus)) {
+            throw new IllegalStateException(
+                String.format("Invalid status transition from %s to %s", 
+                currentStatus, newStatus)
+            );
+        }
+
+        String sql = "UPDATE sidang SET status_sidang = ?::status_sidang, updated_at = ? WHERE sidang_id = ?";
+        int updatedRows = jdbcTemplate.update(sql, 
+            newStatus.name().toLowerCase(), 
+            LocalDateTime.now(), 
+            sidangId
+        );
+        return updatedRows > 0;
+    }
+
+    @Override
+    public List<Sidang> findByStatus(StatusSidang status) {
+        String sql = "SELECT s.*, ta.*, m.npm, m.nama as mahasiswa_nama " +
+                    "FROM sidang s " +
+                    "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                    "JOIN mahasiswa m ON ta.npm = m.npm " +
+                    "WHERE s.status_sidang = ?::status_sidang " +
+                    "ORDER BY s.jadwal";
+        
+        return jdbcTemplate.query(sql, this::mapRowToSidang, 
+            status.name().toLowerCase()
+        );
+    }
+
+    private boolean isValidStatusTransition(StatusSidang currentStatus, StatusSidang newStatus) {
+        if (currentStatus == null) {
+            return newStatus == StatusSidang.terjadwal;
+        }
+
+        switch (currentStatus) {
+            case terjadwal:
+                return newStatus == StatusSidang.berlangsung || newStatus == StatusSidang.dibatalkan;
+            case berlangsung:
+                return newStatus == StatusSidang.selesai;
+            case selesai:
+                return false; // Final state
+            case dibatalkan:
+                return newStatus == StatusSidang.terjadwal; // Can be rescheduled
+            default:
+                return false;
+        }
     }
 
     private List<Dosen> fetchPengujiForSidang(Long sidangId) {
-        String sql = "SELECT d.dosen_id, d.nama, d.nip, ps.peran_penguji " +
-                    "FROM penguji_sidang ps " +
-                    "JOIN dosen d ON ps.dosen_id = d.dosen_id " +
-                    "WHERE ps.sidang_id = ? " +
-                    "ORDER BY ps.peran_penguji"; // This will order by penguji1, penguji2
+        String sql = "SELECT d.* FROM dosen d " +
+                    "JOIN penguji_sidang ps ON d.dosen_id = ps.dosen_id " +
+                    "WHERE ps.sidang_id = ?";
         
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Dosen dosen = new Dosen();
             dosen.setDosenId(rs.getInt("dosen_id"));
             dosen.setNama(rs.getString("nama"));
-            dosen.setNip(rs.getString("nip"));
+            dosen.setEmail(rs.getString("email"));
             return dosen;
         }, sidangId);
     }
@@ -237,24 +290,34 @@ public class JdbcSidangRepository implements SidangRepository {
     private Sidang mapRowToSidang(ResultSet rs, int rowNum) throws SQLException {
         Sidang sidang = new Sidang();
         sidang.setSidangId(rs.getLong("sidang_id"));
-        sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
-        sidang.setRuangan(rs.getString("ruangan"));
-        sidang.setStatusSidang(StatusSidang.valueOf(rs.getString("status_sidang")));
         
-        // Set TugasAkhir
+        // Map TugasAkhir
         TugasAkhir ta = new TugasAkhir();
         ta.setTaId(rs.getLong("ta_id"));
         ta.setJudul(rs.getString("judul"));
-        ta.setTopik(rs.getString("topik"));
-        ta.setStatus(StatusTA.valueOf(rs.getString("status")));
         
-        // Set Mahasiswa
+        // Map Mahasiswa
         Mahasiswa mahasiswa = new Mahasiswa();
         mahasiswa.setNpm(rs.getString("npm"));
         mahasiswa.setNama(rs.getString("mahasiswa_nama"));
         ta.setMahasiswa(mahasiswa);
         
         sidang.setTugasAkhir(ta);
+        
+        // Map other fields
+        sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
+        sidang.setRuangan(rs.getString("ruangan"));
+        sidang.setStatusSidang(StatusSidang.valueOf(rs.getString("status_sidang").toUpperCase()));
+        
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        if (createdAt != null) {
+            sidang.setCreatedAt(createdAt.toLocalDateTime());
+        }
+        
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            sidang.setUpdatedAt(updatedAt.toLocalDateTime());
+        }
         
         // Fetch and set penguji
         List<Dosen> penguji = fetchPengujiForSidang(sidang.getSidangId());

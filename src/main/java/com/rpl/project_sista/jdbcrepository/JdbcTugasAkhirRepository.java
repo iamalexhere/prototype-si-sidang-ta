@@ -92,13 +92,50 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
         }, mahasiswaId);
     }
 
+    private boolean isValidStatusTransition(StatusTA currentStatus, StatusTA newStatus) {
+        if (currentStatus == null && newStatus == StatusTA.draft) {
+            return true; // New TA can be created as draft
+        }
+
+        // Define valid transitions
+        switch (currentStatus) {
+            case draft:
+                return newStatus == StatusTA.diajukan;
+            case diajukan:
+                return newStatus == StatusTA.diterima || newStatus == StatusTA.ditolak;
+            case ditolak:
+                return newStatus == StatusTA.draft; // Can resubmit after rejection
+            case diterima:
+                return newStatus == StatusTA.dalam_pengerjaan;
+            case dalam_pengerjaan:
+                return newStatus == StatusTA.selesai;
+            case selesai:
+                return false; // Final state, no further transitions
+            default:
+                return false;
+        }
+    }
+
     @Override
     public TugasAkhir save(TugasAkhir tugasAkhir) {
         if (tugasAkhir.getTaId() != null) {
+            // For existing TA, validate status transition
+            Optional<TugasAkhir> existingTA = findById(tugasAkhir.getTaId().intValue());
+            if (existingTA.isPresent()) {
+                StatusTA currentStatus = existingTA.get().getStatus();
+                if (!isValidStatusTransition(currentStatus, tugasAkhir.getStatus())) {
+                    throw new IllegalStateException(
+                        String.format("Invalid status transition from %s to %s", 
+                        currentStatus, tugasAkhir.getStatus())
+                    );
+                }
+            }
+
             // Update existing tugas akhir
             jdbcTemplate.update(
                 "UPDATE tugas_akhir SET mahasiswa_id = ?, semester_id = ?, judul = ?, " +
-                "topik = ?, jenis_ta = ?::jenis_ta, status = ?::status_ta " +
+                "topik = ?, jenis_ta = ?::jenis_ta, status = ?::status_ta, " +
+                "updated_at = ? " +
                 "WHERE ta_id = ?",
                 tugasAkhir.getMahasiswa().getMahasiswaId(),
                 tugasAkhir.getSemester().getSemesterId(),
@@ -106,23 +143,31 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
                 tugasAkhir.getTopik(),
                 tugasAkhir.getJenisTA().toString().toLowerCase(),
                 tugasAkhir.getStatus().toString().toLowerCase(),
+                LocalDateTime.now(),
                 tugasAkhir.getTaId()
             );
 
             // Update pembimbing
             updatePembimbing(tugasAkhir);
         } else {
+            // For new TA, only allow draft status
+            if (tugasAkhir.getStatus() != StatusTA.draft) {
+                throw new IllegalStateException("New Tugas Akhir must be created with draft status");
+            }
+
             // Insert new tugas akhir
             tugasAkhir.setCreatedAt(LocalDateTime.now());
             jdbcTemplate.update(
                 "INSERT INTO tugas_akhir (mahasiswa_id, semester_id, judul, topik, " +
-                "jenis_ta, status, created_at) VALUES (?, ?, ?, ?, ?::jenis_ta, ?::status_ta, ?)",
+                "jenis_ta, status, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?::jenis_ta, ?::status_ta, ?, ?)",
                 tugasAkhir.getMahasiswa().getMahasiswaId(),
                 tugasAkhir.getSemester().getSemesterId(),
                 tugasAkhir.getJudul(),
                 tugasAkhir.getTopik(),
                 tugasAkhir.getJenisTA().toString().toLowerCase(),
                 tugasAkhir.getStatus().toString().toLowerCase(),
+                tugasAkhir.getCreatedAt(),
                 tugasAkhir.getCreatedAt()
             );
             
@@ -196,6 +241,63 @@ public class JdbcTugasAkhirRepository implements TugasAkhirRepository {
             logger.error("Error deleting tugas akhir with id: {}", id, e);
             throw e;
         }
+    }
+
+    @Override
+    public boolean updateStatus(Long taId, StatusTA newStatus) {
+        try {
+            int updatedRows = jdbcTemplate.update(
+                "UPDATE tugas_akhir SET status = ?::status_ta WHERE ta_id = ?",
+                newStatus.toString().toLowerCase(),
+                taId
+            );
+            
+            if (updatedRows == 0) {
+                logger.warn("No tugas akhir found with id: {} for status update", taId);
+                return false;
+            }
+            
+            logger.info("Successfully updated status to {} for tugas akhir with id: {}", 
+                       newStatus, taId);
+            return true;
+        } catch (DataAccessException e) {
+            logger.error("Error updating status for tugas akhir with id: {}", taId, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public List<TugasAkhir> findByStatus(StatusTA status) {
+        String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
+                    "s.tahun_ajaran, s.periode " +
+                    "FROM tugas_akhir ta " +
+                    "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
+                    "JOIN semester s ON ta.semester_id = s.semester_id " +
+                    "WHERE ta.status = ?::status_ta " +
+                    "ORDER BY ta.created_at DESC";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            TugasAkhir ta = mapBasicTugasAkhir(rs);
+            ta.setPembimbing(findPembimbingByTaId(ta.getTaId()));
+            return ta;
+        }, status.toString().toLowerCase());
+    }
+
+    @Override
+    public List<TugasAkhir> findByMahasiswaIdAndStatus(Integer mahasiswaId, StatusTA status) {
+        String sql = "SELECT ta.*, m.npm, m.nama as mahasiswa_nama, " +
+                    "s.tahun_ajaran, s.periode " +
+                    "FROM tugas_akhir ta " +
+                    "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
+                    "JOIN semester s ON ta.semester_id = s.semester_id " +
+                    "WHERE ta.mahasiswa_id = ? AND ta.status = ?::status_ta " +
+                    "ORDER BY ta.created_at DESC";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            TugasAkhir ta = mapBasicTugasAkhir(rs);
+            ta.setPembimbing(findPembimbingByTaId(ta.getTaId()));
+            return ta;
+        }, mahasiswaId, status.toString().toLowerCase());
     }
 
     private TugasAkhir mapBasicTugasAkhir(ResultSet rs) throws SQLException {
