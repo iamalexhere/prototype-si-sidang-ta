@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${tugasAkhir.taId == null ? 'Tambah Tugas Akhir' : 'Edit Tugas Akhir'}">Manajemen Tugas Akhir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900" 
+                                th:text="${tugasAkhir.taId == null ? 'Tambah Tugas Akhir' : 'Edit Tugas Akhir'}">
+                                Manajemen Tugas Akhir
+                            </h1>
+                            <nav class="flex mt-2" aria-label="Breadcrumb">
+                                <ol role="list" class="flex items-center space-x-4">
+                                    <li>
+                                        <div>
+                                            <a href="/kta/tugas-akhir" class="text-sm font-medium text-purple-600 hover:text-purple-700">
+                                                Daftar Tugas Akhir
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
+                                            <span class="ml-4 text-sm font-medium text-gray-500" 
+                                                  th:text="${tugasAkhir.taId == null ? 'Tambah' : 'Edit'}">Action</span>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Messages -->
+                <div th:if="${errorMessage}" class="mb-4 p-4 rounded-md bg-red-50 border border-red-200">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800" th:text="${errorMessage}"></p>
+                        </div>
+                        <div class="ml-auto pl-3">
+                            <div class="-mx-1.5 -my-1.5">
+                                <button type="button" class="close-alert inline-flex rounded-md p-1.5 text-red-500 hover:bg-red-100">
+                                    <span class="sr-only">Dismiss</span>
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-white shadow rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Form Tugas Akhir
+                        </h3>
+                    </div>
+                    <form th:action="@{/kta/tugas-akhir/save}" method="post" class="px-4 py-5 sm:p-6">
+                        <input type="hidden" name="taId" th:value="${tugasAkhir.taId}"/>
+
+                        <div class="grid grid-cols-6 gap-6">
+                            <!-- Mahasiswa -->
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="mahasiswa" class="block text-sm font-medium text-gray-700">Mahasiswa</label>
+                                <select id="mahasiswa" name="mahasiswa.mahasiswaId" required
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                    <option value="">Pilih Mahasiswa</option>
+                                    <option th:each="mahasiswa : ${mahasiswaList}"
+                                            th:value="${mahasiswa.mahasiswaId}"
+                                            th:text="${mahasiswa.npm + ' - ' + mahasiswa.nama}"
+                                            th:selected="${tugasAkhir.mahasiswa != null && 
+                                                         tugasAkhir.mahasiswa.mahasiswaId == mahasiswa.mahasiswaId}">
+                                        NPM - Nama Mahasiswa
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Semester -->
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
+                                <select id="semester" name="semester.semesterId" required
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                    <option value="">Pilih Semester</option>
+                                    <option th:each="semester : ${semesterList}"
+                                            th:value="${semester.semesterId}"
+                                            th:text="${semester.tahunAjaran + ' ' + semester.periode}"
+                                            th:selected="${tugasAkhir.semester != null && 
+                                                         tugasAkhir.semester.semesterId == semester.semesterId}">
+                                        Semester
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Judul -->
+                            <div class="col-span-6">
+                                <label for="judul" class="block text-sm font-medium text-gray-700">Judul</label>
+                                <input type="text" id="judul" name="judul" th:value="${tugasAkhir.judul}"
+                                       required class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+
+                            <!-- Topik -->
+                            <div class="col-span-6">
+                                <label for="topik" class="block text-sm font-medium text-gray-700">Topik</label>
+                                <input type="text" id="topik" name="topik" th:value="${tugasAkhir.topik}"
+                                       required class="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            </div>
+
+                            <!-- Jenis TA -->
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="jenisTA" class="block text-sm font-medium text-gray-700">Jenis TA</label>
+                                <select id="jenisTA" name="jenisTA" required
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                    <option value="">Pilih Jenis TA</option>
+                                    <option th:each="jenis : ${jenisTAList}"
+                                            th:value="${jenis}"
+                                            th:text="${jenis}"
+                                            th:selected="${tugasAkhir.jenisTA == jenis}">
+                                        Jenis TA
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <select id="status" name="status"
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                    <option th:each="status : ${statusTAList}"
+                                            th:value="${status}"
+                                            th:text="${status}"
+                                            th:selected="${tugasAkhir.status == status}">
+                                        Status
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Pembimbing -->
+                            <div class="col-span-6 sm:col-span-3">
+                                <label for="pembimbingIds" class="block text-sm font-medium text-gray-700">Pembimbing</label>
+                                <select id="pembimbingIds" name="pembimbingIds" multiple
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                    <option th:each="dosen : ${dosenList}"
+                                            th:value="${dosen.dosenId}"
+                                            th:text="${dosen.nip + ' - ' + dosen.nama}"
+                                            th:selected="${tugasAkhir.pembimbing != null && 
+                                                         tugasAkhir.pembimbing.contains(dosen)}">
+                                        NIP - Nama Dosen
+                                    </option>
+                                </select>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Tekan Ctrl (Windows) atau Command (Mac) untuk memilih lebih dari satu pembimbing
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end space-x-3">
+                            <a href="/kta/tugas-akhir" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                <i class="fas fa-times -ml-1 mr-2"></i>
+                                Batal
+                            </a>
+                            <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                <i class="fas fa-save -ml-1 mr-2"></i>
+                                Simpan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Alert close functionality
+        document.querySelectorAll('.close-alert').forEach(button => {
+            button.addEventListener('click', () => {
+                button.closest('[role="alert"]').remove();
+            });
+        });
+    </script>
+</body>
+</html>
