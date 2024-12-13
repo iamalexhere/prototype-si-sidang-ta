@@ -2,8 +2,12 @@ package com.rpl.project_sista.Mahasiswa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,14 +19,14 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
     private JdbcTemplate jdbc;
 
     @Override
-    public Iterable<Mahasiswa> getMahasiswa(String username) {
+    public List<Mahasiswa> getMahasiswa(String username) {
         return jdbc.query(
             "SELECT \n" + //
                                 "userMahasiswa.username,\n" + //
                                 "mahasiswa.nama AS mahasiswa_nama,\n" + //
                                 "ruangan,\n" + //
                                 "jadwal::DATE AS tanggal,\n" + //
-                                "jadwal::TIME AS jam,\n" + //
+                                "jadwal::TIME AS jam, judul,\n" + //
                                 "array_agg(dosen.nama ORDER BY peran_penguji) AS penguji_nama,\n" + //
                                 "array_agg(users.email ORDER BY peran_penguji) AS penguji_email,\n" + //
                                 "array_agg(peran_penguji ORDER BY peran_penguji) AS penguji_peran\n" + //
@@ -34,7 +38,7 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                                 "JOIN dosen ON dosen.dosen_id = penguji_sidang.dosen_id\n" + //
                                 "JOIN users ON users.user_id = dosen.user_id\n" + //
                                 "WHERE userMahasiswa.username = ?\n" + //
-                                "GROUP BY userMahasiswa.username, mahasiswa.nama, ruangan, jadwal", this::mapRowToMahasiswa, username);
+                                "GROUP BY userMahasiswa.username, mahasiswa.nama, ruangan, jadwal, judul", this::mapRowToMahasiswa, username);
     }
 
     private Mahasiswa mapRowToMahasiswa(ResultSet resultSet, int rowNum) throws SQLException{
@@ -46,15 +50,20 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
         List<String> listPenguji = Arrays.asList(
             penguji_nama.replace("{", "").replace("}", "").split(","));
 
+        LocalDate current_date = resultSet.getDate("tanggal").toLocalDate(); 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.forLanguageTag("id"));
+        String formatted_date = current_date.format(formatter);
+            
         return new Mahasiswa(
             resultSet.getString("mahasiswa_nama"),
             resultSet.getString("ruangan"),
-            resultSet.getDate("tanggal").toLocalDate(),
+            formatted_date,
             resultSet.getTime("jam"),
             listPenguji.get(0).substring(1, listPenguji.get(0).length()-1),
             pengujiEmails.get(0),
             listPenguji.get(1).substring(1, listPenguji.get(1).length()-1),
-            pengujiEmails.get(1)
+            pengujiEmails.get(1),
+            resultSet.getString("judul")
         );
     }
 }

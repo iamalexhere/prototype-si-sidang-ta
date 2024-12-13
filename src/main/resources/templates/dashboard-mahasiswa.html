@@ -62,14 +62,14 @@
         </aside>
 
         <!-- Main Content & Profile -->
-        <div class="flex-1 flex flex-col p-8 overflow-y-auto" th:if="${mahasiswa != null}" th:each="row : ${mahasiswa}"> 
+        <div class="flex-1 flex flex-col p-8 overflow-y-auto" th:if="${mahasiswa != null}" th:block="${mahasiswa}"> 
 
             <!-- Main Content -->
             <div class="flex-grow">
                <div class="header-welcome flex w-full"> 
                     <div class="w-full">
-                        <h2 class="text-3xl font-bold mb-4 specialText"> Selamat Datang, <span th:text="${row.nama}"></span>!</h2>
-                        <p class="text-gray-600" th:text="${tanggal}">Senin, 14 Oktober 2024</p>
+                        <h2 class="text-3xl font-bold mb-4 specialText"> Selamat Datang, <span th:text="${mahasiswa.nama}"></span>!</h2>
+                        <p class="text-gray-600" th:text="${tanggal}">EEEE, DD MMMM YYYY</p>
                     </div>
                     <div id="profile_pic" class="profile-bar ml-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,34 +80,34 @@
                </div>
 
                <div class="mainColor h-48 p-6 rounded-lg mt-6">
-                <h3 class="text-xl text-white font-bold mb-2 specialText">Informasi Sidang</h3>
-                <p class="text-white">Implementasi protokol transfer data dengan multiple frame/packet yang reliable di Wireless Sensor Network bertopologi kluster</p>
+                <h3 class="text-3xl text-white font-bold mb-2 specialText">Informasi Sidang</h3>
+                <p class="text-white text-2xl" th:text="${mahasiswa.judul_ta}">judul Sidang</p>
                </div>
 
                <div class="flex mt-6 h-80">
                 <div class="w-1/2 border border-pink-400 mx-8 p-4 rounded-lg">
                     <h4 class="font-bold mb-2 specialText text-xl navy">Tempat</h4>
                     <div class="flex items-center justify-center">
-                        <h4 class="font-bold mb-2 specialText text-5xl navy mt-16" th:text="${row.tempat}"></h4>
+                        <h4 class="font-bold mb-2 specialText text-5xl navy mt-16">Ruang <span th:text="${mahasiswa.tempat}"></span></h4>
                     </div>
                 </div>
                 <div class="w-1/2 border border-pink-400 mx-8 p-4 rounded-lg">
                     <h4 class="font-bold mb-2 specialText text-xl navy">Waktu</h4>
                     <div class="flex items-center justify-center mt-8">
-                        <h4 class="font-bold mb-2 specialText text-5xl navy" th:text="${row.jamSidang}"></h4>
+                        <h4 class="font-bold mb-2 specialText text-5xl navy" th:text="${mahasiswa.jamSidang}"></h4>
                     </div>
                     <div class="flex items-center justify-center mt-8">
-                        <h4 class="font-bold mb-2 specialText text-5xl navy"th:text="${row.tanggalSidang}"></h4>
+                        <h4 class="font-bold mb-2 specialText text-4xl navy"th:text="${mahasiswa.tanggalSidang}"></h4>
                     </div>
                 </div>
                </div>
 
                <div class="flex">
                    <div class="mx-8 mt-6 w-1/2 pl-4">
-                    <p class="mb-2 navy text-xl font-medium">Dosen Penguji 1: <br><span class="font-medium" th:text="${row.dosenPenguji1}"> </span> <br> <span th:text="${row.emailPenguji1}" class="text-blue-500"></span></p>
+                    <p class="mb-2 navy text-xl font-medium">Dosen Penguji 1: <br><span class="font-medium" th:text="${mahasiswa.dosenPenguji1}"> belum di assign </span> <br> <span th:text="${mahasiswa.emailPenguji1}" class="text-blue-500">-</span></p>
                     </div>
                     <div class="mx-8 mt-6 w-1/2 pl-8 font-medium">
-                       <p class="mb navy text-xl">Dosen Penguji 2: <br><span class="font-medium" th:text="${row.dosenPenguji2}"> </span> <br> <span th:text="${row.emailPenguji2}" class="text-blue-500"></span></p>
+                       <p class="mb navy text-xl">Dosen Penguji 2: <br><span class="font-medium" th:text="${mahasiswa.dosenPenguji2}"> belum di assign </span> <br> <span th:text="${mahasiswa.emailPenguji2}" class="text-blue-500">-</span></p>
                    </div>
                </div>
 
