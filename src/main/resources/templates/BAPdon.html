@@ -183,11 +183,11 @@
         <div style="font-size: 1rem; display: flex; flex-direction: column; gap: 0.125rem; padding: 0.25rem; margin-bottom: 1.75rem;">
             <table style="border-collapse: collapse; border: 2px solid black; text-align: left; font-size: 1rem; margin: auto;">
                 <tr>
-                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem; text align:center">Ketua Tim Penguji</th>
-                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem; text align:center">Anggota Tim Penguji</th>
-                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem; text align:center">Pembimbing</th>
-                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem; text align:center">Mahasiswa</th>
-                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem; text align:center">Koordinator Skripsi</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Ketua Tim Penguji</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Anggota Tim Penguji</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Pembimbing</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Mahasiswa</th>
+                    <th style="border: 1px solid #D1D5DB; padding: 0.5rem;">Koordinator Skripsi</th>
                 </tr>
                 <tr>
                     <td style="border: 1px solid #D1D5DB; padding: 0.5rem; height: 12rem; width:12rem"></td>
@@ -198,19 +198,5 @@
                 </tr>
             </table>
         </div>
-
-        <button  class="bg-green-600 hover:bg-green-800 text-white font-bold rounded-full py-2 px-6 w-32" id="DownloadButton">Download</button>
     </body>
-    <script>
-    document.getElementById("DownloadButton").addEventListener("click", function() {
-        const newWindow=window.open('/BAPdon','_blank');
-
-        newWindow.onload=function(){
-            newWindow.print();
-            newWindow.onafterprint=function(){
-                newWindow.close()
-            }
-        };
-    });
-    </script>
 </html>

@@ -12,5 +12,9 @@ public interface BapRepository{
     String findKetuaPenguji(String nama);
     String findAnggotaPenguji(String nama);
     String findTanggal(String nama);
-
+    double findBobotPembimbing(int semester);
+    double findBobotPenguji(int semester);
+    double findNilaiKetua(String name);
+    double findNilaiPenguji(String name);
+    double findNilaiPembimbing(String name);
 }

@@ -1,27 +1,27 @@
    //import org.springframework.core.io.InputStreamResource;
    package com.rpl.project_sista;
    import org.springframework.beans.factory.annotation.Autowired;
-   import org.springframework.core.io.InputStreamResource;
-   import org.springframework.http.HttpHeaders;
-   import org.springframework.http.MediaType;
-   import org.springframework.http.ResponseEntity;
+   //import org.springframework.core.io.InputStreamResource;
+   //import org.springframework.http.HttpHeaders;
+   //import org.springframework.http.MediaType;
+   //import org.springframework.http.ResponseEntity;
    import org.springframework.stereotype.Controller;
    import org.springframework.ui.Model;
    import org.springframework.web.bind.annotation.GetMapping;
-   import org.thymeleaf.context.Context;
-   import org.thymeleaf.spring6.SpringTemplateEngine;
-   import org.xhtmlrenderer.pdf.ITextRenderer;
+   //import org.thymeleaf.context.Context;
+   //import org.thymeleaf.spring6.SpringTemplateEngine;
+   //import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import jakarta.annotation.PostConstruct;
 
-import java.io.ByteArrayInputStream;
-   import java.io.ByteArrayOutputStream;
+//import java.io.ByteArrayInputStream;
+//import java.io.ByteArrayOutputStream;
 
    @Controller
    public class BapController {
       
-      @Autowired
-      private SpringTemplateEngine templateEngine;
+      /* @Autowired
+      private SpringTemplateEngine templateEngine; */
 
       @Autowired
       private BapRepository bapRepository;
@@ -29,13 +29,18 @@ import java.io.ByteArrayInputStream;
       private String semester;
       private String tahunAkademik;
       private String npm;
-      private String namaz;
+      //private String namaz;
       private String topik;
       private String pembimbingTunggal;
       //private String PembimbingPendamping;
       private String PengujiKetua;
       private String PengujiDosen;
       private String fullDate;
+      private double bobotPembimbing;
+      private double bobotPenguji;
+      private double nilaiKetua;
+      private double nilaiPenguji;
+      private double nilaiPembimbing;
 
 
       // ini tuh nama nantinya di ambil dari session aja,tapi sebelumnya dari session tuh bakal diubah terlebih dahulu aja 
@@ -48,9 +53,14 @@ import java.io.ByteArrayInputStream;
          topik=bapRepository.findTopik(nama);
          pembimbingTunggal=bapRepository.findPembimbingTunggal(nama);
          //PembimbingPendamping=bapRepository.pe
-         //PengujiKetua=bapRepository.findKetuaPenguji(nama);
-         PengujiDosen=bapRepository.findAnggotaPenguji(nama); //ini di comment dulu karena kalau engga error anjay wkwkwk
-         fullDate=bapRepository.findTanggal(nama);;
+         PengujiKetua=bapRepository.findKetuaPenguji(nama);
+         PengujiDosen=bapRepository.findAnggotaPenguji(nama);
+         fullDate=bapRepository.findTanggal(nama);
+         bobotPembimbing=bapRepository.findBobotPembimbing(1);
+         bobotPenguji=bapRepository.findBobotPenguji(1);
+         nilaiKetua=bapRepository.findNilaiKetua(PengujiKetua);
+         nilaiPenguji=bapRepository.findNilaiPenguji(PengujiDosen);
+         nilaiPembimbing=bapRepository.findNilaiPembimbing(pembimbingTunggal);
 
       }
 
@@ -64,83 +74,62 @@ import java.io.ByteArrayInputStream;
          model.addAttribute("Topik",topik);//
          model.addAttribute("PembimbingTunggal",pembimbingTunggal);//
          model.addAttribute("PembimbingPendamping","");// ini karena gaada nanti bisa kosong aja
-         model.addAttribute("PengujiKetua","");//
-         model.addAttribute("PengujiDosen",PengujiDosen);//ini karena belum jadi belum ditulis
-         model.addAttribute("KetuaNilai","100");
-         model.addAttribute("KetuaBobot","30");
-         model.addAttribute("KetuaNa","40");
-         model.addAttribute("PengujiNilai","80");
-         model.addAttribute("PengujiBobot","20");
-         model.addAttribute("PengujiNa","40");
-         model.addAttribute("PembimbingNilai","90");
-         model.addAttribute("PembimbingBobot","30");
-         model.addAttribute("PembimbingNa","60");
-         model.addAttribute("KoorNilai","78");
-         model.addAttribute("KoorBobot","15");
-         model.addAttribute("KoorNa","25");
+         model.addAttribute("PengujiKetua",PengujiKetua);//
+         model.addAttribute("PengujiDosen",PengujiDosen);
+         model.addAttribute("KetuaNilai",nilaiKetua);
+         model.addAttribute("KetuaBobot",bobotPenguji);//
+         model.addAttribute("KetuaNa", ((nilaiKetua * bobotPenguji) / 100));
+         model.addAttribute("PengujiNilai",nilaiPenguji);
+         model.addAttribute("PengujiBobot",bobotPenguji);//
+         model.addAttribute("PengujiNa", ((nilaiPenguji * bobotPenguji) / 100));
+         model.addAttribute("PembimbingNilai",nilaiPembimbing);
+         model.addAttribute("PembimbingBobot",bobotPembimbing);//
+         model.addAttribute("PembimbingNa", (((nilaiPembimbing) * bobotPembimbing) / 100));
+         model.addAttribute("KoorNilai","100");
+         model.addAttribute("KoorBobot","10");
+         model.addAttribute("KoorNa","10");
          model.addAttribute("bobotTotal","100");
-         model.addAttribute("NaTotal","78");
+         model.addAttribute("NaTotal", ((nilaiKetua * bobotPenguji) / 100) + ((nilaiPenguji * bobotPenguji) / 100) + (((nilaiPembimbing) * bobotPembimbing) / 100) + 10);
 
-         model.addAttribute("fullDate",fullDate);
+         model.addAttribute("fullDate",fullDate);//
          return "BAP";
+      }
+      @GetMapping("/BAPdon")
+      public  String bapbapbap(Model model){
+         
+
+         model.addAttribute("semester", semester); //
+         model.addAttribute("tahunAkademik", tahunAkademik);//
+         model.addAttribute("NPM",npm);//
+         model.addAttribute("Nama",nama);//
+         model.addAttribute("Topik",topik);//
+         model.addAttribute("PembimbingTunggal",pembimbingTunggal);//
+         model.addAttribute("PembimbingPendamping","");// ini karena gaada nanti bisa kosong aja
+         model.addAttribute("PengujiKetua",PengujiKetua);//
+         model.addAttribute("PengujiDosen",PengujiDosen);
+         model.addAttribute("KetuaNilai",nilaiKetua);
+         model.addAttribute("KetuaBobot",bobotPenguji);//
+         model.addAttribute("KetuaNa", ((nilaiKetua * bobotPenguji) / 100));
+         model.addAttribute("PengujiNilai",nilaiPenguji);
+         model.addAttribute("PengujiBobot",bobotPenguji);//
+         model.addAttribute("PengujiNa", ((nilaiPenguji * bobotPenguji) / 100));
+         model.addAttribute("PembimbingNilai",nilaiPembimbing);
+         model.addAttribute("PembimbingBobot",bobotPembimbing);//
+         model.addAttribute("PembimbingNa", (((nilaiPembimbing) * bobotPembimbing) / 100));
+         model.addAttribute("KoorNilai","100");
+         model.addAttribute("KoorBobot","10");
+         model.addAttribute("KoorNa","10");
+         model.addAttribute("bobotTotal","100");
+         model.addAttribute("NaTotal", ((nilaiKetua * bobotPenguji) / 100) + ((nilaiPenguji * bobotPenguji) / 100) + (((nilaiPembimbing) * bobotPembimbing) / 100) + 10);
+
+         model.addAttribute("fullDate",fullDate);//
+         return "BAPdon";
       }
 
 
       @GetMapping("/dondon")
       public String dondon(){
          return "ButtonBap";
-      }
-
-      @GetMapping("/download-bap")
-      public ResponseEntity<?> downloadBap() {
-        // Data yang akan disisipkan ke template
-         Context context = new Context();
-         context.setVariable("Semester", semester);
-         context.setVariable("tahunAkademik", tahunAkademik);
-         context.setVariable("NPM", npm);
-         context.setVariable("Nama", nama);
-         context.setVariable("Topik", topik);
-         context.setVariable("PembimbingTunggal", pembimbingTunggal);
-         context.setVariable("PembimbingPendamping","");
-         context.setVariable("PengujiKetua", "");
-         context.setVariable("PengujiDosen", PengujiDosen);
-         context.setVariable("KetuaNilai", "100");
-         context.setVariable("KetuaBobot", "30");
-         context.setVariable("KetuaNa", "40");
-         context.setVariable("PengujiNilai", "80");
-         context.setVariable("PengujiBobot", "20");
-         context.setVariable("PengujiNa", "40");
-         context.setVariable("PembimbingNilai", "90");
-         context.setVariable("PembimbingBobot", "30");
-         context.setVariable("PembimbingNa", "60");
-         context.setVariable("KoorNilai", "78");
-         context.setVariable("KoorBobot", "15");
-         context.setVariable("KoorNa", "25");
-         context.setVariable("bobotTotal", "100");
-         context.setVariable("NaTotal", "78");
-         context.setVariable("fullDate", fullDate);
-
-         String htmlContent = templateEngine.process("BAP", context);
-
-         // Konversi HTML ke PDF menggunakan Flying Saucer
-         ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-         try {
-             ITextRenderer renderer = new ITextRenderer();
-             renderer.setDocumentFromString(htmlContent);
-             renderer.layout();
-             renderer.createPDF(pdfOutputStream);
-             renderer.setDocumentFromString(htmlContent, "http://localhost:8080/");
-         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Terjadi kesalahan saat membuat PDF: " + e.getMessage());
-        }
-
-         ByteArrayInputStream inputStream = new ByteArrayInputStream(pdfOutputStream.toByteArray());
- 
-         return ResponseEntity.ok()
-                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=BAP.pdf")
-                 .contentType(MediaType.APPLICATION_PDF)
-                 .body(new InputStreamResource(inputStream));
       } 
 
    }
