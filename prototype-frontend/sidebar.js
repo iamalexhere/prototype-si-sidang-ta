@@ -1,7 +1,7 @@
 (function () {
     const profileBar = document.getElementById('profile');
     const profileButton = document.getElementById('profile_pic');
-    let counter = 0;
+    let counter = 1;
 
     profileButton.addEventListener('click', function () {
         if(counter%2==0){

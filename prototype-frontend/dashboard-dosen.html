@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Lecture Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="sidebar.js" text="text/javascript" defer></script>
+    <script src="dashboard-dosen.js" text="text/javascript" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard-dosen.css">
 
     <style>
         .mainColor{
@@ -30,6 +32,10 @@
             border-top-width: 1px;
             border-bottom-width: 1px;
             padding: 6px;
+        }
+
+        tr{
+            height: 50px;
         }
 
         span.linkToStudent{
@@ -110,7 +116,7 @@
                             <td>Ganjil</td>
                             <td>2024/2024</td>
                             <td>Penguji</td>
-                            <td><span class="linkToStudent ">i</span></td>
+                            <td><span onclick="showPopupPenguji()" class="linkToStudent hover:cursor-pointer">i</span></td>
                         </tr>
                         <tr>    
                             <td>6182201087</td>
@@ -118,33 +124,145 @@
                             <td>Genap</td>
                             <td>2024/2025</td>
                             <td>Pembimbing</td>
-                            <td><span class="linkToStudent ">i</span></td>
+                            <td><span onclick="showPopupPembimbing()" class="linkToStudent hover:cursor-pointer">i</span></td>
                         </tr>
                     </tbody>
                 </table>
-
-
             </div>
         </div>
 
         <!--Left bar for profile-->
-        <div id="profile" class="h-full w-96 ml-auto border-l-4 flex">
+        <div id="profile" class="hidden h-full w-96 ml-auto border-l-4 flex flex-col">
             <p class="font-bold m-4 fontJakarta">Profile</p>
 
-            <div class="about flex flex-col justify-center items-center mt-6">
+            <div class="about h-full flex flex-col justify-center items-center mt-6">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                         d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
                     </svg>
                 </div>
-                <div>
+                <div class="flex flex-col justify-center items-center">
                     <p class="name text-center"><strong>John Doe</strong></p>
-                    <p class="email text-center">6182001100@student.unpar.ac.id</p>    
+                    <p class="email text-center">JohnDoe@unpar.ac.id</p>    
                 </div>
             </div>
         </div>
 
     </div>
+
+    <!--Pop-up Informasi Mahasiswa Untuk Dosen Penguji-->
+    <div id="popupOverlayPenguji" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
+        <div id="popupContentPenguji" class="pop-up bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+            <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
+
+            <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
+                <div class="flex">
+                    <div class="flex">
+                        <p>NPM</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>6182201018</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex">
+                        <p>Nama</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>Rayner Cuanda</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex">
+                        <p>Semester</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>Ganjil</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex w-4/5 items-center justify-start">
+                        <p>Topik TA</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p class="text-right"><strong>Visualisasi Graf Interaksi Pengguna Twitter</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="beri_nilai_penguji.html">
+                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
+                    <p>Nilai Mahasiswa</p>
+                </div>
+            </a>
+
+            <button id="closePopupPenguji" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                Close
+            </button>
+        </div>
+      </div>
+
+      <!--Pop-up Informasi Mahasiswa Untuk Dosen Pembimbing-->
+    <div id="popupOverlayPembimbing" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
+        <div id="popupContentPembimbing" class="pop-up bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+            <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
+
+            <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
+                <div class="flex">
+                    <div class="flex">
+                        <p>NPM</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>6182201087</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex">
+                        <p>Nama</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>Hans Stevensen</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex">
+                        <p>Semester</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p><strong>Ganjil</strong></p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="flex w-4/5 items-center justify-start">
+                        <p>Topik TA</p>
+                    </div>
+                    <div class="flex ml-auto">
+                        <p class="text-right flex-nowrap"><strong>Implementasi Generative AI Dalam Mesin Pencarian Buku di Perpustakaan Kota Bandung</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex w-full h-full mt-4">
+                <textarea placeholder="Catatan Sidang" class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center"></textarea>
+            </div>
+
+            <a href="beri_nilai_pembimbing.html">
+                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
+                    <p>Nilai Mahasiswa</p>
+                </div>
+            </a>
+
+            <button id="closePopupPembimbing" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                Close
+            </button>
+        </div>
+      </div>
 </body>
 </html>
