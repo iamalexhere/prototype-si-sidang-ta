@@ -12,16 +12,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.rpl.project_sista.ListMahasiswa;
+import com.rpl.project_sista.Dosen.ListMahasiswa;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/mahasiswa")
 public class MahasiswaController {
     @Autowired
     private MahasiswaRepository repo;
 
-    @GetMapping("/")
+    @GetMapping({"/", "/dashboard"})
     public String dashboardMahasiswa(Model model, HttpSession Session){
         String username = "hans";
         // String username = (String) session.getAttribute("username");
@@ -34,6 +35,8 @@ public class MahasiswaController {
 
         model.addAttribute("tanggal", formatted_date);
         model.addAttribute("mahasiswa", mahasiswa.getFirst());
-        return "/dashboard-mahasiswa";
+        model.addAttribute("pageTitle", "dashboard mahasiswa");
+        model.addAttribute("title", "dashboard mahasiswa");
+        return "/mahasiswa/dashboard-mahasiswa";
     }
 }

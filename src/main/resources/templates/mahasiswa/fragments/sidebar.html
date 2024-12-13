@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="sidebar" class="flex flex-col w-64 bg-gray-800 min-h-screen">
+        <!-- Logo/Brand -->
+        <div class="flex items-center justify-center h-16 bg-gray-900">
+            <span class="text-white font-bold text-xl">SI-SIDANG TA</span>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 px-2 py-4 space-y-2">
+            <!-- Dashboard -->
+            <a th:href="@{/mahasiswa/dashboard}" 
+               class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+               th:classappend="${#strings.equals(pageTitle, 'Dashboard')} ? 'bg-gray-700' : ''">
+                <i class="fas fa-home w-6"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- Tugas Akhir -->
+            <div class="space-y-1">
+                <a th:href="@{/mahasiswa/nilai}" 
+                   class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                   th:classappend="${#strings.startsWith(pageTitle, 'Tugas Akhir')} ? 'bg-gray-700' : ''">
+                    <i class="fas fa-book w-6"></i>
+                    <span>Nilai</span>
+                </a>
+            </div>
+
+            <!-- Sidang -->
+            <div class="space-y-1">
+                <a th:href="@{/mahasiswa/catatan}" 
+                   class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                   th:classappend="${#strings.startsWith(pageTitle, 'Sidang')} ? 'bg-gray-700' : ''">
+                    <i class="fas fa-users w-6"></i>
+                    <span>Catatan</span>
+                </a>
+            </div>
+
+            <!-- Settings -->
+            <div class="space-y-1 mt-6 pt-6 border-t border-gray-700">
+                <a th:href="@{/kta/settings}" 
+                   class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                   th:classappend="${#strings.equals(pageTitle, 'Settings')} ? 'bg-gray-700' : ''">
+                    <i class="fas fa-cog w-6"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center space-x-3">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-300"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-300" th:text="${mahasiswa.nama}">Nama Mahasiswa</p>
+                    <p class="text-xs text-gray-500">Mahasiswa</p>
+                </div>
+                <a th:href="@{/logout}" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

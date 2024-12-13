@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script th:src="@{/sidebar.js}" text="text/javascript" defer></script>
+    <script th:src="@{/profileBar.js}" text="text/javascript" defer></script>
     <script th:src="@{/filter.js}" text="text/javascript" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -58,24 +58,7 @@
 
     <div class="flex h-full">
         <!-- Sidebar -->
-        <aside class=" flex flex-col w-64 mainColor text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold">SISTA</h1>
-                <p class="text-sm fontJakarta">Grup Pengguna Dosen</p>
-            </div>
-            <nav class="flex flex-col flex-1 space-y-4">
-                <div>
-                    <a href="dashboard-dosen.html" class="flex items-center darkColor p-2 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                    <strong>Dashboard</strong></a>
-                </div>
-            </nav>
-            <div class="mt-auto">
-                <a href="index.html" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                Log Out</a>
-            </div>
-        </aside>
+        <aside th:replace="~{dosen/fragments/sidebar :: sidebar}"> </aside>
 
         <!-- Main Content & Profile -->
         <div class="flex-1 flex flex-col p-8 overflow-y-auto"> 
@@ -84,7 +67,7 @@
             <div class="flex-grow">
                <div class="header-welcome flex w-full"> 
                     <div>
-                        <h2 class="text-3xl font-bold mb-4 fontJakarta"> Selamat Datang, <span th:if="${currentUser}" th:text="${currentUser}">Dosen</span>!</h2>
+                        <h2 class="text-3xl font-bold mb-4 fontJakarta"> Selamat Datang, <span th:if="${nama_dosen}" th:text="${nama_dosen}">Dosen</span>!</h2>
                         <p class="text-gray-600" th:text="${tanggal}">Senin, 14 Oktober 2024</p>
                     </div>
                     <div id="profile_pic" class="profile-bar ml-auto">

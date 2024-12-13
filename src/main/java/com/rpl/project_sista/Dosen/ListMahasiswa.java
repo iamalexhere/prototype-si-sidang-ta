@@ -1,4 +1,4 @@
-package com.rpl.project_sista;
+package com.rpl.project_sista.Dosen;
 
 import lombok.Data;
 

@@ -9,13 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.rpl.project_sista.ListMahasiswa;
-
 @Repository
 public class JdbcDosenRepository implements DosenRepository {
     @Autowired
     private JdbcTemplate jdbc;
 
+    @Override
+    public  String getName(String username){
+        String sql = "SELECT nama FROM dosen JOIN users ON dosen.user_id = users.user_id WHERE username = ?";
+
+        
+        return jdbc.query(sql, this::rowName, username).getFirst();
+    }
     @Override
     public Iterable<ListMahasiswa> findAllPembimbing(String username, String nama_mahasiswa, String npm_mahasiswa, String periode, String tahun_ajaran) {
         String query =           
@@ -78,11 +83,15 @@ public class JdbcDosenRepository implements DosenRepository {
         String dummy = resultSet.getString("periode");
         dummy = dummy.substring(0,1).toUpperCase() + dummy.substring(1);
         
-    return new ListMahasiswa(
-        resultSet.getString("npm"),
-        resultSet.getString("nama"),
-        dummy,
-        resultSet.getString("tahun_ajaran")
-    );
-}
+        return new ListMahasiswa(
+            resultSet.getString("npm"),
+            resultSet.getString("nama"),
+            dummy,
+            resultSet.getString("tahun_ajaran")
+        );
+    }
+
+    private String rowName(ResultSet rs, int rowNum) throws SQLException{
+        return rs.getString("nama");
+    }
 }
