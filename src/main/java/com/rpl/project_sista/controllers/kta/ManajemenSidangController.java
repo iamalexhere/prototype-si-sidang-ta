@@ -134,21 +134,9 @@ public class ManajemenSidangController {
                 sidang.setStatusSidang(StatusSidang.terjadwal);
             }
 
-            // Set penguji
-            Set<Dosen> pengujiSet = new HashSet<>();
-            Dosen penguji1 = dosenRepository.findById(form.getPenguji1Id()).orElseThrow(() -> 
-                new IllegalArgumentException("Penguji 1 tidak ditemukan"));
-            Dosen penguji2 = dosenRepository.findById(form.getPenguji2Id()).orElseThrow(() -> 
-                new IllegalArgumentException("Penguji 2 tidak ditemukan"));
-            
-            // Validate penguji are different
-            if (penguji1.getDosenId().equals(penguji2.getDosenId())) {
-                throw new IllegalArgumentException("Penguji 1 dan Penguji 2 tidak boleh sama");
-            }
-            
-            pengujiSet.add(penguji1);
-            pengujiSet.add(penguji2);
-            sidang.setPenguji(pengujiSet);
+            // Set penguji IDs directly
+            sidang.setPenguji1(form.getPenguji1Id());
+            sidang.setPenguji2(form.getPenguji2Id());
 
             // Save sidang with penguji
             sidang = sidangRepository.save(sidang);

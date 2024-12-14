@@ -14,6 +14,7 @@ import com.rpl.project_sista.model.entity.Mahasiswa;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.repository.SidangRepository;
+import com.rpl.project_sista.repository.DosenRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,11 +22,15 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class JdbcSidangRepository implements SidangRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private DosenRepository dosenRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcSidangRepository.class);
 
@@ -132,6 +137,8 @@ public class JdbcSidangRepository implements SidangRepository {
 
     @Override
     public Sidang save(Sidang sidang) {
+        logger.info("Saving sidang with penguji1: {}, penguji2: {}", sidang.getPenguji1(), sidang.getPenguji2());
+        
         if (sidang.getSidangId() != null) {
             // Update existing sidang
             jdbcTemplate.update(
@@ -170,23 +177,26 @@ public class JdbcSidangRepository implements SidangRepository {
         }
 
         // Save penguji assignments if they exist
-        if (sidang.getPenguji() != null && !sidang.getPenguji().isEmpty()) {
-            Object[] pengujiArray = sidang.getPenguji().toArray();
-            if (pengujiArray.length >= 2) {
-                // Save Penguji 1
-                jdbcTemplate.update(
-                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji1'::peran_penguji)",
-                    sidang.getSidangId(),
-                    ((Dosen)pengujiArray[0]).getDosenId()
-                );
-                
-                // Save Penguji 2
-                jdbcTemplate.update(
-                    "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji2'::peran_penguji)",
-                    sidang.getSidangId(),
-                    ((Dosen)pengujiArray[1]).getDosenId()
-                );
-            }
+        if (sidang.getPenguji1() != null && sidang.getPenguji2() != null) {
+            logger.info("Saving penguji1: {} and penguji2: {}", sidang.getPenguji1(), sidang.getPenguji2());
+            
+            // Save Penguji 1
+            jdbcTemplate.update(
+                "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji1'::peran_penguji)",
+                sidang.getSidangId(),
+                sidang.getPenguji1()
+            );
+            
+            // Save Penguji 2
+            jdbcTemplate.update(
+                "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji2'::peran_penguji)",
+                sidang.getSidangId(),
+                sidang.getPenguji2()
+            );
+            
+            // Fetch the complete penguji data
+            List<Dosen> pengujiList = fetchPengujiForSidang(sidang.getSidangId());
+            sidang.setPenguji(new HashSet<>(pengujiList));
         }
 
         return sidang;
