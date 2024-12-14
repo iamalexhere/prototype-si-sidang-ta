@@ -68,21 +68,42 @@ public class ManajemenMahasiswaController {
     }
 
     @PostMapping("/ubah")
-    public String updateMahasiswa(@RequestParam Integer id, @RequestParam String npm,
-                            @RequestParam String nama, @RequestParam String username,
-                            @RequestParam String email, @RequestParam(required = false) String password,
-                            @RequestParam StatusTA statusTa, RedirectAttributes redirectAttributes) {
+    public String updateMahasiswa(@RequestParam Integer id, 
+                            @RequestParam String npm,
+                            @RequestParam String nama, 
+                            @RequestParam String email,
+                            @RequestParam String username,
+                            @RequestParam(required = false) String password,
+                            RedirectAttributes redirectAttributes) {
         try {
             Mahasiswa existingMahasiswa = mahasiswaRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Mahasiswa tidak ditemukan"));
+            
+            // Keep the existing IDs and sensitive data
+            Integer userId = existingMahasiswa.getUserId();
+            Integer mahasiswaId = existingMahasiswa.getMahasiswaId();
+            String currentPasswordHash = existingMahasiswa.getPasswordHash();
+            StatusTA currentStatusTa = existingMahasiswa.getStatusTa(); // Preserve current status
+            
+            // Update fields
             existingMahasiswa.setNpm(npm);
             existingMahasiswa.setNama(nama);
-            existingMahasiswa.setUsername(username);
             existingMahasiswa.setEmail(email);
-            existingMahasiswa.setStatusTa(statusTa);
-            if (password != null && !password.isEmpty()) {
+            existingMahasiswa.setUsername(username);
+            existingMahasiswa.setStatusTa(currentStatusTa); // Keep the existing status
+            
+            // Only update password if provided
+            if (password != null && !password.trim().isEmpty()) {
                 existingMahasiswa.setPasswordHash(password);
+            } else {
+                existingMahasiswa.setPasswordHash(currentPasswordHash);
             }
+            
+            // Ensure IDs are preserved
+            existingMahasiswa.setUserId(userId);
+            existingMahasiswa.setMahasiswaId(mahasiswaId);
+            
+            // Save the updated mahasiswa
             mahasiswaRepository.save(existingMahasiswa);
             redirectAttributes.addFlashAttribute("successMessage", "Data mahasiswa berhasil diperbarui");
             return "redirect:/kta/mahasiswa";

@@ -52,15 +52,15 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 mahasiswa.getPasswordHash(),
                 mahasiswa.getRole().toString().toLowerCase(),
                 mahasiswa.getIsActive(),
-                mahasiswa.getMahasiswaId()
+                mahasiswa.getUserId()  // Use user_id for users table
             );
             
             jdbcTemplate.update(
-                "UPDATE mahasiswa SET npm = ?, nama = ?, status_ta = ?::status_ta WHERE user_id = ?",
+                "UPDATE mahasiswa SET npm = ?, nama = ?, status_ta = ?::status_ta WHERE mahasiswa_id = ?",
                 mahasiswa.getNpm(),
                 mahasiswa.getNama(),
-                mahasiswa.getStatusTa().toString(),
-                mahasiswa.getMahasiswaId()
+                mahasiswa.getStatusTa().toString().toLowerCase(),
+                mahasiswa.getMahasiswaId()  // Use mahasiswa_id for mahasiswa table
             );
         } else {
             // Insert new mahasiswa
@@ -85,10 +85,18 @@ public class JdbcMahasiswaRepository implements MahasiswaRepository {
                 userId,
                 mahasiswa.getNpm(),
                 mahasiswa.getNama(),
-                mahasiswa.getStatusTa().toString()
+                mahasiswa.getStatusTa().toString().toLowerCase()
             );
             
-            mahasiswa.setMahasiswaId(userId);
+            // Get the generated mahasiswa_id
+            Integer mahasiswaId = jdbcTemplate.queryForObject(
+                "SELECT mahasiswa_id FROM mahasiswa WHERE user_id = ?",
+                Integer.class,
+                userId
+            );
+            
+            mahasiswa.setUserId(userId);
+            mahasiswa.setMahasiswaId(mahasiswaId);
         }
         return mahasiswa;
     }
