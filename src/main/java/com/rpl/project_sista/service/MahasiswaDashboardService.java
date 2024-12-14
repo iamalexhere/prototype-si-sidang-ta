@@ -12,7 +12,7 @@ public class MahasiswaDashboardService {
     @Autowired
     private MahasiswaDashboardRepository mahasiswaDashboardRepository;
 
-    public TugasAkhir getTugasAkhir(Long mahasiswaId) {
+    public TugasAkhir getTugasAkhir(int mahasiswaId) {
         return mahasiswaDashboardRepository.findTugasAkhirByMahasiswaId(mahasiswaId);
     }
 

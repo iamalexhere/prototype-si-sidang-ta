@@ -29,7 +29,7 @@ public class JdbcMahasiswaDashboardRepository implements MahasiswaDashboardRepos
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public TugasAkhir findTugasAkhirByMahasiswaId(Long mahasiswaId) {
+    public TugasAkhir findTugasAkhirByMahasiswaId(int mahasiswaId) {
         String sql = "SELECT DISTINCT ta.*, m.*, s.* FROM tugas_akhir ta " +
                     "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
                     "JOIN semester s ON ta.semester_id = s.semester_id " +

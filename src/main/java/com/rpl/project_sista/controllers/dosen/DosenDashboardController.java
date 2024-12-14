@@ -5,6 +5,9 @@ import com.rpl.project_sista.model.entity.Sidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.service.DosenDashboardService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,8 +46,9 @@ public class DosenDashboardController {
     }
 
     @GetMapping
-    public String showDashboard(@RequestParam Integer dosenId, Model model) {
+    public String showDashboard(HttpSession session, Model model) {
         // Get data
+        int dosenId = (int) session.getAttribute("dosenId");
         List<TugasAkhir> bimbinganList = dosenDashboardService.getTugasAkhirBimbingan(dosenId);
         List<Sidang> sidangList = dosenDashboardService.getSidangPenguji(dosenId);
 
@@ -56,5 +60,12 @@ public class DosenDashboardController {
         model.addAttribute("sidangStatusColors", sidangStatusColors);
 
         return "dosen/dashboard-dosen";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("email");
+        session.removeAttribute("dosenId");
+        return "redirect:/";
     }
 }
