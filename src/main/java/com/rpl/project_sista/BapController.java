@@ -4,13 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 @Controller
 public class BapController {
+
+    
     
     private static final Logger logger = LoggerFactory.getLogger(BapController.class);
 
@@ -31,39 +35,54 @@ public class BapController {
     private double nilaiPenguji;
     private double nilaiPembimbing;
 
-    @PostConstruct
-    public void init() {
+    private void initializeData(String email) {
+            // Reset all fields to default/null before querying
+        nama = null;
+        semester = null;
+        tahunAkademik = null;
+        npm = null;
+        topik = null;
+        pembimbingTunggal = null;
+        PengujiKetua = null;
+        PengujiDosen = null;
+        fullDate = null;
+        bobotPembimbing = 0;
+        bobotPenguji = 0;
+        nilaiKetua = 0;
+        nilaiPenguji = 0;
+        nilaiPembimbing = 0;
         try {
-            nama = bapRepository.findNama("6182201001@student.unpar.ac.id");
-            if (nama != null) {
-                semester = bapRepository.findSemester(nama);
-                tahunAkademik = bapRepository.findTahunAkademik(nama);
-                npm = bapRepository.findNpm(nama);
-                topik = bapRepository.findTopik(nama);
-                pembimbingTunggal = bapRepository.findPembimbingTunggal(nama);
-                PengujiKetua = bapRepository.findKetuaPenguji(nama);
-                PengujiDosen = bapRepository.findAnggotaPenguji(nama);
-                fullDate = bapRepository.findTanggal(nama);
-                bobotPembimbing = bapRepository.findBobotPembimbing(1);
-                bobotPenguji = bapRepository.findBobotPenguji(1);
-                nilaiKetua = bapRepository.findNilaiKetua(PengujiKetua);
-                nilaiPenguji = bapRepository.findNilaiPenguji(PengujiDosen);
-                nilaiPembimbing = bapRepository.findNilaiPembimbing(pembimbingTunggal);
-            }
+            nama = bapRepository.findNama(email);
+            semester = bapRepository.findSemester(nama);
+            tahunAkademik = bapRepository.findTahunAkademik(nama);
+            npm = bapRepository.findNpm(nama);
+            topik = bapRepository.findTopik(nama);
+            pembimbingTunggal = bapRepository.findPembimbingTunggal(nama);
+            PengujiKetua = bapRepository.findKetuaPenguji(nama);
+            PengujiDosen = bapRepository.findAnggotaPenguji(nama);
+            fullDate = bapRepository.findTanggal(nama);
+            bobotPembimbing = bapRepository.findBobotPembimbing(1);
+            bobotPenguji = bapRepository.findBobotPenguji(1);
+            nilaiKetua = bapRepository.findNilaiKetua(PengujiKetua);
+            nilaiPenguji = bapRepository.findNilaiPenguji(PengujiDosen);
+            nilaiPembimbing = bapRepository.findNilaiPembimbing(pembimbingTunggal);
         } catch (EmptyResultDataAccessException e) {
-            logger.warn("User not found: manuel@student.unpar.ac.id");
+            logger.warn("User not found: " + email);
             // Set default values or handle the case where user is not found
             nama = "Default User";
             semester = "Default Semester";
             tahunAkademik = "Default Year";
         } catch (Exception e) {
             logger.error("Error initializing BAP controller", e);
-            // Set default values or handle other errors
+            // Handle other errors
         }
     }
 
     @GetMapping("/bap")
-    public String bapbap(Model model) {
+    public String bapbap(Model model,HttpSession session) {
+        String email = (String) session.getAttribute("email");
+        initializeData(email);
+
         model.addAttribute("semester", semester); //
         model.addAttribute("tahunAkademik", tahunAkademik);// 
         model.addAttribute("NPM", npm);// 
