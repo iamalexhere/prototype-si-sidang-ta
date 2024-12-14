@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Dashboard Dosen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="sidebar.js" text="text/javascript" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .mainColor { background-color: #EF476F; }
+        .darkColor { background-color: #78405e; }
+        .YesColor { background-color: #60d2a4; }
+        .fontJakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .navy { color: #30547a; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="flex flex-col w-64 mainColor text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">SISTA</h1>
+                <p class="text-sm fontJakarta">Grup Pengguna Dosen</p>
+            </div>
+            <nav class="flex flex-col flex-1 space-y-4">
+                <div>
+                    <a href="dashboard-dosen.html" class="flex items-center darkColor p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        <strong>Dashboard</strong>
+                    </a>
+                </div>
+            </nav>
+            <div class="mt-auto">
+                <a href="index.html" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col p-8 overflow-y-auto">
+            <div class="flex-grow">
+                <!-- Header -->
+                <div class="header-welcome flex w-full mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-4 fontJakarta">Selamat Datang, Dosen!</h2>
+                        <p class="text-gray-600">Senin, 14 Oktober 2024</p>
+                    </div>
+                    <div id="profile_pic" class="profile-bar ml-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Mahasiswa Bimbingan Section -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold fontJakarta mb-4">Mahasiswa Bimbingan</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NPM</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul TA</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="ta : ${bimbinganList}">
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.npm}">NPM</td>
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.nama}">Nama</td>
+                                    <td class="px-6 py-4" th:text="${ta.judul}">Judul TA</td>
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.jenisTA}">Jenis</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                              th:text="${ta.status}"
+                                              th:class="${taStatusColors.get(ta.status)}">
+                                            Status
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${bimbinganList.empty}">
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada mahasiswa bimbingan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Jadwal Sidang Section -->
+                <div>
+                    <h3 class="text-2xl font-bold fontJakarta mb-4">Jadwal Sidang (Sebagai Penguji)</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul TA</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruangan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="sidang : ${sidangList}">
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${#temporals.format(sidang.jadwal, 'dd MMM yyyy HH:mm')}">Tanggal</td>
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${sidang.tugasAkhir.mahasiswa.nama}">Mahasiswa</td>
+                                    <td class="px-6 py-4" th:text="${sidang.tugasAkhir.judul}">Judul TA</td>
+                                    <td class="px-6 py-4 whitespace-nowrap" th:text="${sidang.ruangan}">Ruangan</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                              th:text="${sidang.statusSidang}"
+                                              th:class="${sidangStatusColors.get(sidang.statusSidang)}">
+                                            Status
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${sidangList.empty}">
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada jadwal sidang</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Left bar for profile-->
+        <div id="profile" class="h-full w-96 ml-auto border-l-4 flex">
+            <p class="font-bold m-4 fontJakarta">Profile</p>
+
+            <div class="about flex flex-col justify-center items-center mt-6">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="name text-center"><strong>John Doe</strong></p>
+                    <p class="email text-center">6182001100@student.unpar.ac.id</p>    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

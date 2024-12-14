@@ -7,6 +7,7 @@ import com.rpl.project_sista.model.entity.Mahasiswa;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.repository.SidangRepository;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,22 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+=======
+import com.rpl.project_sista.repository.DosenRepository;
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.util.*;
+=======
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
 
 // Repository untuk mengelola data sidang menggunakan JDBC.
 @Repository
@@ -28,7 +39,14 @@ public class JdbcSidangRepository implements SidangRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+<<<<<<< HEAD
     
+=======
+
+    @Autowired
+    private DosenRepository dosenRepository;
+
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
     private static final Logger logger = LoggerFactory.getLogger(JdbcSidangRepository.class);
 
     // Mengambil semua data sidang dari database.
@@ -95,6 +113,8 @@ public class JdbcSidangRepository implements SidangRepository {
     // Menyimpan atau memperbarui data sidang.
     @Override
     public Sidang save(Sidang sidang) {
+        logger.info("Saving sidang with penguji1: {}, penguji2: {}", sidang.getPenguji1(), sidang.getPenguji2());
+        
         if (sidang.getSidangId() != null) {
             // Memperbarui data sidang yang sudah ada
             String sql = "UPDATE sidang SET " +
@@ -126,6 +146,33 @@ public class JdbcSidangRepository implements SidangRepository {
             );
             sidang.setSidangId(id);
         }
+<<<<<<< HEAD
+=======
+
+        // Save penguji assignments if they exist
+        if (sidang.getPenguji1() != null && sidang.getPenguji2() != null) {
+            logger.info("Saving penguji1: {} and penguji2: {}", sidang.getPenguji1(), sidang.getPenguji2());
+            
+            // Save Penguji 1
+            jdbcTemplate.update(
+                "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji1'::peran_penguji)",
+                sidang.getSidangId(),
+                sidang.getPenguji1()
+            );
+            
+            // Save Penguji 2
+            jdbcTemplate.update(
+                "INSERT INTO penguji_sidang (sidang_id, dosen_id, peran_penguji) VALUES (?, ?, 'penguji2'::peran_penguji)",
+                sidang.getSidangId(),
+                sidang.getPenguji2()
+            );
+            
+            // Fetch the complete penguji data
+            List<Dosen> pengujiList = fetchPengujiForSidang(sidang.getSidangId());
+            sidang.setPenguji(new HashSet<>(pengujiList));
+        }
+
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
         return sidang;
     }
 
@@ -320,6 +367,7 @@ public class JdbcSidangRepository implements SidangRepository {
         
         sidang.setTugasAkhir(ta);
         
+<<<<<<< HEAD
         // Mapping field lainnya
         sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
         sidang.setRuangan(rs.getString("ruangan"));
@@ -338,6 +386,19 @@ public class JdbcSidangRepository implements SidangRepository {
         // Mengambil dan menetapkan penguji
         List<Dosen> penguji = fetchPengujiForSidang(sidang.getSidangId());
         sidang.setPenguji(new HashSet<>(penguji));
+=======
+        // Fetch and set penguji
+        List<Dosen> pengujiList = fetchPengujiForSidang(sidang.getSidangId());
+        sidang.setPenguji(new HashSet<>(pengujiList));
+        
+        // Set penguji1 and penguji2 IDs
+        if (!pengujiList.isEmpty()) {
+            sidang.setPenguji1(pengujiList.get(0).getDosenId());
+            if (pengujiList.size() > 1) {
+                sidang.setPenguji2(pengujiList.get(1).getDosenId());
+            }
+        }
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
         
         return sidang;
     }

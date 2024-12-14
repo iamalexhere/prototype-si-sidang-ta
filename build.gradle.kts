@@ -9,7 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(20)
 	}
 }
 
@@ -36,6 +36,7 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
+<<<<<<< HEAD
     
     // Testing dependencies
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -46,6 +47,13 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.mockito:mockito-junit-jupiter:5.8.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+=======
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.20")
+
+
+>>>>>>> 6655fe35a783ad19052434a9c81a80b7dab38496
 }
 
 tasks.withType<Test> {

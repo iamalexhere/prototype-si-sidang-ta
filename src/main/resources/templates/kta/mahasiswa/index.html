@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">Data Mahasiswa</title>
+    <title th:text="${pageTitle}">Data Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -18,7 +18,7 @@
                 <!-- Header -->
                 <div class="mb-8">
                     <div class="flex justify-between items-center mb-4">
-                        <h1 class="text-3xl font-bold text-gray-800" th:text="${title}">Data Mahasiswa</h1>
+                        <h1 class="text-3xl font-bold text-gray-800" th:text="${pageTitle}">Data Mahasiswa</h1>
                         <a th:href="@{/kta/mahasiswa/tambah}" 
                            class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
                             <i class="fas fa-plus mr-2"></i>
@@ -26,6 +26,22 @@
                         </a>
                     </div>
                     <p class="text-gray-600">Kelola data mahasiswa yang sedang menjalani tugas akhir.</p>
+                </div>
+
+                <!-- Alert Messages -->
+                <div th:if="${successMessage}" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Berhasil!</strong>
+                    <span class="block sm:inline" th:text="${successMessage}"></span>
+                    <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div th:if="${errorMessage}" class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline" th:text="${errorMessage}"></span>
+                    <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
 
                 <!-- Search and Filter -->
@@ -94,18 +110,15 @@
                                             Status
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                        <div class="flex justify-center space-x-2">
-                                            <a th:href="@{/kta/mahasiswa/ubah/{id}(id=${mahasiswa.userId})}" 
-                                               class="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <div class="flex justify-end space-x-2">
+                                            <a th:href="@{/kta/mahasiswa/ubah(id=${mahasiswa.userId})}" class="text-purple-600 hover:text-purple-900">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form th:action="@{/kta/mahasiswa/hapus/{id}(id=${mahasiswa.userId})}" method="post" class="inline" 
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?');">
-                                                <input type="hidden" name="id" th:value="${mahasiswa.userId}">
-                                                <button type="submit" 
-                                                        class="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-full transition-colors">
-                                                    <i class="fas fa-trash-alt"></i>
+                                            <form th:action="@{/kta/mahasiswa/hapus}" method="post" class="inline">
+                                                <input type="hidden" name="id" th:value="${mahasiswa.userId}" />
+                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus mahasiswa ini?')">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -176,6 +189,13 @@
                 row.style.display = text.includes(searchText) ? '' : 'none';
             });
         });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('[role="alert"]').forEach(alert => {
+                alert.remove();
+            });
+        }, 5000);
     </script>
 </body>
 </html>

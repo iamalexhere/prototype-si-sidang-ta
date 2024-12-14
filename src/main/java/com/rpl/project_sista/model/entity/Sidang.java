@@ -91,58 +91,18 @@ public class Sidang {
 
     public void setPenguji1(Integer penguji1Id) {
         this.penguji1 = penguji1Id;
-        updatePenguji();
     }
 
     public void setPenguji2(Integer penguji2Id) {
         this.penguji2 = penguji2Id;
-        updatePenguji();
-    }
-
-    private void updatePenguji() {
-        if (penguji1 != null || penguji2 != null) {
-            // Clear existing penguji set
-            if (this.penguji == null) {
-                this.penguji = new HashSet<>();
-            } else {
-                this.penguji.clear();
-            }
-
-            // Add penguji1 if set
-            if (penguji1 != null) {
-                Dosen penguji1Dosen = new Dosen();
-                penguji1Dosen.setDosenId(penguji1);
-                this.penguji.add(penguji1Dosen);
-            }
-
-            // Add penguji2 if set
-            if (penguji2 != null) {
-                Dosen penguji2Dosen = new Dosen();
-                penguji2Dosen.setDosenId(penguji2);
-                this.penguji.add(penguji2Dosen);
-            }
-        }
     }
 
     public Integer getPenguji1() {
-        if (this.penguji != null && !this.penguji.isEmpty()) {
-            return this.penguji.stream()
-                .findFirst()
-                .map(Dosen::getDosenId)
-                .orElse(null);
-        }
-        return null;
+        return this.penguji1;
     }
 
     public Integer getPenguji2() {
-        if (this.penguji != null && this.penguji.size() > 1) {
-            return this.penguji.stream()
-                .skip(1)
-                .findFirst()
-                .map(Dosen::getDosenId)
-                .orElse(null);
-        }
-        return null;
+        return this.penguji2;
     }
 
     @PrePersist

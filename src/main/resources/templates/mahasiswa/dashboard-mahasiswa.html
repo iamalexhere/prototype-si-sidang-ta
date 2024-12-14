@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Dashboard Mahasiswa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .mainColor { background-color: #EF476F; }
+        .darkColor { background-color: #78405e; }
+        .YesColor { background-color: #60d2a4; }
+        .specialText { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .navy { color: #30547a; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans h-screen">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <aside class="flex flex-col w-64 mainColor text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold">SISTA</h1>
+                <p class="text-sm specialText">Grup Pengguna Mahasiswa</p>
+            </div>
+            <nav class="flex flex-col flex-1">
+               <ul class="space-y-4">
+                   <li>
+                       <a href="#" class="flex items-center darkColor p-2 rounded">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                           </svg>
+                           <strong>Dashboard</strong>
+                       </a>
+                   </li>
+                   <li>
+                       <a href="#" class="flex items-center mainColor hover:bg-[rgb(182,64,94)] p-2 rounded">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                           </svg>
+                           Nilai
+                       </a>
+                   </li>
+                   <li>
+                       <a href="#" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" />
+                           </svg>
+                           Catatan Sidang
+                       </a>
+                   </li>
+               </ul> 
+            </nav>
+            <div class="mt-auto">
+                <a href="#" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col p-8 overflow-y-auto"> 
+            <!-- Header -->
+            <div class="header-welcome flex w-full"> 
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 specialText" th:text="'Selamat Datang, ' + ${tugasAkhir?.mahasiswa?.nama ?: 'Mahasiswa'}">Selamat Datang!</h2>
+                    <p class="text-gray-600" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, dd MMMM yyyy')}">Tanggal</p>
+                </div>
+                <div id="profile_pic" class="profile-bar ml-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Tugas Akhir Info -->
+            <div th:if="${tugasAkhir}" class="mainColor h-48 p-6 rounded-lg mt-6">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-xl text-white font-bold mb-2 specialText">Informasi Tugas Akhir</h3>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          th:text="${tugasAkhir.status}"
+                          th:class="${taStatusColors.get(tugasAkhir.status)}">
+                        Status
+                    </span>
+                </div>
+                <p class="text-white" th:text="${tugasAkhir.judul}">Judul TA</p>
+                <p class="text-white mt-2">
+                    <span class="font-semibold">Pembimbing:</span>
+                    <span th:each="pembimbing, pembimbingStat : ${tugasAkhir.pembimbing}" th:text="${pembimbing.nama + (pembimbingStat.last ? '' : ', ')}">Nama Pembimbing</span>
+                </p>
+            </div>
+            <div th:unless="${tugasAkhir}" class="mainColor h-48 p-6 rounded-lg mt-6">
+                <h3 class="text-xl text-white font-bold mb-2 specialText">Belum Ada Tugas Akhir</h3>
+                <p class="text-white">Anda belum memiliki tugas akhir yang terdaftar.</p>
+            </div>
+
+            <!-- Sidang Info -->
+            <div th:if="${sidang}" class="mt-6">
+                <div class="flex h-80">
+                    <div class="w-1/2 border border-pink-400 mx-8 p-4 rounded-lg">
+                        <h4 class="font-bold mb-2 specialText text-xl navy">Tempat</h4>
+                        <p th:text="${sidang.ruangan}">Ruangan Sidang</p>
+                        <div class="mt-4">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                  th:text="${sidang.statusSidang}"
+                                  th:class="${sidangStatusColors.get(sidang.statusSidang)}">
+                                Status Sidang
+                            </span>
+                        </div>
+                    </div>
+                    <div class="w-1/2 border border-pink-400 mx-8 p-4 rounded-lg">
+                        <h4 class="font-bold mb-2 specialText text-xl navy">Waktu</h4>
+                        <p th:text="${#temporals.format(sidang.jadwal, 'EEEE, dd MMMM yyyy')}">Tanggal Sidang</p>
+                        <p th:text="${#temporals.format(sidang.jadwal, 'HH:mm')} + ' WIB'">Waktu Sidang</p>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="mx-8 mt-6 w-1/2 pl-4">
+                        <p class="mb-2 navy text-xl font-medium">
+                            Dosen Pembimbing:<br>
+                            <th:block th:if="${tugasAkhir != null and tugasAkhir.pembimbing != null and !tugasAkhir.pembimbing.empty}">
+                                <th:block th:each="pembimbing, iterStat : ${tugasAkhir.pembimbing}">
+                                    <span class="font-medium" th:text="${pembimbing.nama}">Nama Pembimbing</span>
+                                    <br th:if="${!iterStat.last}"/>
+                                </th:block>
+                            </th:block>
+                            <span class="font-medium" th:unless="${tugasAkhir != null and tugasAkhir.pembimbing != null and !tugasAkhir.pembimbing.empty}" 
+                                  th:text="'Belum ditentukan'">Belum ditentukan</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex mt-4">
+                    <div class="mx-8 mt-6 w-1/2 pl-4">
+                        <p class="mb-2 navy text-xl font-medium">
+                            Dosen Penguji:<br>
+                            <th:block th:if="${sidang != null and sidang.penguji != null}">
+                                <th:block th:each="p : ${sidang.penguji}">
+                                    <th:block th:if="${p.dosenId == sidang.penguji1}">
+                                        Penguji 1: <span class="font-medium" th:text="${p.nama}">Nama Penguji 1</span><br/>
+                                    </th:block>
+                                    <th:block th:if="${p.dosenId == sidang.penguji2}">
+                                        Penguji 2: <span class="font-medium" th:text="${p.nama}">Nama Penguji 2</span>
+                                    </th:block>
+                                </th:block>
+                                <th:block th:if="${sidang.penguji1 == null and sidang.penguji2 == null}">
+                                    <span class="font-medium">Belum ditentukan</span>
+                                </th:block>
+                            </th:block>
+                            <th:block th:unless="${sidang != null and sidang.penguji != null}">
+                                <span class="font-medium">Belum ditentukan</span>
+                            </th:block>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <button class="YesColor hover:bg-teal-700 text-white font-bold rounded-xl w-64 h-12">
+                        SETUJUI BAP
+                    </button>
+                </div>
+            </div>
+            <div th:unless="${sidang}" class="mt-6 text-center">
+                <p class="text-gray-500">Belum ada jadwal sidang yang ditentukan.</p>
+            </div>
+        </div>
+
+        <!-- Profile Sidebar -->
+        <div id="profile" class="h-full w-96 ml-auto border-l-4 flex flex-col">
+            <p class="font-bold m-4 specialText">Profile</p>
+            <div class="about flex flex-col justify-center items-center mt-6">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="name text-center">
+                        <strong th:text="${tugasAkhir?.mahasiswa?.nama ?: 'Mahasiswa'}">Nama Mahasiswa</strong>
+                    </p>
+                    <p class="email text-center" th:text="${tugasAkhir?.mahasiswa?.npm ?: '-'}">NPM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
