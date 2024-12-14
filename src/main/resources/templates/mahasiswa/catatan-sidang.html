@@ -112,32 +112,31 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Mengambil mahasiswaId dari URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const mahasiswaId = urlParams.get('mahasiswaId');
-        
-        const textarea = document.querySelector("#catatanSidang");
+        const URL = "http://localhost:8080/mahasiswa/catatan";
 
-        if (mahasiswaId) {
-            // Fetch catatan berdasarkan mahasiswaId
-            fetch(`/catatan/sidang/${mahasiswaId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch catatan");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const catatanText = data.map(catatan => `- ${catatan.isiCatatan}`).join("\n\n");
-                    textarea.value = catatanText || "Tidak ada catatan untuk ditampilkan.";
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    textarea.value = "Gagal memuat catatan.";
-                });
-        } else {
-            textarea.value = "Mahasiswa ID tidak ditemukan.";
+        function stripHTML(html) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = html;
+            return tempDiv.textContent || tempDiv.innerText || "";
         }
+
+        async function fetchCatatanSidang(mahasiswaId) {
+            const mahasiswaId = "[[${session.mahasiswaId}]]";
+            const response = await fetch(`http://localhost:8080/mahasiswa/catatan/${mahasiswaId}`);
+            if (!response.ok) throw new Error("Gagal mengambil data dari server.");
+            const data = await response.text();
+            const cleanText = stripHTML(data);
+            document.getElementById("catatanSidang").value = cleanText;
+        }
+
+        // Memastikan mahasiswaId tersedia dan memanggil fungsi fetch
+        if (mahasiswaId) {
+            fetchCatatanSidang(mahasiswaId);
+        } else {
+            console.error("Mahasiswa ID tidak ditemukan dalam sesi.");
+            alert("Tidak dapat memuat data karena ID mahasiswa tidak ditemukan.");
+        }
+
     });
 </script>
 

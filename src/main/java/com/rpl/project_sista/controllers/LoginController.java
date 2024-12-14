@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rpl.project_sista.model.entity.Users;
+import com.rpl.project_sista.model.enums.UserRole;
 import com.rpl.project_sista.service.LoginService;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,16 +46,19 @@ public class LoginController {
             if(cekUser == null) {
                 return "/login/index";
             }else {
-                if(email.equals("kta@unpar.ac.id")) {
-                    return "redirect:/kta/dashboard";
-                }else if(email.contains("@unpar")) {
+                if(cekUser.getRole() == UserRole.dosen) {
+                    int dosenId = this.loginService.findDosenId(cekUser.getUserId());
                     httpSession.setAttribute("email", email);
-                    httpSession.setAttribute("dosenId", this.loginService.findDosenId(cekUser.getUserId()));
+                    httpSession.setAttribute("dosenId", dosenId);
                     return "redirect:/dosen/dashboard";
+                }else if(cekUser.getRole() == UserRole.mahasiswa){
+                    int mhsId = this.loginService.findMhsId(cekUser.getUserId());
+                    httpSession.setAttribute("email", email);
+                    httpSession.setAttribute("mahasiswaId", mhsId);
+                    return "redirect:/mahasiswa/dashboard";
                 }else {
                     httpSession.setAttribute("email", email);
-                    httpSession.setAttribute("mahasiswaId", this.loginService.findMhsId(cekUser.getUserId()));
-                    return "redirect:/mahasiswa/dashboard";
+                    return "redirect:/kta/dashboard";
                 }
             }
         }

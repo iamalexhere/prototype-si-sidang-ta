@@ -9,7 +9,6 @@ import org.springframework.validation.BindingResult;
 
 import com.rpl.project_sista.model.entity.Users;
 import com.rpl.project_sista.repository.LoginRepository;
-import com.rpl.project_sista.config.SecurityConfig;
 
 @Service
 public class LoginService {

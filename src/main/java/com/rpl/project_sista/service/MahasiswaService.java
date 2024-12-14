@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.rpl.project_sista.jdbcrepository.JdbcMahasiswaRepository;
 import com.rpl.project_sista.jdbcrepository.JdbcTugasAkhirRepository;
 import com.rpl.project_sista.model.entity.Mahasiswa;
-import com.rpl.project_sista.model.entity.TugasAkhir;
-import java.util.List;
 
 @Service
 public class MahasiswaService {

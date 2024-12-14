@@ -22,22 +22,38 @@ public class CatatanController {
     // Serve the catatan-sidang.html page
     @GetMapping
     public String showCatatanPage(HttpSession session, Model model) {
-        Integer mahasiswaId = (Integer) session.getAttribute("mahasiswaId");
-        Long mahasiswaIdLong = (mahasiswaId != null) ? Long.valueOf(mahasiswaId) : null;
+        Object mahasiswaIdObj = session.getAttribute("mahasiswaId");
+        Long mahasiswaId = null;
 
-        List<CatatanRevisi> catatanList = catatanRepository.findCatatanByMahasiswaId(mahasiswaIdLong);
-        if (catatanList.isEmpty()) {
-            model.addAttribute("message", "Mahasiswa ID tidak ditemukan.");
-        } else {
-            model.addAttribute("catatanList", catatanList);
+        if (mahasiswaIdObj instanceof Long) {
+            mahasiswaId = (Long) mahasiswaIdObj; // Safe cast if it is Long
+        } else if (mahasiswaIdObj instanceof Integer) {
+            mahasiswaId = ((Integer) mahasiswaIdObj).longValue(); // Convert Integer to Long
         }
-        return "mahasiswa/catatan-sidang";
+        System.out.println("Mahasiswa ID from session: " + mahasiswaId);
+
+        if (mahasiswaId != null) {
+            List<CatatanRevisi> catatanList = catatanRepository.findCatatanByMahasiswaId(mahasiswaId);
+            model.addAttribute("catatanList", catatanList);
+            model.addAttribute("mahasiswaId", mahasiswaId);
+            return "mahasiswa/catatan-sidang"; 
+        } else {
+            model.addAttribute("errorMessage", "Mahasiswa ID tidak ditemukan.");
+            return "mahasiswa/error"; 
+        }
+    }
+
+    @GetMapping("/mahasiswa/catatan/{mahasiswaId}")
+    @ResponseBody
+    public List<CatatanRevisi> getCatatanByMahasiswaId(@PathVariable Long mahasiswaId) {
+        return catatanRepository.findCatatanByMahasiswaId(mahasiswaId);
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("email");
         session.removeAttribute("mahasiswaId");
+        session.invalidate();
         return "redirect:/";
     }
 }

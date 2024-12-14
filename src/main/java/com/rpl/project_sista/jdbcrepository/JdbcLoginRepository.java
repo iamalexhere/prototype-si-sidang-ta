@@ -40,11 +40,20 @@ public class JdbcLoginRepository implements LoginRepository{
             ps = connection.prepareStatement("select mahasiswa_id from mahasiswa where user_id=?");
             ps.setInt(1, userId);
             rs = ps.executeQuery();
-            mhsId = rs.getInt("mahasiswa_id");
+            
+            if(rs.next()) {
+                mhsId = rs.getInt("mahasiswa_id");
+            }
+
+            return mhsId;
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {}
         }
-
+        
         return mhsId;
     }
 
@@ -58,9 +67,18 @@ public class JdbcLoginRepository implements LoginRepository{
             ps = connection.prepareStatement("select dosen_id from dosen where user_id=?");
             ps.setInt(1, userId);
             rs = ps.executeQuery();
-            dosenId = rs.getInt("dosen_id");
+            
+            if(rs.next()) {
+                dosenId = rs.getInt("dosen_id");
+            }
+
+            return dosenId;
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {}
         }
 
         return dosenId;

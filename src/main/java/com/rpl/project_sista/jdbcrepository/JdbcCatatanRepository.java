@@ -81,7 +81,7 @@ public class JdbcCatatanRepository implements CatatanRepository{
                      "JOIN sidang s ON cr.sidang_id = s.sidang_id " +
                      "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
                      "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-                     "WHERE m.user_id = ?";
+                     "WHERE m.mahasiswa_id = ?";
         
         return jdbcTemplate.query(sql, new Object[]{mahasiswaId}, (rs, rowNum) -> {
             CatatanRevisi catatanRevisi = new CatatanRevisi();
@@ -101,7 +101,6 @@ public class JdbcCatatanRepository implements CatatanRepository{
         return jdbcTemplate.queryForObject(sql, new Object[]{sidangId}, (rs, rowNum) -> {
             Sidang sidang = new Sidang();
             sidang.setSidangId(rs.getLong("sidang_id"));
-            sidang.setTaId(rs.getInt("ta_id"));
             sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
             sidang.setRuangan(rs.getString("ruangan"));
             StatusSidang.valueOf(rs.getString("status_sidang"));
