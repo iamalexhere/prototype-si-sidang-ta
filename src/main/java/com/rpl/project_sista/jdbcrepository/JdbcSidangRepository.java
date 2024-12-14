@@ -267,8 +267,16 @@ public class JdbcSidangRepository implements SidangRepository {
         sidang.setTugasAkhir(ta);
         
         // Fetch and set penguji
-        List<Dosen> penguji = fetchPengujiForSidang(sidang.getSidangId());
-        sidang.setPenguji(new HashSet<>(penguji));
+        List<Dosen> pengujiList = fetchPengujiForSidang(sidang.getSidangId());
+        sidang.setPenguji(new HashSet<>(pengujiList));
+        
+        // Set penguji1 and penguji2 IDs
+        if (!pengujiList.isEmpty()) {
+            sidang.setPenguji1(pengujiList.get(0).getDosenId());
+            if (pengujiList.size() > 1) {
+                sidang.setPenguji2(pengujiList.get(1).getDosenId());
+            }
+        }
         
         return sidang;
     }
