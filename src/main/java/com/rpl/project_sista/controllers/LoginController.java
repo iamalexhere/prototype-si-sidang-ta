@@ -47,14 +47,17 @@ public class LoginController {
                 return "/login/index";
             }else {
                 if(cekUser.getRole() == UserRole.dosen) {
+                    int dosenId = this.loginService.findDosenId(cekUser.getUserId());
                     httpSession.setAttribute("email", email);
-                    httpSession.setAttribute("dosenId", this.loginService.findDosenId(cekUser.getUserId()));
+                    httpSession.setAttribute("dosenId", dosenId);
                     return "redirect:/dosen/dashboard";
                 }else if(cekUser.getRole() == UserRole.mahasiswa){
+                    int mhsId = this.loginService.findMhsId(cekUser.getUserId());
                     httpSession.setAttribute("email", email);
-                    httpSession.setAttribute("mahasiswaId", this.loginService.findMhsId(cekUser.getUserId()));
+                    httpSession.setAttribute("mahasiswaId", mhsId);
                     return "redirect:/mahasiswa/dashboard";
                 }else {
+                    httpSession.setAttribute("email", email);
                     return "redirect:/kta/dashboard";
                 }
             }

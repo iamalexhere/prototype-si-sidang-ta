@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rpl.project_sista.repository.*;
+
+import jakarta.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ public class DashboardController {
 
         // Add page title and section
         model.addAttribute("pageTitle", "Dashboard");
-        model.addAttribute("section", "dashboard");
+        // model.addAttribute("section", "dashboard");
 
         // Add counts
         try {
@@ -66,7 +69,7 @@ public class DashboardController {
         ));
         model.addAttribute("recentActivities", recentActivities);
 
-        // Add notifications (dummy data for now)
+        // // Add notifications (dummy data for now)
         List<Map<String, String>> notifications = new ArrayList<>();
         notifications.add(Map.of(
             "title", "Deadline Pendaftaran Sidang",
@@ -80,6 +83,12 @@ public class DashboardController {
         ));
         model.addAttribute("notifications", notifications);
 
-        return "kta/dashboard";
+        return "/kta/dashboard";
+    }
+
+    @GetMapping("/dashboard/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("email");
+        return "redirect:/";
     }
 }
