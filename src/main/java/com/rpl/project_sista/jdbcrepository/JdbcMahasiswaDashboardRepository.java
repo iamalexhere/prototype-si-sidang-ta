@@ -2,9 +2,11 @@ package com.rpl.project_sista.jdbcrepository;
 
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.model.entity.Mahasiswa;
+import com.rpl.project_sista.model.entity.Semester;
 import com.rpl.project_sista.model.entity.Sidang;
 import com.rpl.project_sista.model.entity.TugasAkhir;
 import com.rpl.project_sista.model.enums.JenisTA;
+import com.rpl.project_sista.model.enums.Periode;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.repository.MahasiswaDashboardRepository;
@@ -28,24 +30,13 @@ public class JdbcMahasiswaDashboardRepository implements MahasiswaDashboardRepos
 
     @Override
     public TugasAkhir findTugasAkhirByMahasiswaId(Long mahasiswaId) {
-        String sql = "SELECT ta.*, m.*, d.* FROM tugas_akhir ta " +
+        String sql = "SELECT DISTINCT ta.*, m.*, s.* FROM tugas_akhir ta " +
                     "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
-                    "JOIN pembimbing_ta pt ON ta.ta_id = pt.ta_id " +
-                    "JOIN dosen d ON pt.dosen_id = d.dosen_id " +
+                    "JOIN semester s ON ta.semester_id = s.semester_id " +
                     "WHERE m.mahasiswa_id = ?";
 
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                Mahasiswa mahasiswa = new Mahasiswa();
-                mahasiswa.setNpm(rs.getString("npm"));
-                mahasiswa.setNama(rs.getString("nama"));
-                mahasiswa.setStatusTa(StatusTA.valueOf(rs.getString("status_ta")));
-                mahasiswa.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-
-                Dosen pembimbing = new Dosen();
-                pembimbing.setNip(rs.getString("nip"));
-                pembimbing.setNama(rs.getString("nama"));
-
                 TugasAkhir tugasAkhir = new TugasAkhir();
                 tugasAkhir.setTaId(rs.getLong("ta_id"));
                 tugasAkhir.setJudul(rs.getString("judul"));
@@ -53,23 +44,53 @@ public class JdbcMahasiswaDashboardRepository implements MahasiswaDashboardRepos
                 tugasAkhir.setJenisTA(JenisTA.valueOf(rs.getString("jenis_ta")));
                 tugasAkhir.setStatus(StatusTA.valueOf(rs.getString("status")));
                 tugasAkhir.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+
+                // Set Mahasiswa
+                Mahasiswa mahasiswa = new Mahasiswa();
+                mahasiswa.setMahasiswaId(rs.getInt("mahasiswa_id"));
+                mahasiswa.setNpm(rs.getString("npm"));
+                mahasiswa.setNama(rs.getString("nama"));
+                mahasiswa.setStatusTa(StatusTA.valueOf(rs.getString("status_ta")));
+                mahasiswa.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
                 tugasAkhir.setMahasiswa(mahasiswa);
 
-                java.util.Set<Dosen> pembimbingSet = new HashSet<>();
-                pembimbingSet.add(pembimbing);
-                tugasAkhir.setPembimbing(pembimbingSet);
+                // Set Semester
+                Semester semester = new Semester();
+                semester.setSemesterId(rs.getLong("semester_id"));
+                semester.setTahunAjaran(rs.getString("tahun_ajaran"));
+                semester.setPeriode(Periode.valueOf(rs.getString("periode")));
+                semester.setIsActive(rs.getBoolean("is_active"));
+                semester.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                tugasAkhir.setSemester(semester);
 
+                // Get pembimbing in a separate query with proper joins
+                String pembimbingSQL = "SELECT d.* FROM dosen d " +
+                                     "JOIN pembimbing_ta pt ON d.dosen_id = pt.dosen_id " +
+                                     "WHERE pt.ta_id = ?";
+                
+                List<Dosen> pembimbingList = jdbcTemplate.query(pembimbingSQL, 
+                    (pembimbingRs, pembimbingRowNum) -> {
+                        Dosen pembimbing = new Dosen();
+                        pembimbing.setDosenId(pembimbingRs.getInt("dosen_id"));
+                        pembimbing.setNip(pembimbingRs.getString("nip"));
+                        pembimbing.setNama(pembimbingRs.getString("nama"));
+                        return pembimbing;
+                    }, 
+                    tugasAkhir.getTaId());
+                
+                Set<Dosen> pembimbingSet = new HashSet<>(pembimbingList);
+                tugasAkhir.setPembimbing(pembimbingSet);
+                
                 return tugasAkhir;
             }, mahasiswaId);
-        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
     public Sidang findSidangByTugasAkhirId(Long taId) {
-        String sql = "SELECT DISTINCT s.* FROM sidang s " +
-                    "WHERE s.ta_id = ?";
+        String sql = "SELECT s.* FROM sidang s WHERE s.ta_id = ?";
 
         try {
             return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
@@ -86,7 +107,8 @@ public class JdbcMahasiswaDashboardRepository implements MahasiswaDashboardRepos
                                   "JOIN penguji_sidang ps ON d.dosen_id = ps.dosen_id " +
                                   "WHERE ps.sidang_id = ?";
                 
-                List<Dosen> pengujiList = jdbcTemplate.query(pengujiSql, 
+                Set<Dosen> pengujiSet = new HashSet<>();
+                jdbcTemplate.query(pengujiSql, 
                     (pengujiRs, pengujiRowNum) -> {
                         Dosen penguji = new Dosen();
                         penguji.setDosenId(pengujiRs.getInt("dosen_id"));
@@ -100,12 +122,12 @@ public class JdbcMahasiswaDashboardRepository implements MahasiswaDashboardRepos
                         } else if ("penguji2".equals(peranPenguji)) {
                             sidang.setPenguji2(penguji.getDosenId());
                         }
-                        
+                        pengujiSet.add(penguji);
                         return penguji;
                     }, 
                     sidang.getSidangId());
                 
-                sidang.setPenguji(new HashSet<>(pengujiList));
+                sidang.setPenguji(pengujiSet);
                 return sidang;
             }, taId);
         } catch (EmptyResultDataAccessException e) {

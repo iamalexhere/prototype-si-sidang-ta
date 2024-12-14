@@ -120,26 +120,38 @@
                 <div class="flex">
                     <div class="mx-8 mt-6 w-1/2 pl-4">
                         <p class="mb-2 navy text-xl font-medium">
-                            Dosen Penguji 1:<br>
-                            <th:block th:if="${sidang.penguji}">
-                                <span class="font-medium" th:each="p : ${sidang.penguji}"
-                                      th:if="${p.dosenId == sidang.penguji1}"
-                                      th:text="${p.nama}">Nama Penguji 1</span>
+                            Dosen Pembimbing:<br>
+                            <th:block th:if="${tugasAkhir != null and tugasAkhir.pembimbing != null and !tugasAkhir.pembimbing.empty}">
+                                <th:block th:each="pembimbing, iterStat : ${tugasAkhir.pembimbing}">
+                                    <span class="font-medium" th:text="${pembimbing.nama}">Nama Pembimbing</span>
+                                    <br th:if="${!iterStat.last}"/>
+                                </th:block>
                             </th:block>
-                            <span class="font-medium" th:unless="${sidang.penguji1}" 
+                            <span class="font-medium" th:unless="${tugasAkhir != null and tugasAkhir.pembimbing != null and !tugasAkhir.pembimbing.empty}" 
                                   th:text="'Belum ditentukan'">Belum ditentukan</span>
                         </p>
                     </div>
-                    <div class="mx-8 mt-6 w-1/2 pl-8 font-medium">
-                        <p class="mb navy text-xl">
-                            Dosen Penguji 2:<br>
-                            <th:block th:if="${sidang.penguji}">
-                                <span class="font-medium" th:each="p : ${sidang.penguji}"
-                                      th:if="${p.dosenId == sidang.penguji2}"
-                                      th:text="${p.nama}">Nama Penguji 2</span>
+                </div>
+                <div class="flex mt-4">
+                    <div class="mx-8 mt-6 w-1/2 pl-4">
+                        <p class="mb-2 navy text-xl font-medium">
+                            Dosen Penguji:<br>
+                            <th:block th:if="${sidang != null and sidang.penguji != null}">
+                                <th:block th:each="p : ${sidang.penguji}">
+                                    <th:block th:if="${p.dosenId == sidang.penguji1}">
+                                        Penguji 1: <span class="font-medium" th:text="${p.nama}">Nama Penguji 1</span><br/>
+                                    </th:block>
+                                    <th:block th:if="${p.dosenId == sidang.penguji2}">
+                                        Penguji 2: <span class="font-medium" th:text="${p.nama}">Nama Penguji 2</span>
+                                    </th:block>
+                                </th:block>
+                                <th:block th:if="${sidang.penguji1 == null and sidang.penguji2 == null}">
+                                    <span class="font-medium">Belum ditentukan</span>
+                                </th:block>
                             </th:block>
-                            <span class="font-medium" th:unless="${sidang.penguji2}" 
-                                  th:text="'Belum ditentukan'">Belum ditentukan</span>
+                            <th:block th:unless="${sidang != null and sidang.penguji != null}">
+                                <span class="font-medium">Belum ditentukan</span>
+                            </th:block>
                         </p>
                     </div>
                 </div>
