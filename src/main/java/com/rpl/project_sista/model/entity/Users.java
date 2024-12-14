@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 
 import com.rpl.project_sista.model.enums.UserRole;
 
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,9 +27,13 @@ public class Users {
     private String username;
     
     @Column(unique = true, nullable = false)
+    @NotNull
+    @Size(min=4, max=100)
     private String email;
     
     @Column(name = "password_hash", nullable = false)
+    @NotNull
+    @Size(min=4, max=255)
     private String passwordHash;
     
     @Enumerated(EnumType.STRING)

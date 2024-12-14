@@ -5,6 +5,9 @@ import com.rpl.project_sista.model.entity.Sidang;
 import com.rpl.project_sista.model.enums.StatusTA;
 import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.service.MahasiswaDashboardService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +45,9 @@ public class MahasiswaDashboardController {
     }
 
     @GetMapping
-    public String showDashboard(@RequestParam Long mahasiswaId, Model model) {
+    public String showDashboard(HttpSession session, Model model) {
         // Get Tugas Akhir data
+        int mahasiswaId = (int) session.getAttribute("mahasiswaId");
         TugasAkhir tugasAkhir = mahasiswaDashboardService.getTugasAkhir(mahasiswaId);
         
         // Get Sidang data if Tugas Akhir exists
@@ -60,5 +64,12 @@ public class MahasiswaDashboardController {
         model.addAttribute("sidangStatusColors", sidangStatusColors);
 
         return "mahasiswa/dashboard-mahasiswa";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute("email");
+        session.removeAttribute("mahasiswaId");
+        return "redirect:/";
     }
 }
