@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita Acara Pelaksanaan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold mb-6">Berita Acara Pelaksanaan (BAP)</h1>
+            
+            <!-- Sidang Details -->
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-3">Detail Sidang</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Mahasiswa:</p>
+                        <p class="font-medium" th:text="${bap.sidang.mahasiswa.nama}"></p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">NPM:</p>
+                        <p class="font-medium" th:text="${bap.sidang.mahasiswa.npm}"></p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Tanggal Sidang:</p>
+                        <p class="font-medium" th:text="${#temporals.format(bap.sidang.tanggal, 'dd MMMM yyyy')}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download BAP -->
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-3">Download BAP</h2>
+                <a th:href="@{/bap/download/{id}(id=${bap.sidang.id})}" 
+                   class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Download BAP Document
+                </a>
+            </div>
+
+            <!-- Upload Signed BAP -->
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold mb-3">Upload Signed BAP</h2>
+                <form th:action="@{/bap/upload/{id}(id=${bap.sidang.id})}" 
+                      method="POST" 
+                      enctype="multipart/form-data"
+                      class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">User Type</label>
+                        <select name="userType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <option value="DOSEN_PEMBIMBING">Dosen Pembimbing</option>
+                            <option value="DOSEN_PENGUJI">Dosen Penguji</option>
+                            <option value="MAHASISWA">Mahasiswa</option>
+                            <option value="KTA">KTA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Upload File</label>
+                        <input type="file" name="file" required
+                               class="mt-1 block w-full text-sm text-gray-500
+                                      file:mr-4 file:py-2 file:px-4
+                                      file:rounded-full file:border-0
+                                      file:text-sm file:font-semibold
+                                      file:bg-blue-50 file:text-blue-700
+                                      hover:file:bg-blue-100">
+                    </div>
+                    <button type="submit" 
+                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                        Upload
+                    </button>
+                </form>
+            </div>
+
+            <!-- Approval Status -->
+            <div>
+                <h2 class="text-lg font-semibold mb-3">Approval Status</h2>
+                <div class="space-y-2">
+                    <div th:each="approval : ${bap.approvedBy}"
+                         class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span th:text="${approval}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

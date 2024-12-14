@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -35,6 +36,16 @@ public class BAP {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<Users> persetujuan;
+
+    private Set<String> approvedBy = new HashSet<>();
+
+    public Set<String> getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(Set<String> approvedBy) {
+        this.approvedBy = approvedBy;
+    }
 
     @PrePersist
     protected void onCreate() {
