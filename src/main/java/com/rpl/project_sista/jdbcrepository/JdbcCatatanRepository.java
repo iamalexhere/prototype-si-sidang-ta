@@ -3,10 +3,10 @@ package com.rpl.project_sista.jdbcrepository;
 import com.rpl.project_sista.model.entity.CatatanRevisi;
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.model.entity.Sidang;
+import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.repository.CatatanRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -22,22 +22,8 @@ public class JdbcCatatanRepository implements CatatanRepository{
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Override
-    public List<CatatanRevisi> findAll() {
-        String sql = "SELECT * FROM catatan_revisi";
-        return jdbcTemplate.query(sql, new CatatanRowMapper());
-    }
-
-    @Override
-    public List<CatatanRevisi> findBySidangId(Long sidangId) {
-        String sql = "SELECT * FROM catatan_revisi WHERE sidang_id = ?";
-        return jdbcTemplate.query(sql, new CatatanRowMapper(), sidangId);
-    }
-
-    @Override
-    public List<CatatanRevisi> findByDosenId(Long dosenId) {
-        String sql = "SELECT * FROM catatan_revisi WHERE dosen_id = ?";
-        return jdbcTemplate.query(sql, new CatatanRowMapper(), dosenId);
+    public JdbcCatatanRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -88,23 +74,54 @@ public class JdbcCatatanRepository implements CatatanRepository{
         }
     }
     
+    @SuppressWarnings("deprecation")
     public List<CatatanRevisi> findCatatanByMahasiswaId(Long mahasiswaId) {
-        String sql = """
-            SELECT isi_catatan
-            FROM catatan_revisi cr
-            JOIN sidang s ON s.sidang_id = cr.sidang_id
-            JOIN tugas_akhir ta ON s.ta_id = ta.ta_id
-            JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id
-            WHERE m.mahasiswa_id = ?
-        """;
-        return jdbcTemplate.query(sql, this::mapRowToCatatanRevisi, mahasiswaId);
+        String sql = "SELECT cr.catatan_id, cr.sidang_id, cr.dosen_id, cr.isi_catatan, cr.created_at " +
+                     "FROM catatan_revisi cr " +
+                     "JOIN sidang s ON cr.sidang_id = s.sidang_id " +
+                     "JOIN tugas_akhir ta ON s.ta_id = ta.ta_id " +
+                     "JOIN mahasiswa m ON ta.mahasiswa_id = m.mahasiswa_id " +
+                     "WHERE m.user_id = ?";
+        
+        return jdbcTemplate.query(sql, new Object[]{mahasiswaId}, (rs, rowNum) -> {
+            CatatanRevisi catatanRevisi = new CatatanRevisi();
+            catatanRevisi.setCatatanId(rs.getLong("catatan_id"));
+            catatanRevisi.setSidang(findSidangById(rs.getLong("sidang_id")));
+            catatanRevisi.setDosen(findDosenById(rs.getLong("dosen_id")));
+            catatanRevisi.setIsiCatatan(rs.getString("isi_catatan"));
+            catatanRevisi.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            return catatanRevisi;
+        });
     }
 
-    private CatatanRevisi mapRowToCatatanRevisi(ResultSet rs, int rowNum) throws SQLException{
-        CatatanRevisi cr = new CatatanRevisi();
-        cr.setCatatanId(rs.getLong("catatan_id"));
-        cr.setIsiCatatan(rs.getString("isi_catatan"));
+    @SuppressWarnings("deprecation")
+    public Sidang findSidangById(Long sidangId) {
+        String sql = "SELECT * FROM sidang WHERE sidang_id = ?";
 
-        return cr;
+        return jdbcTemplate.queryForObject(sql, new Object[]{sidangId}, (rs, rowNum) -> {
+            Sidang sidang = new Sidang();
+            sidang.setSidangId(rs.getLong("sidang_id"));
+            sidang.setTaId(rs.getInt("ta_id"));
+            sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
+            sidang.setRuangan(rs.getString("ruangan"));
+            StatusSidang.valueOf(rs.getString("status_sidang"));
+            sidang.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            sidang.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+            return sidang;
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    public Dosen findDosenById(Long dosenId) {
+        String sql = "SELECT * FROM dosen WHERE dosen_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{dosenId}, (rs, rowNum) -> {
+            Dosen dosen = new Dosen();
+            dosen.setDosenId(rs.getInt("dosen_id"));
+            dosen.setNip(rs.getString("nip"));
+            dosen.setNama(rs.getString("nama"));
+            dosen.setUserId(rs.getInt("user_id"));
+            dosen.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            return dosen;
+        });
     }
 }

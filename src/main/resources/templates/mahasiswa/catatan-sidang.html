@@ -7,6 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="sidebar.js" text="text/javascript" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        .mainColor { background-color: #EF476F; }
+        .darkColor { background-color: #78405e; }
+        .YesColor { background-color: #60d2a4; }
+        .specialText { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .navy { color: #30547a; }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
     <div class="flex h-full">
@@ -14,12 +21,12 @@
         <aside class="w-64 bg-purple-600 text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6" style="background-color: #EF476F;">
             <div class="mb-8">
                 <h1 class="text-2xl font-bold">SISTA</h1>
-                <p class="text-sm">Grup Pengguna Mahasiswa</p>
+                <p class="text-sm specialText">Grup Pengguna Mahasiswa</p>
             </div>
-            <nav>
+            <nav class="flex flex-col flex-1">
                 <ul class="space-y-4">
                     <li>
-                        <a href="#" class="flex items-center hover:bg-[#921C38] p-2 rounded">
+                        <a th:href="@{/mahasiswa/dashboard}" class="flex items-center hover:bg-[#921C38] p-2 rounded">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
@@ -45,7 +52,7 @@
                 </ul>
             </nav>
             <div class="mt-auto">
-                <a href="#" class="flex items-center hover:bg-[#921C38] p-2 rounded">
+                <a href="/mahasiswa/dashboard/logout" class="flex items-center hover:bg-[#921C38] p-2 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
@@ -75,7 +82,9 @@
             <div class="mt-8">
                 <h3 class="text-xl font-semibold mb-2">Catatan Sidang</h3>
                 <textarea id="catatanSidang" class="w-full p-4 border border-gray-300 rounded bg-gray-100 text-gray-700 resize-none" rows="20" readonly>
-                Memuat catatan sidang...
+                    <th:block th:each="catatan : ${catatanList}">
+                    - <span th:text="${catatan.isiCatatan}">Catatan</span>
+                </th:block>
                 </textarea>
             </div>
 

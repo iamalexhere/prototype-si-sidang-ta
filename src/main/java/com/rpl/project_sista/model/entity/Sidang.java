@@ -116,4 +116,9 @@ public class Sidang {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    public void setTaId(int int1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTaId'");
+    }
 }
