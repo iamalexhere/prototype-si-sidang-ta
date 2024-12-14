@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class MahasiswaDashboardController {
         model.addAttribute("sidang", sidang);
         model.addAttribute("taStatusColors", taStatusColors);
         model.addAttribute("sidangStatusColors", sidangStatusColors);
-
+        model.addAttribute("mahasiswaId", mahasiswaId);
         return "mahasiswa/dashboard-mahasiswa";
     }
 

@@ -49,7 +49,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.20")
-
+	implementation("javax.persistence:javax.persistence-api:2.2")
+    runtimeOnly("com.h2database:h2")
 
 }
 
