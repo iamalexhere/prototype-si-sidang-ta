@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SI-SIDANG TA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div th:replace="~{kta/fragments/sidebar :: sidebar}"></div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto">
+            <!-- Header -->
+            <div th:replace="~{kta/fragments/header :: header}"></div>
+
+            <!-- Main Content -->
+            <main class="p-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <!-- Total Tugas Akhir -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-100 bg-opacity-75">
+                                <i class="fas fa-book text-purple-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h2 class="text-sm font-medium text-gray-600">Total Tugas Akhir</h2>
+                                <p class="text-2xl font-semibold text-gray-900" th:text="${totalTugasAkhir}">150</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidang Terjadwal -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-blue-100 bg-opacity-75">
+                                <i class="fas fa-calendar text-blue-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h2 class="text-sm font-medium text-gray-600">Sidang Terjadwal</h2>
+                                <p class="text-2xl font-semibold text-gray-900" th:text="${totalSidangTerjadwal}">45</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Mahasiswa -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-green-100 bg-opacity-75">
+                                <i class="fas fa-user-graduate text-green-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h2 class="text-sm font-medium text-gray-600">Total Mahasiswa</h2>
+                                <p class="text-2xl font-semibold text-gray-900" th:text="${totalMahasiswa}">320</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Dosen -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-yellow-100 bg-opacity-75">
+                                <i class="fas fa-chalkboard-teacher text-yellow-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h2 class="text-sm font-medium text-gray-600">Total Dosen</h2>
+                                <p class="text-2xl font-semibold text-gray-900" th:text="${totalDosen}">25</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities and Notifications -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Activities -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-900">Aktivitas Terbaru</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flow-root">
+                                <ul role="list" class="-mb-8">
+                                    <li th:each="activity : ${recentActivities}" class="pb-8">
+                                        <div class="relative">
+                                            <div class="relative flex items-start space-x-3">
+                                                <div>
+                                                    <div class="relative px-1">
+                                                        <div class="h-8 w-8 bg-purple-100 rounded-full ring-8 ring-white flex items-center justify-center">
+                                                            <i class="fas fa-check-circle text-purple-600"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="min-w-0 flex-1">
+                                                    <div>
+                                                        <p class="text-sm text-gray-500" th:text="${activity.timestamp}">3 hours ago</p>
+                                                    </div>
+                                                    <div class="mt-2 text-sm text-gray-700">
+                                                        <p th:text="${activity.description}">Activity description</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-medium text-gray-900">Notifikasi Penting</h3>
+                        </div>
+                        <div class="divide-y divide-gray-200">
+                            <div th:each="notification : ${notifications}" class="p-6">
+                                <div class="flex space-x-3">
+                                    <div class="flex-1 space-y-1">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-medium" th:text="${notification.title}">Notification title</h3>
+                                            <p class="text-sm text-gray-500" th:text="${notification.time}">1h</p>
+                                        </div>
+                                        <p class="text-sm text-gray-600" th:text="${notification.message}">
+                                            Notification message
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -58,7 +58,7 @@ public class MahasiswaDashboardController {
         model.addAttribute("sidang", sidang);
         model.addAttribute("taStatusColors", taStatusColors);
         model.addAttribute("sidangStatusColors", sidangStatusColors);
-
+        model.addAttribute("mahasiswaId", mahasiswaId);
         return "mahasiswa/dashboard-mahasiswa";
     }
 }
