@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rpl.project_sista.model.entity.Users;
+import com.rpl.project_sista.model.enums.UserRole;
 import com.rpl.project_sista.service.LoginService;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,16 +46,16 @@ public class LoginController {
             if(cekUser == null) {
                 return "/login/index";
             }else {
-                if(email.equals("kta@unpar.ac.id")) {
-                    return "redirect:/kta/dashboard";
-                }else if(email.contains("@unpar")) {
+                if(cekUser.getRole() == UserRole.dosen) {
                     httpSession.setAttribute("email", email);
                     httpSession.setAttribute("dosenId", this.loginService.findDosenId(cekUser.getUserId()));
                     return "redirect:/dosen/dashboard";
-                }else {
+                }else if(cekUser.getRole() == UserRole.mahasiswa){
                     httpSession.setAttribute("email", email);
                     httpSession.setAttribute("mahasiswaId", this.loginService.findMhsId(cekUser.getUserId()));
                     return "redirect:/mahasiswa/dashboard";
+                }else {
+                    return "redirect:/kta/dashboard";
                 }
             }
         }
