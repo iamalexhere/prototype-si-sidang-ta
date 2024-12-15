@@ -36,8 +36,13 @@ public class DashboardController {
     private DosenRepository dosenRepository;
 
     @GetMapping({"/", "/dashboard"})
-    public String dashboard(Model model) {
+    public String dashboard(Model model, HttpSession session) {
         logger.info("Accessing dashboard page");
+
+        //cek udh login atau belum
+        if(session.getAttribute("email") == null) {
+            return "redirect:/";
+        }
 
         // Add page title and section
         model.addAttribute("pageTitle", "Dashboard");
