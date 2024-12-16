@@ -33,7 +33,16 @@ public class CatatanController {
         System.out.println("Mahasiswa ID from session: " + mahasiswaId);
 
         if (mahasiswaId != null) {
+            // Ambil catatan revisi
             List<CatatanRevisi> catatanList = catatanRepository.findCatatanByMahasiswaId(mahasiswaId);
+            
+            // Konversi \n menjadi baris baru yang sesuai untuk textarea
+            for (CatatanRevisi catatan : catatanList) {
+                String isiCatatanFormatted = catatan.getIsiCatatan().replace("\\n", "\n");
+                catatan.setIsiCatatan(isiCatatanFormatted);
+            }
+            
+            // Kirim ke model
             model.addAttribute("catatanList", catatanList);
             model.addAttribute("mahasiswaId", mahasiswaId);
             return "mahasiswa/catatan-sidang"; 

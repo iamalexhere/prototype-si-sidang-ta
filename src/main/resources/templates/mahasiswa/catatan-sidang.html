@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catatan Sidang - Mahasiswa</title>
+    <title th:text="${pageTitle}">Catatan Sidang - Mahasiswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="sidebar.js" text="text/javascript" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,46 +14,54 @@
         .specialText { font-family: 'Plus Jakarta Sans', sans-serif; }
         .navy { color: #30547a; }
     </style>
+    <style>
+        textarea {
+            text-align: left; 
+            padding: 0px;    
+            line-height: 0.5;
+            display: block;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
     <div class="flex h-full">
         <!-- Sidebar -->
-        <aside class="w-64 bg-purple-600 text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6" style="background-color: #EF476F;">
+        <aside class="flex flex-col w-64 mainColor text-white p-6 md:w-1/4 lg:w-1/5 xl:w-1/6">
             <div class="mb-8">
                 <h1 class="text-2xl font-bold">SISTA</h1>
                 <p class="text-sm specialText">Grup Pengguna Mahasiswa</p>
             </div>
             <nav class="flex flex-col flex-1">
-                <ul class="space-y-4">
-                    <li>
-                        <a th:href="@{/mahasiswa/dashboard}" class="flex items-center hover:bg-[#921C38] p-2 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            <strong>Dashboard</strong>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center hover:bg-[#921C38] p-2 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                            <strong>Nilai</strong>
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/mahasiswa/catatan}" class="flex items-center hover:bg-[#921C38] bg-[#921C38] p-2 rounded">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" />
+               <ul class="space-y-4">
+                   <li>
+                       <a th:href="@{/mahasiswa/dashboard}" class="flex items-center mainColor hover:bg-[rgb(182,64,94)] p-2 rounded">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                           </svg>
+                           <strong>Dashboard</strong>
+                       </a>
+                   </li>
+                   <li>
+                       <a href="#" class="flex items-center mainColor hover:bg-[rgb(182,64,94)] p-2 rounded">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                           </svg>
+                           Nilai
+                       </a>
+                   </li>
+                   <li>
+                        <a th:href="@{/mahasiswa/catatan}" class="flex items-center darkColor p-2 rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z" />
                             </svg>
-                            <strong>Catatan Sidang</strong>
+                            Catatan Sidang
                         </a>
-                    </li>
-                </ul>
+                   </li>
+               </ul> 
             </nav>
             <div class="mt-auto">
-                <a href="/mahasiswa/dashboard/logout" class="flex items-center hover:bg-[#921C38] p-2 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <a href="/mahasiswa/dashboard/logout" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                     Log Out
@@ -68,7 +76,7 @@
             <!-- Header -->
             <div class="header-welcome flex w-full"> 
                 <div>
-                    <h2 class="text-3xl font-bold mb-4 specialText" th:text="'Selamat Datang, ' + ${tugasAkhir?.mahasiswa?.nama ?: 'Mahasiswa'}">Selamat Datang!</h2>
+                    <h2 class="text-3xl font-bold mb-4 specialText">Catatan Sidang</h2>
                     <p class="text-gray-600" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, dd MMMM yyyy')}">Tanggal</p>
                 </div>
                 <div id="profile_pic" class="profile-bar ml-auto">
@@ -80,11 +88,14 @@
             
             <!-- Text Area for Sidang Notes -->
             <div class="mt-8">
-                <h3 class="text-xl font-semibold mb-2">Catatan Sidang</h3>
-                <textarea id="catatanSidang" class="w-full p-4 border border-gray-300 rounded bg-gray-100 text-gray-700 resize-none" rows="20" readonly>
+                <textarea id="catatanSidang" 
+                        class="w-full p-4 border border-gray-300 rounded bg-gray-100 text-gray-700 resize-none" 
+                        rows="20" 
+                        readonly 
+                        style="text-align: left; padding: 0;">
                     <th:block th:each="catatan : ${catatanList}">
-                    - <span th:text="${catatan.isiCatatan}">Catatan</span>
-                </th:block>
+                        [[${catatan.isiCatatan}]]
+                    </th:block>
                 </textarea>
             </div>
 
