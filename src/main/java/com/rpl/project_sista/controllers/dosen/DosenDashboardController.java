@@ -129,6 +129,39 @@ public class DosenDashboardController {
         return "dosen/beri-nilai-bimbingan";
     }
 
+    @GetMapping("/beri-nilai-pembimbing")
+    public String beriNilaiPembimbing(HttpSession session,
+                                @RequestParam Integer taId, 
+                                Model model) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Dosen> dosen = dosenRepo.findById(userId);
+        if (!dosen.isPresent()) {
+            return "redirect:/login";
+        }
+
+        List<KomponenNilai> komponenNilaiList = komponenNilaiService.getKomponenNilaiByTipePenilai(TipePenilai.pembimbing);
+        List<KomponenNilaiDTO> komponenNilaiDTOList = komponenNilaiList.stream()
+                .map(komponenNilai -> {
+                    KomponenNilaiDTO dto = new KomponenNilaiDTO();
+                    dto.setKomponenId(komponenNilai.getKomponenId().intValue());
+                    dto.setNamaKomponen(komponenNilai.getNamaKomponen());
+                    dto.setBobot(komponenNilai.getBobot());
+                    dto.setNilai(0.0); // Default value
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("komponenNilai", komponenNilaiDTOList);
+        model.addAttribute("taId", taId);
+        model.addAttribute("dosen", dosen.get());
+        
+        return "dosen/beri-nilai-pembimbing";
+    }
+
     @PostMapping("/hitung-nilai-akhir-pembimbing")
     public String hitungNilaiAkhirPembimbing(
         HttpSession session,
