@@ -84,4 +84,8 @@ public class TugasAkhir {
             this.pembimbing.remove(dosen);
         }
     }
+
+    public Long getTaId(){
+        return this.taId;
+    }
 }

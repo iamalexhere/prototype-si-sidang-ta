@@ -2,8 +2,11 @@ package com.rpl.project_sista.controllers.dosen;
 
 import com.rpl.project_sista.model.entity.TugasAkhir;
 import com.rpl.project_sista.dto.KomponenNilaiDTO;
+import com.rpl.project_sista.jdbcrepository.JdbcCatatanRepository;
+import com.rpl.project_sista.jdbcrepository.JdbcDosenDashboardRepository;
 import com.rpl.project_sista.jdbcrepository.JdbcDosenRepository;
 import com.rpl.project_sista.jdbcrepository.JdbcKomponenNilaiRepository;
+import com.rpl.project_sista.model.entity.CatatanRevisi;
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.model.entity.KomponenNilai;
 import com.rpl.project_sista.model.entity.Sidang;
@@ -50,6 +53,12 @@ public class DosenDashboardController {
 
     @Autowired
     private NilaiSidangService nilaiSidangService;
+
+    @Autowired
+    private JdbcCatatanRepository jdbcCatatanRepository;
+
+    @Autowired
+    private JdbcDosenDashboardRepository jdbcDosenDashboardRepository;
 
 
     private final Map<StatusTA, String> taStatusColors = new HashMap<>();
@@ -253,6 +262,39 @@ public class DosenDashboardController {
         model.addAttribute("dosenId", this.dosenId);
 
         return "dosen/beri_nilai_penguji"; // Ganti dengan tampilan yang sesuai
+    }
+
+    @PostMapping("/simpanCatatan")
+    public String simpanCatatan(@RequestParam("isiCatatan") String isiCatatan,
+                                HttpSession session,
+                                Model model) {
+                                    
+        Object dosenIdObj = session.getAttribute("dosenId");
+        Integer dosenId = null;
+
+        if (dosenIdObj instanceof Long) {
+            dosenId = ((Long) dosenIdObj).intValue(); // Convert Long to Integer
+        } else if (dosenIdObj instanceof Integer) {
+            dosenId = (Integer) dosenIdObj; // Safe cast if it is Integer
+        }
+
+        Sidang sidang = jdbcDosenDashboardRepository.findSidangByTugasAkhirId();
+
+        // Buat instance CatatanRevisi
+        CatatanRevisi catatan = new CatatanRevisi();
+
+        Dosen dosen = new Dosen();
+        dosen.setDosenId(dosenId);
+
+        catatan.setSidang(sidang);
+        catatan.setDosen(dosen);
+        catatan.setIsiCatatan(isiCatatan);
+
+        // Simpan catatan menggunakan JdbcCatatanRepository
+        jdbcCatatanRepository.save(catatan);
+
+        // Redirect kembali ke halaman dashboard
+        return "redirect:/dosen/dashboard";
     }
 
     @GetMapping("/logout")

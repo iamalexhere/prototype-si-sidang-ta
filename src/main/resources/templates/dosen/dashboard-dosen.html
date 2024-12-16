@@ -140,7 +140,12 @@
                                             </div>
 
                                             <div class="flex w-full h-full mt-4">
-                                                <textarea placeholder="Catatan Sidang" class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center"></textarea>
+                                                <form id="formCatatanPembimbing" method="POST" action="/dosen/dashboard/simpanCatatan">
+                                                    <textarea id="isiCatatan" name="isiCatatan" placeholder="Catatan Sidang"
+                                                        class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center">
+                                                    </textarea>
+                                                    <button type="submit" class="bg-green-300 text-white px-4 py-2 mt-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">Simpan Catatan</button>
+                                                </form>
                                             </div>
 
                                             <a th:href="@{/dosen/dashboard/beriNilaiBimbingan?(dosenId=${dosenId}, taId=${ta.taId})}">

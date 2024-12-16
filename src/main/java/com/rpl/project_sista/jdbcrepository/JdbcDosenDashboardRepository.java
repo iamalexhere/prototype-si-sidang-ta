@@ -4,6 +4,7 @@ import com.rpl.project_sista.model.entity.*;
 import com.rpl.project_sista.model.enums.*;
 import com.rpl.project_sista.repository.DosenDashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -86,4 +87,20 @@ public class JdbcDosenDashboardRepository implements DosenDashboardRepository {
 
         return sidang;
     }
+
+    @SuppressWarnings("deprecation")
+    public Sidang findSidangByTugasAkhirId() {
+        String sql = "SELECT * FROM sidang WHERE ta_id = 1";
+
+        return jdbcTemplate.queryForObject(sql, new Object[]{}, (rs, rowNum) -> {
+            Sidang sidang = new Sidang();
+            sidang.setSidangId(rs.getLong("sidang_id"));
+            sidang.setJadwal(rs.getTimestamp("jadwal").toLocalDateTime());
+            sidang.setRuangan(rs.getString("ruangan"));
+            StatusSidang.valueOf(rs.getString("status_sidang"));
+            sidang.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            sidang.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
+            return sidang;
+        });
+    }    
 }
