@@ -144,4 +144,13 @@ public class JdbcKomponenNilaiRepository implements KomponenNilaiRepository {
             return semester;
         }
     }
+
+    @Override
+    public List<KomponenNilai> findKomponenByTipePenilai(TipePenilai tipePenilai) {
+        String sql = "SELECT kn.*, s.* FROM komponen_nilai kn " +
+                    "JOIN semester s ON kn.semester_id = s.semester_id " +
+                    "WHERE kn.tipe_penilai = ?::tipe_penilai";
+        return jdbcTemplate.query(sql, new KomponenNilaiRowMapper(), tipePenilai.toString().toLowerCase());
+    }
+
 }

@@ -1,0 +1,76 @@
+.body{
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+}
+
+.nilai{
+    height: 100vh;
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 1rem;
+    column-gap: 1rem;
+    grid-template-areas: 
+    "ketua-penguji anggota-penguji"
+    "pembimbing koor"
+}
+
+.nilai-ketua-penguji{
+    grid-area: 'ketua-penguji';
+    border: 2px solid #EF476F;
+    transition: transform 0.1s ease;
+    color: #EF476F;
+}
+
+.nilai-ketua-penguji:hover{
+    background-color: lightgray;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.nilai-anggota-penguji{
+    grid-area: 'anggota-penguji';
+    border: 2px solid #EF476F;
+    transition: transform 0.1s ease; 
+    color: #EF476F;
+}
+
+.nilai-anggota-penguji:hover{
+    background-color: lightgray;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.nilai-pembimbing{
+    grid-area: 'pembimbing';
+    border: 2px solid #EF476F;
+    transition: transform 0.1s ease; 
+    color: #EF476F;
+}
+
+.nilai-pembimbing:hover{
+    background-color: lightgray;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.nilai-koordinator-TA{
+    grid-area: 'koor';
+    border: 2px solid #EF476F;
+    transition: transform 0.1s ease;    
+    color:#EF476F;
+}
+
+.nilai-koordinator-TA:hover{
+    background-color: lightgray;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.nilai-akhir{
+    height: 6.5rem;
+}
+
