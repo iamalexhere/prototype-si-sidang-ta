@@ -99,9 +99,35 @@ public class DosenDashboardController {
     public String beriNilaiBimbingan(HttpSession session,
                                     @RequestParam Integer taId, 
                                     Model model) {
-        Integer dosenId = (Integer) session.getAttribute("userId");
-        if (dosenId == null) {
-            return "redirect:/login";
+        Integer userId = (Integer) session.getAttribute("userId");
+        Integer TaId = (Integer) session.getAttribute("taId");
+        List<KomponenNilai> listNilai = komponenNilaiService.getKomponenNilaiByTipePenilai(TipePenilai.pembimbing);
+        List<KomponenNilaiDTO> nilaiSidangList = nilaiSidangService.findAllNilaiByIdSidang(taId);
+
+        // Buat Map dari List komponenNilai agar mudah mencari bobot berdasarkan idKomponen
+        Map<Long, Float> bobotMap = listNilai.stream()
+                .collect(Collectors.toMap(KomponenNilai::getKomponenId, KomponenNilai::getBobot));
+
+        // Hitung nilai akhir
+        double totalNilai = 0.0;
+
+        for (KomponenNilaiDTO nilaiSidang : nilaiSidangList) {
+            int idKomponen = nilaiSidang.getKomponenId();
+            double nilai = nilaiSidang.getNilai();
+
+            System.out.println("==============NILAI SIDANG===============================");
+            System.out.println(nilaiSidang.getKomponenId()+" "+nilaiSidang.getNilai());
+
+            // Cari bobot dari Map, jika idKomponen tidak ada maka gunakan bobot default 0
+            float bobot = bobotMap.getOrDefault((long) idKomponen, 0.0f);
+
+            totalNilai += nilai * bobot;
+        }
+        
+        // Mengatur bobot dalam persentase
+        for (KomponenNilai komp : listNilai) {
+            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
+            komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
         // Get data
@@ -184,8 +210,8 @@ public class DosenDashboardController {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(komp.getKomponenId().intValue(), dosenId, nilaiKomponen);
-                System.out.println(komp.getKomponenId()+" "+dosenId+" "+nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             
         }
@@ -226,8 +252,8 @@ public class DosenDashboardController {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(komp.getKomponenId().intValue(), dosenId, nilaiKomponen);
-                System.out.println(komp.getKomponenId()+" "+dosenId+" "+nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             
         }

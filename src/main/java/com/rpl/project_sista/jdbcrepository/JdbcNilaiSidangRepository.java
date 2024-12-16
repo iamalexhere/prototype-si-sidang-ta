@@ -29,26 +29,21 @@ public class JdbcNilaiSidangRepository {
         return jdbcTemplate.query(sql, nilaiSidangRowMapper);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")    
     public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
-        String sql = """
+        String sql = "
             SELECT kn.komponen_id, kn.nama_komponen, kn.bobot, ns.nilai 
             FROM komponen_nilai kn 
             LEFT JOIN nilai_sidang ns ON ns.komponen_id = kn.komponen_id 
-            WHERE ns.sidang_id = ?
+            WHERE ns.sidang_id = ?"
 
-            """;
-
-        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) -> {
-            KomponenNilaiDTO dto = new KomponenNilaiDTO();
-            dto.setKomponenId(rs.getInt("komponen_id"));
-            dto.setNama(rs.getString("nama_komponen"));
-            dto.setBobot(rs.getFloat("bobot"));
-            dto.setNilai(rs.getDouble("nilai"));
-            return dto;
-        });
-
-    }
+        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) ->
+            new KomponenNilaiDTO(
+                rs.getInt("komponen_id"),
+                rs.getDouble("nilai")
+            )
+        );
+    }    
 
     @SuppressWarnings("deprecation")
     public NilaiSidang findById(Long id) {
@@ -56,12 +51,12 @@ public class JdbcNilaiSidangRepository {
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, nilaiSidangRowMapper);
     }
 
-    public int saveNilaiSidang(int komponenId, int dosenId, double nilai) {
+    public int saveNilaiSidang(int idSidang, int komponenId, int dosenId, double nilai) {
         String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai, created_at, updated_at) " +
-                 "VALUES (12, ?, ?, ?, now(), now()) " +
+                 "VALUES (?, ?, ?, ?, now(), now()) " +
                  "ON CONFLICT (sidang_id, komponen_id, dosen_id) " +
                  "DO UPDATE SET nilai = EXCLUDED.nilai, updated_at = now()";
 
-        return jdbcTemplate.update(sql, komponenId, dosenId, nilai);
+    return jdbcTemplate.update(sql, idSidang, komponenId, dosenId, nilai);
     }
 }
