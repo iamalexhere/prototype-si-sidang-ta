@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Dashboard KTA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans min-h-screen">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside th:replace="~{kta/fragments/sidebar :: sidebar}"></aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 ml-64">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800" th:text="${pageTitle}">Dashboard KTA</h1>
+                    <p class="text-gray-600">Ringkasan informasi tugas akhir, sidang, mahasiswa, dan dosen</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Tugas Akhir Stats -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Tugas Akhir</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-1" th:text="${totalTugasAkhir}">0</p>
+                            </div>
+                            <div class="p-3 bg-purple-100 rounded-full">
+                                <i class="fas fa-book text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidang Stats -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Sidang Terjadwal</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-1" th:text="${totalSidangTerjadwal}">0</p>
+                            </div>
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <i class="fas fa-users text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mahasiswa Stats -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Mahasiswa</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-1" th:text="${totalMahasiswa}">0</p>
+                            </div>
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <i class="fas fa-user-graduate text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dosen Stats -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total Dosen</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-1" th:text="${totalDosen}">0</p>
+                            </div>
+                            <div class="p-3 bg-orange-100 rounded-full">
+                                <i class="fas fa-chalkboard-teacher text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
