@@ -15,12 +15,15 @@ import com.rpl.project_sista.repository.DosenRepository;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -237,5 +240,29 @@ public class DosenDashboardController {
         model.addAttribute("dosen", dosen.get());
 
         return "redirect:/dosen/dashboard";
+    }
+
+    @PostMapping("/dashboard/beriNilai")
+    public ResponseEntity<?> beriNilai(@RequestBody Map<String, Object> payload, HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Integer taId = Integer.parseInt(payload.get("taId").toString());
+        Double nilai = Double.parseDouble(payload.get("nilai").toString());
+        String catatan = (String) payload.get("catatan");
+        String type = (String) payload.get("type");
+
+        try {
+            if ("pembimbing".equals(type)) {
+                dosenDashboardService.beriNilaiBimbingan(taId, nilai, catatan);
+            } else {
+                dosenDashboardService.beriNilaiPenguji(taId, nilai);
+            }
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

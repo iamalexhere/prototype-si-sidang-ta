@@ -1,3 +1,5 @@
+package com.rpl.project_sista;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.rpl.project_sista.model.entity.Dosen;
