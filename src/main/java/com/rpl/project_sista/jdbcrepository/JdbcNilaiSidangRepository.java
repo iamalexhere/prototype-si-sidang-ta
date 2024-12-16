@@ -29,21 +29,21 @@ public class JdbcNilaiSidangRepository {
         return jdbcTemplate.query(sql, nilaiSidangRowMapper);
     }
 
-    @SuppressWarnings("deprecation")    
-    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
-        String sql = "
-            SELECT kn.komponen_id, kn.nama_komponen, kn.bobot, ns.nilai 
-            FROM komponen_nilai kn 
-            LEFT JOIN nilai_sidang ns ON ns.komponen_id = kn.komponen_id 
-            WHERE ns.sidang_id = ?"
+    //@SuppressWarnings("deprecation")
+    // public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
+    //     String sql = "SELECT kn.komponen_id, kn.nama_komponen, kn.bobot, ns.nilai " +
+    //                 "FROM komponen_nilai kn " +
+    //                 "LEFT JOIN nilai_sidang ns ON ns.komponen_id = kn.komponen_id " +
+    //                 "WHERE ns.sidang_id = ?";
 
-        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) ->
-            new KomponenNilaiDTO(
-                rs.getInt("komponen_id"),
-                rs.getDouble("nilai")
-            )
-        );
-    }    
+    //     return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) ->
+    //         new KomponenNilaiDTO(
+    //             rs.getInt("komponen_id"),
+    //             rs.getDouble("nilai")
+    //         )
+    //     );
+    // }
+
 
     @SuppressWarnings("deprecation")
     public NilaiSidang findById(Long id) {

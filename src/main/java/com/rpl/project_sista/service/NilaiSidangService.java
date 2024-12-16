@@ -28,7 +28,7 @@ public class NilaiSidangService {
         nilaiSidangJdbcRepository.saveNilaiSidang(idSidang, komponenId, dosenId, nilai);
     }
 
-    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang){
-        return nilaiSidangJdbcRepository.findAllNilaiByIdSidang(idSidang);
-    }
+    // public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang){
+    //     return nilaiSidangJdbcRepository.findAllNilaiByIdSidang(idSidang);
+    // }
 }

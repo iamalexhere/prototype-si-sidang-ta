@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public class KomponenNilaiDTO {
     private Long id;
     private int komponenId;
-    private String nama;
+    private String namaKomponen;
     private Float bobot;
     private Double nilai;
 }

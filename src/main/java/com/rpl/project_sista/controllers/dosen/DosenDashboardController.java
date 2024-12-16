@@ -2,8 +2,6 @@ package com.rpl.project_sista.controllers.dosen;
 
 import com.rpl.project_sista.model.entity.TugasAkhir;
 import com.rpl.project_sista.dto.KomponenNilaiDTO;
-import com.rpl.project_sista.jdbcrepository.JdbcDosenRepository;
-import com.rpl.project_sista.jdbcrepository.JdbcKomponenNilaiRepository;
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.model.entity.KomponenNilai;
 import com.rpl.project_sista.model.entity.Sidang;
@@ -13,6 +11,7 @@ import com.rpl.project_sista.model.enums.StatusSidang;
 import com.rpl.project_sista.service.DosenDashboardService;
 import com.rpl.project_sista.service.KomponenNilaiService;
 import com.rpl.project_sista.service.NilaiSidangService;
+import com.rpl.project_sista.repository.DosenRepository;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +31,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/dosen/dashboard")
+@RequestMapping("/dosen")
 public class DosenDashboardController {
 
     @Autowired
     private DosenDashboardService dosenDashboardService;
 
-    @Autowired 
-    private JdbcDosenRepository dosenRepo;
-
     @Autowired
     private KomponenNilaiService komponenNilaiService;
 
     @Autowired
-    private JdbcKomponenNilaiRepository nilaiRepo;
+    private NilaiSidangService nilaiSidangService;
 
     @Autowired
-    private NilaiSidangService nilaiSidangService;
+    private DosenRepository dosenRepo;
 
     private final Map<StatusTA, String> taStatusColors = new HashMap<>();
     private final Map<StatusSidang, String> sidangStatusColors = new HashMap<>();
@@ -63,18 +59,20 @@ public class DosenDashboardController {
         taStatusColors.put(StatusTA.selesai, "bg-purple-100 text-purple-800");
 
         // Initialize Sidang status colors
-        sidangStatusColors.put(StatusSidang.terjadwal, "bg-blue-100 text-blue-800");
-        sidangStatusColors.put(StatusSidang.berlangsung, "bg-yellow-100 text-yellow-800");
+        sidangStatusColors.put(StatusSidang.terjadwal, "bg-yellow-100 text-yellow-800");
+        sidangStatusColors.put(StatusSidang.berlangsung, "bg-blue-100 text-blue-800");
         sidangStatusColors.put(StatusSidang.selesai, "bg-green-100 text-green-800");
         sidangStatusColors.put(StatusSidang.dibatalkan, "bg-red-100 text-red-800");
     }
 
-
-    @GetMapping
+    @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
         Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
         Optional<Dosen> dosen = dosenRepo.findById(userId);
-        
         if (!dosen.isPresent()) {
             return "redirect:/login";
         }
@@ -90,49 +88,21 @@ public class DosenDashboardController {
         model.addAttribute("taStatusColors", taStatusColors);
         model.addAttribute("sidangStatusColors", sidangStatusColors);
         model.addAttribute("dosen", dosen.get());
-        model.addAttribute("dosenId", dosen.get().getDosenId());
 
         return "dosen/dashboard-dosen";
     }
 
-    @GetMapping("/beriNilaiBimbingan")
+    @GetMapping("/beri-nilai-bimbingan")
     public String beriNilaiBimbingan(HttpSession session,
-                                    @RequestParam Integer taId, 
-                                    Model model) {
+                                @RequestParam Integer taId, 
+                                Model model) {
         Integer userId = (Integer) session.getAttribute("userId");
-        Integer TaId = (Integer) session.getAttribute("taId");
-        List<KomponenNilai> listNilai = komponenNilaiService.getKomponenNilaiByTipePenilai(TipePenilai.pembimbing);
-        List<KomponenNilaiDTO> nilaiSidangList = nilaiSidangService.findAllNilaiByIdSidang(taId);
-
-        // Buat Map dari List komponenNilai agar mudah mencari bobot berdasarkan idKomponen
-        Map<Long, Float> bobotMap = listNilai.stream()
-                .collect(Collectors.toMap(KomponenNilai::getKomponenId, KomponenNilai::getBobot));
-
-        // Hitung nilai akhir
-        double totalNilai = 0.0;
-
-        for (KomponenNilaiDTO nilaiSidang : nilaiSidangList) {
-            int idKomponen = nilaiSidang.getKomponenId();
-            double nilai = nilaiSidang.getNilai();
-
-            System.out.println("==============NILAI SIDANG===============================");
-            System.out.println(nilaiSidang.getKomponenId()+" "+nilaiSidang.getNilai());
-
-            // Cari bobot dari Map, jika idKomponen tidak ada maka gunakan bobot default 0
-            float bobot = bobotMap.getOrDefault((long) idKomponen, 0.0f);
-
-            totalNilai += nilai * bobot;
-        }
-        
-        // Mengatur bobot dalam persentase
-        for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
-            komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
+        if (userId == null) {
+            return "redirect:/login";
         }
 
-        // Get data
-        Optional<Dosen> listDosen = this.dosenRepo.findById(dosenId);
-        if (!listDosen.isPresent()) {
+        Optional<Dosen> dosen = dosenRepo.findById(userId);
+        if (!dosen.isPresent()) {
             return "redirect:/login";
         }
 
@@ -141,62 +111,35 @@ public class DosenDashboardController {
                 .map(komponenNilai -> {
                     KomponenNilaiDTO dto = new KomponenNilaiDTO();
                     dto.setKomponenId(komponenNilai.getKomponenId().intValue());
-                    dto.setNama(komponenNilai.getNamaKomponen());
+                    dto.setNamaKomponen(komponenNilai.getNamaKomponen());
                     dto.setBobot(komponenNilai.getBobot());
                     dto.setNilai(0.0); // Default value
                     return dto;
                 })
                 .collect(Collectors.toList());
 
-        model.addAttribute("komponenNilaiList", komponenNilaiDTOList);
-        model.addAttribute("dosenId", dosenId);
-        model.addAttribute("taId", taId);
+        model.addAttribute("komponenNilai", komponenNilaiDTOList);
+        model.addAttribute("sidangId", taId);
+        model.addAttribute("dosenId", dosen.get().getDosenId());
+        model.addAttribute("dosen", dosen.get());
         
         return "dosen/beri-nilai-bimbingan";
     }
 
-    @GetMapping("/beriNilaiPenguji")
-    public String beriNilaiPenguji(HttpSession session,
-                                    @RequestParam Integer taId, 
-                                    Model model) {
-        Integer dosenId = (Integer) session.getAttribute("userId");
-        if (dosenId == null) {
-            return "redirect:/login";
-        }
-
-        // Get data
-        Optional<Dosen> listDosen = this.dosenRepo.findById(dosenId);
-        if (!listDosen.isPresent()) {
-            return "redirect:/login";
-        }
-
-        List<KomponenNilai> komponenNilaiList = komponenNilaiService.getKomponenNilaiByTipePenilai(TipePenilai.penguji);
-        List<KomponenNilaiDTO> komponenNilaiDTOList = komponenNilaiList.stream()
-                .map(komponenNilai -> {
-                    KomponenNilaiDTO dto = new KomponenNilaiDTO();
-                    dto.setKomponenId(komponenNilai.getKomponenId().intValue());
-                    dto.setNama(komponenNilai.getNamaKomponen());
-                    dto.setBobot(komponenNilai.getBobot());
-                    dto.setNilai(0.0); // Default value
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        model.addAttribute("komponenNilaiList", komponenNilaiDTOList);
-        model.addAttribute("dosenId", dosenId);
-        model.addAttribute("taId", taId);
-        
-        return "dosen/beri-nilai-penguji";
-    }
-
-    
-    @PostMapping("/hitungNilaiAkhirPembimbing")
+    @PostMapping("/hitung-nilai-akhir-pembimbing")
     public String hitungNilaiAkhirPembimbing(
         HttpSession session,
-        @RequestParam Map<String, String> allParams, Model model) {
-        // Ambil daftar komponen nilai
-        Integer dosenId = (Integer) session.getAttribute("userId");
-        if (dosenId == null) {
+        @RequestParam Integer taId,
+        @RequestParam Map<String, String> allParams, 
+        Model model) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Dosen> dosen = dosenRepo.findById(userId);
+        if (!dosen.isPresent()) {
             return "redirect:/login";
         }
 
@@ -205,21 +148,12 @@ public class DosenDashboardController {
         // Hitung nilai akhir
         double nilaiAkhir = 0;
         for (KomponenNilai komp : listNilai) {
-            String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
+            String paramName = "nilai_" + komp.getKomponenId();
             if (allParams.containsKey(paramName)) {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
-                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
-                // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
-                System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
+                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100;
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), dosen.get().getDosenId(), nilaiKomponen);
             }
-            
-        }
-
-        // Mengatur bobot dan menyiapkan model
-        for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
-            komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
         BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir * 100);
@@ -227,18 +161,58 @@ public class DosenDashboardController {
 
         model.addAttribute("listNilai", listNilai);
         model.addAttribute("nilaiAkhir", nilaiAkhir);
-        model.addAttribute("dosenId", dosenId);
+        model.addAttribute("dosen", dosen.get());
 
-        return "dosen/beri-nilai-pembimbing"; // Ganti dengan tampilan yang sesuai
+        return "redirect:/dosen/dashboard";
     }
 
-    @PostMapping("/hitungNilaiAkhirPenguji")
+    @GetMapping("/beri-nilai-penguji")
+    public String beriNilaiPenguji(HttpSession session,
+                                @RequestParam Integer taId, 
+                                Model model) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Dosen> dosen = dosenRepo.findById(userId);
+        if (!dosen.isPresent()) {
+            return "redirect:/login";
+        }
+
+        List<KomponenNilai> komponenNilaiList = komponenNilaiService.getKomponenNilaiByTipePenilai(TipePenilai.penguji);
+        List<KomponenNilaiDTO> komponenNilaiDTOList = komponenNilaiList.stream()
+                .map(komponenNilai -> {
+                    KomponenNilaiDTO dto = new KomponenNilaiDTO();
+                    dto.setKomponenId(komponenNilai.getKomponenId().intValue());
+                    dto.setNamaKomponen(komponenNilai.getNamaKomponen());
+                    dto.setBobot(komponenNilai.getBobot());
+                    dto.setNilai(0.0); // Default value
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("komponenNilaiList", komponenNilaiDTOList);
+        model.addAttribute("taId", taId);
+        model.addAttribute("dosen", dosen.get());
+        
+        return "dosen/beri-nilai-penguji";
+    }
+
+    @PostMapping("/hitung-nilai-akhir-penguji")
     public String hitungNilaiAkhirPenguji(
         HttpSession session,
-        @RequestParam Map<String, String> allParams, Model model) {
-        // Ambil daftar komponen nilai
-        Integer dosenId = (Integer) session.getAttribute("userId");
-        if (dosenId == null) {
+        @RequestParam Integer taId,
+        @RequestParam Map<String, String> allParams, 
+        Model model) {
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Optional<Dosen> dosen = dosenRepo.findById(userId);
+        if (!dosen.isPresent()) {
             return "redirect:/login";
         }
 
@@ -247,21 +221,12 @@ public class DosenDashboardController {
         // Hitung nilai akhir
         double nilaiAkhir = 0;
         for (KomponenNilai komp : listNilai) {
-            String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
+            String paramName = "nilai_" + komp.getKomponenId();
             if (allParams.containsKey(paramName)) {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
-                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
-                // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
-                System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
+                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100;
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), dosen.get().getDosenId(), nilaiKomponen);
             }
-            
-        }
-
-        // Mengatur bobot dan menyiapkan model
-        for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
-            komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
         BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir * 100);
@@ -269,10 +234,8 @@ public class DosenDashboardController {
 
         model.addAttribute("listNilai", listNilai);
         model.addAttribute("nilaiAkhir", nilaiAkhir);
-        model.addAttribute("dosenId", dosenId);
+        model.addAttribute("dosen", dosen.get());
 
-        return "dosen/beri-nilai-penguji"; // Ganti dengan tampilan yang sesuai
+        return "redirect:/dosen/dashboard";
     }
-
-
 }
