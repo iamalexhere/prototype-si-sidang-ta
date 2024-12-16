@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Dashboard Dosen</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="sidebar.js" text="text/javascript" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script th:src="@{/js/dashboard-dosen.js}" text="text/javascript" defer></script>
     <style>
         .mainColor { background-color: #EF476F; }
         .darkColor { background-color: #78405e; }
@@ -14,6 +14,18 @@
         .fontJakarta { font-family: 'Plus Jakarta Sans', sans-serif; }
         .navy { color: #30547a; }
     </style>
+    <script>
+        function sidebar() {
+            const profileBar = document.getElementById('profile');
+            const displayStyle = window.getComputedStyle(profileBar).display;
+            if (displayStyle === "none") {
+                profileBar.style.display = "flex";
+            } else {
+                profileBar.style.display = "none";
+            }
+        }
+
+    </script>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
     <div class="flex h-full">
@@ -25,12 +37,9 @@
             </div>
             <nav class="flex flex-col flex-1 space-y-4">
                 <div>
-                    <a href="dashboard-dosen.html" class="flex items-center darkColor p-2 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        <strong>Dashboard</strong>
-                    </a>
+                    <a th:href="@{/dosen/dashboard?(dosenId=${dosenId})}" class="flex items-center darkColor p-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    <strong>Dashboard</strong></a>
                 </div>
             </nav>
             <div class="mt-auto">
@@ -49,10 +58,10 @@
                 <!-- Header -->
                 <div class="header-welcome flex w-full mb-8">
                     <div>
-                        <h2 class="text-3xl font-bold mb-4 fontJakarta">Selamat Datang, Dosen!</h2>
+                        <h2 class="text-3xl font-bold mb-4 fontJakarta">Selamat Datang, <span th:text="${dosen.nama}">Dosen</span>!</h2>
                         <p class="text-gray-600">Senin, 14 Oktober 2024</p>
                     </div>
-                    <div id="profile_pic" class="profile-bar ml-auto">
+                    <div id="profile_pic" class="profile-bar ml-auto" onclick="sidebar()">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
                         </svg>
@@ -73,7 +82,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody id="infoButtonPembimbing" class="bg-white divide-y divide-gray-200 hover:bg-gray-200 cursor-pointer">
                                 <tr th:each="ta : ${bimbinganList}">
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.npm}">NPM</td>
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.nama}">Nama</td>
@@ -86,6 +95,66 @@
                                             Status
                                         </span>
                                     </td>
+
+                                    <!--Pop-up Informasi Mahasiswa Untuk Dosen Pembimbing-->
+                                    <div id="popupOverlayPembimbing" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
+                                        <div id="popupContentPembimbing" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+                                            <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
+
+                                            <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
+                                                <div class="flex">
+                                                    <div class="flex">
+                                                        <p>NPM</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p><strong th:text="${ta.mahasiswa.npm}">NPM</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex">
+                                                        <p>Nama</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p><strong th:text="${ta.mahasiswa.nama}">Nama</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex">
+                                                        <p>Jenis</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p><strong th:text="${ta.jenisTA}">TA1</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex w-4/5 items-center justify-start">
+                                                        <p>Topik TA</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p class="text-right flex-nowrap"><strong th:text="${ta.judul}">Judul TA</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex w-full h-full mt-4">
+                                                <textarea placeholder="Catatan Sidang" class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center"></textarea>
+                                            </div>
+
+                                            <a th:href="@{/dosen/dashboard/beriNilaiBimbingan?(dosenId=${dosenId}, taId=${ta.taId})}">
+                                                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
+                                                    <p>Nilai Mahasiswa</p>
+                                                </div>
+                                            </a>
+
+                                            <button id="closePopupPembimbing" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+
                                 </tr>
                                 <tr th:if="${bimbinganList.empty}">
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada mahasiswa bimbingan</td>
@@ -109,7 +178,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody id="infoButtonPenguji" class="bg-white divide-y divide-gray-200 hover:bg-gray-200 cursor-pointer">
                                 <tr th:each="sidang : ${sidangList}">
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${#temporals.format(sidang.jadwal, 'dd MMM yyyy HH:mm')}">Tanggal</td>
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${sidang.tugasAkhir.mahasiswa.nama}">Mahasiswa</td>
@@ -122,6 +191,61 @@
                                             Status
                                         </span>
                                     </td>
+                                    <!--Pop-up Informasi Mahasiswa Untuk Dosen Penguji-->
+                                    <div id="popupOverlayPenguji" class="fixed inset-0 bg-black flex bg-opacity-50 backdrop-blur-sm items-center justify-center hidden">
+                                        <div id="popupContentPenguji" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+                                            <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
+
+                                            <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
+                                                <div class="flex">
+                                                    <div class="flex">
+                                                        <p>NPM</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p><strong th:text="${sidang.tugasAkhir.mahasiswa.npm}">NPM</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex">
+                                                        <p>Nama</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p><strong th:text="${sidang.tugasAkhir.mahasiswa.nama}">Nama</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex w-4/5 items-center justify-start">
+                                                        <p>Semester</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p class="text-right"><strong th:text="${sidang.tugasAkhir.semester.periode}">periode</strong>
+                                                            <strong th:text="${sidang.tugasAkhir.semester.tahunAjaran}">tahunAjar</strong></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex">
+                                                    <div class="flex w-4/5 items-center justify-start">
+                                                        <p>Judul TA</p>
+                                                    </div>
+                                                    <div class="flex ml-auto">
+                                                        <p class="text-right flex-nowrap"><strong th:text="${sidang.tugasAkhir.judul}">Judul TA</strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <a th:href="@{/dosen/dashboard/beriNilaiPenguji?(dosenId=${dosenId}, taId=${sidang.tugasAkhir.taId})}">
+                                                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
+                                                    <p>Nilai Mahasiswa</p>
+                                                </div>
+                                            </a>
+
+                                            <button id="closePopupPenguji" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
                                 </tr>
                                 <tr th:if="${sidangList.empty}">
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada jadwal sidang</td>
@@ -134,10 +258,10 @@
         </div>
 
         <!--Left bar for profile-->
-        <div id="profile" class="h-full w-96 ml-auto border-l-4 flex">
+        <div id="profile" class="hidden h-full w-96 ml-auto border-l-4 flex-col">
             <p class="font-bold m-4 fontJakarta">Profile</p>
 
-            <div class="about flex flex-col justify-center items-center mt-6">
+            <div class="about h-full w-full flex flex-col justify-center items-center mt-6">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -145,12 +269,13 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="name text-center"><strong>John Doe</strong></p>
-                    <p class="email text-center">6182001100@student.unpar.ac.id</p>    
+                    <p class="name text-center"><strong th:text="${dosen.nama}">John Doe</strong></p>
+                    <p class="email text-center" th:text="${dosen.email}">@dosen.unpar.ac.id</p>    
                 </div>
             </div>
         </div>
 
+        
     </div>
 </body>
 </html>
