@@ -108,3 +108,7 @@ FROM (
 INSERT INTO semester (tahun_ajaran, periode, is_active) VALUES
 ('2023/2024', 'ganjil', false),
 ('2023/2024', 'genap', true);
+
+-- Insert KTA
+INSERT INTO users (username, email, password_hash, role) VALUES
+('admin', 'admin@unpar.ac.id', hash_password('adminpass'), 'admin');
