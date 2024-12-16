@@ -40,12 +40,18 @@ dependencies {
 	// https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
 	implementation("jakarta.persistence:jakarta.persistence-api")
 
+	implementation("jakarta.validation:jakarta.validation-api")
+
+
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.mindrot:jbcrypt:0.4")
 	implementation("org.xhtmlrenderer:flying-saucer-pdf:9.1.20")
 
 
