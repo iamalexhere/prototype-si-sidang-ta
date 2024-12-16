@@ -5,6 +5,8 @@ import com.rpl.project_sista.model.entity.Sidang;
 import com.rpl.project_sista.repository.BAPRepository;
 import com.rpl.project_sista.repository.SidangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,5 +55,27 @@ public class BAPService {
         BAP bap = getBAPBySidangId(sidangId);
         bap.getApprovedBy().add(userType);
         bapRepository.save(bap);
+    }
+
+    public BAP approveBap(Long bapId, Long dosenId) {
+        Optional<BAP> bapOpt = bapRepository.findById(bapId);
+        if (!bapOpt.isPresent()) {
+            throw new RuntimeException("BAP not found");
+        }
+
+        BAP bap = bapOpt.get();
+        bap.getApprovedBy().add(dosenId.toString());
+        return bapRepository.save(bap);
+    }
+
+    public ResponseEntity<Resource> downloadBap(Long bapId) {
+        Optional<BAP> bapOpt = bapRepository.findById(bapId);
+        if (!bapOpt.isPresent()) {
+            throw new RuntimeException("BAP not found");
+        }
+
+        // TODO: Implement actual file download logic
+        // For now, return a placeholder response
+        return ResponseEntity.notFound().build();
     }
 }
