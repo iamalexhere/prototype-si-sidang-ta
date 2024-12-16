@@ -115,6 +115,9 @@ public class DosenDashboardController {
             int idKomponen = nilaiSidang.getKomponenId();
             double nilai = nilaiSidang.getNilai();
 
+            System.out.println("==============NILAI SIDANG===============================");
+            System.out.println(nilaiSidang.getKomponenId()+" "+nilaiSidang.getNilai());
+
             // Cari bobot dari Map, jika idKomponen tidak ada maka gunakan bobot default 0
             float bobot = bobotMap.getOrDefault((long) idKomponen, 0.0f);
 
@@ -189,7 +192,7 @@ public class DosenDashboardController {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
                 System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             
@@ -227,7 +230,7 @@ public class DosenDashboardController {
                 double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
                 System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             
