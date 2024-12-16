@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.rpl.project_sista.jdbcrepository.JdbcDosenRepository;
 import com.rpl.project_sista.model.entity.Dosen;
 import com.rpl.project_sista.repository.DosenRepository;
 

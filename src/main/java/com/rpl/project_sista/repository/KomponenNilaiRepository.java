@@ -12,6 +12,7 @@ public interface KomponenNilaiRepository {
     Optional<KomponenNilai> findById(Long id);
     List<KomponenNilai> findBySemester(Semester semester);
     List<KomponenNilai> findBySemesterAndTipePenilai(Semester semester, TipePenilai tipePenilai);
+    List<KomponenNilai> findKomponenByTipePenilai(TipePenilai tipePenilai);
     KomponenNilai save(KomponenNilai komponenNilai);
     void deleteById(Long id);
     long count();
