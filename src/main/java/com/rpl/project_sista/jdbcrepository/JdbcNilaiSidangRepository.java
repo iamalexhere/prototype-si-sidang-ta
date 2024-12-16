@@ -32,7 +32,7 @@ public class JdbcNilaiSidangRepository{
         return jdbcTemplate.query(sql, nilaiSidangRowMapper);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")    
     public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
         String sql = "SELECT komponen_id, nilai FROM nilai_sidang WHERE sidang_id = ?";
 
@@ -42,7 +42,6 @@ public class JdbcNilaiSidangRepository{
                 rs.getDouble("nilai")
             )
         );
-
     }    
 
     @SuppressWarnings("deprecation")
@@ -51,12 +50,12 @@ public class JdbcNilaiSidangRepository{
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, nilaiSidangRowMapper);
     }
 
-    public int saveNilaiSidang(int komponenId, int dosenId, double nilai) {
+    public int saveNilaiSidang(int idSidang, int komponenId, int dosenId, double nilai) {
         String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai, created_at, updated_at) " +
-                 "VALUES (12, ?, ?, ?, now(), now()) " +
+                 "VALUES (?, ?, ?, ?, now(), now()) " +
                  "ON CONFLICT (sidang_id, komponen_id, dosen_id) " +
                  "DO UPDATE SET nilai = EXCLUDED.nilai, updated_at = now()";
 
-    return jdbcTemplate.update(sql, komponenId, dosenId, nilai);
+    return jdbcTemplate.update(sql, idSidang, komponenId, dosenId, nilai);
     }
 }
