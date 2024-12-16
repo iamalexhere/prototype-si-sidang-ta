@@ -1,10 +1,8 @@
 package com.rpl.project_sista.jdbcrepository;
 
-
 import com.rpl.project_sista.dto.KomponenNilaiDTO;
 import com.rpl.project_sista.model.entity.NilaiSidang;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -12,11 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class JdbcNilaiSidangRepository{
+public class JdbcNilaiSidangRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public JdbcNilaiSidangRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -34,16 +31,24 @@ public class JdbcNilaiSidangRepository{
 
     @SuppressWarnings("deprecation")
     public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
-        String sql = "SELECT komponen_id, nilai FROM nilai_sidang WHERE sidang_id = ?";
+        String sql = """
+            SELECT kn.komponen_id, kn.nama_komponen, kn.bobot, ns.nilai 
+            FROM komponen_nilai kn 
+            LEFT JOIN nilai_sidang ns ON ns.komponen_id = kn.komponen_id 
+            WHERE ns.sidang_id = ?
 
-        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) ->
-            new KomponenNilaiDTO(
-                rs.getInt("komponen_id"),
-                rs.getDouble("nilai")
-            )
-        );
+            """;
 
-    }    
+        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) -> {
+            KomponenNilaiDTO dto = new KomponenNilaiDTO();
+            dto.setKomponenId(rs.getInt("komponen_id"));
+            dto.setNama(rs.getString("nama_komponen"));
+            dto.setBobot(rs.getFloat("bobot"));
+            dto.setNilai(rs.getDouble("nilai"));
+            return dto;
+        });
+
+    }
 
     @SuppressWarnings("deprecation")
     public NilaiSidang findById(Long id) {
@@ -57,6 +62,6 @@ public class JdbcNilaiSidangRepository{
                  "ON CONFLICT (sidang_id, komponen_id, dosen_id) " +
                  "DO UPDATE SET nilai = EXCLUDED.nilai, updated_at = now()";
 
-    return jdbcTemplate.update(sql, komponenId, dosenId, nilai);
+        return jdbcTemplate.update(sql, komponenId, dosenId, nilai);
     }
 }

@@ -24,7 +24,6 @@
                 profileBar.style.display = "none";
             }
         }
-
     </script>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
@@ -37,26 +36,19 @@
             </div>
             <nav class="flex flex-col flex-1 space-y-4">
                 <div>
-                    <a th:href="@{/dosen/dashboard?(dosenId=${dosenId})}" class="flex items-center darkColor p-2 rounded">
+                    <a th:href="@{/dosen/dashboard}" class="flex items-center darkColor p-2 rounded">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                     <strong>Dashboard</strong></a>
                 </div>
-                <div>
-                    <a th:href="@{/dosen/dashboard/bap(dosenId=${dosenId})}" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <strong>Manajemen BAP</strong></a>
+                <div class="mt-auto">
+                    <a th:href="@{/logout}" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <strong>Logout</strong>
+                    </a>
                 </div>
             </nav>
-            <div class="mt-auto">
-                <a href="index.html" class="flex items-center hover:bg-[rgb(182,64,94)] p-2 rounded">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Log Out
-                </a>
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -66,12 +58,14 @@
                 <div class="header-welcome flex w-full mb-8">
                     <div>
                         <h2 class="text-3xl font-bold mb-4 fontJakarta">Selamat Datang, <span th:text="${dosen.nama}">Dosen</span>!</h2>
-                        <p class="text-gray-600">Senin, 14 Oktober 2024</p>
+                        <p class="text-gray-600" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, d MMMM yyyy')}">Tanggal</p>
                     </div>
-                    <div id="profile_pic" class="profile-bar ml-auto" onclick="sidebar()">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2 hover:bg-gray-400 rounded transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
-                        </svg>
+                    <div class="ml-auto">
+                        <button onclick="sidebar()" class="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -97,71 +91,54 @@
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.jenisTA}">Jenis</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                              th:text="${ta.status}"
-                                              th:class="${taStatusColors.get(ta.status)}">
+                                              th:classappend="${taStatusColors.get(ta.status)}"
+                                              th:text="${ta.status}">
                                             Status
                                         </span>
                                     </td>
-
-                                    <!--Pop-up Informasi Mahasiswa Untuk Dosen Pembimbing-->
                                     <div id="popupOverlayPembimbing" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
                                         <div id="popupContentPembimbing" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
                                             <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
 
                                             <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
-                                                <div class="flex">
-                                                    <div class="flex">
-                                                        <p>NPM</p>
+                                                <div class="flex flex-col gap-3">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">NPM</p>
+                                                            <p class="text-left" th:text="${ta.mahasiswa.npm}">NPM</p>
+                                                        </div>
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Nama</p>
+                                                            <p class="text-left" th:text="${ta.mahasiswa.nama}">Nama</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex ml-auto">
-                                                        <p><strong th:text="${ta.mahasiswa.npm}">NPM</strong></p>
+                                                    <div class="flex flex-col gap-2">
+                                                        <p class="font-bold text-left">Judul</p>
+                                                        <p class="text-left" th:text="${ta.judul}">Judul</p>
                                                     </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex">
-                                                        <p>Nama</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p><strong th:text="${ta.mahasiswa.nama}">Nama</strong></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex">
-                                                        <p>Jenis</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p><strong th:text="${ta.jenisTA}">TA1</strong></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex w-4/5 items-center justify-start">
-                                                        <p>Topik TA</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p class="text-right flex-nowrap"><strong th:text="${ta.judul}">Judul TA</strong></p>
+                                                    <div class="flex flex-row gap-5">
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Jenis</p>
+                                                            <p class="text-left" th:text="${ta.jenisTA}">Jenis</p>
+                                                        </div>
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Status</p>
+                                                            <p class="text-left" th:text="${ta.status}">Status</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="flex w-full h-full mt-4">
-                                                <textarea placeholder="Catatan Sidang" class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center"></textarea>
+                                            <div class="mt-6">
+                                                <button id="closeButtonPembimbing" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                                                    Tutup
+                                                </button>
+                                                <a th:href="@{/dosen/dashboard/beriNilaiBimbingan(taId=${ta.taId})}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">
+                                                    Beri Nilai
+                                                </a>
                                             </div>
-
-                                            <a th:href="@{/dosen/dashboard/beriNilaiBimbingan?(dosenId=${dosenId}, taId=${ta.taId})}">
-                                                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
-                                                    <p>Nilai Mahasiswa</p>
-                                                </div>
-                                            </a>
-
-                                            <button id="closePopupPembimbing" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
-                                                Close
-                                            </button>
                                         </div>
                                     </div>
-
                                 </tr>
                                 <tr th:if="${bimbinganList.empty}">
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada mahasiswa bimbingan</td>
@@ -193,64 +170,52 @@
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${sidang.ruangan}">Ruangan</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                              th:text="${sidang.statusSidang}"
-                                              th:class="${sidangStatusColors.get(sidang.statusSidang)}">
+                                              th:classappend="${sidangStatusColors.get(sidang.statusSidang)}"
+                                              th:text="${sidang.statusSidang}">
                                             Status
                                         </span>
                                     </td>
-                                    <!--Pop-up Informasi Mahasiswa Untuk Dosen Penguji-->
                                     <div id="popupOverlayPenguji" class="fixed inset-0 bg-black flex bg-opacity-50 backdrop-blur-sm items-center justify-center hidden">
                                         <div id="popupContentPenguji" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
                                             <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
 
                                             <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
-                                                <div class="flex">
-                                                    <div class="flex">
-                                                        <p>NPM</p>
+                                                <div class="flex flex-col gap-3">
+                                                    <div class="flex flex-row gap-5">
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Mahasiswa</p>
+                                                            <p class="text-left" th:text="${sidang.tugasAkhir.mahasiswa.nama}">Mahasiswa</p>
+                                                        </div>
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Tanggal</p>
+                                                            <p class="text-left" th:text="${#temporals.format(sidang.jadwal, 'dd MMM yyyy HH:mm')}">Tanggal</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="flex ml-auto">
-                                                        <p><strong th:text="${sidang.tugasAkhir.mahasiswa.npm}">NPM</strong></p>
+                                                    <div class="flex flex-col gap-2">
+                                                        <p class="font-bold text-left">Judul</p>
+                                                        <p class="text-left" th:text="${sidang.tugasAkhir.judul}">Judul</p>
                                                     </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex">
-                                                        <p>Nama</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p><strong th:text="${sidang.tugasAkhir.mahasiswa.nama}">Nama</strong></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex w-4/5 items-center justify-start">
-                                                        <p>Semester</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p class="text-right"><strong th:text="${sidang.tugasAkhir.semester.periode}">periode</strong>
-                                                            <strong th:text="${sidang.tugasAkhir.semester.tahunAjaran}">tahunAjar</strong></p>
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex">
-                                                    <div class="flex w-4/5 items-center justify-start">
-                                                        <p>Judul TA</p>
-                                                    </div>
-                                                    <div class="flex ml-auto">
-                                                        <p class="text-right flex-nowrap"><strong th:text="${sidang.tugasAkhir.judul}">Judul TA</strong></p>
+                                                    <div class="flex flex-row gap-5">
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Ruangan</p>
+                                                            <p class="text-left" th:text="${sidang.ruangan}">Ruangan</p>
+                                                        </div>
+                                                        <div class="flex flex-col gap-2 w-1/2">
+                                                            <p class="font-bold text-left">Status</p>
+                                                            <p class="text-left" th:text="${sidang.statusSidang}">Status</p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <a th:href="@{/dosen/dashboard/beriNilaiPenguji?(dosenId=${dosenId}, taId=${sidang.tugasAkhir.taId})}">
-                                                <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
-                                                    <p>Nilai Mahasiswa</p>
-                                                </div>
-                                            </a>
-
-                                            <button id="closePopupPenguji" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
-                                                Close
-                                            </button>
+                                            <div class="mt-6">
+                                                <button id="closeButtonPenguji" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
+                                                    Tutup
+                                                </button>
+                                                <a th:href="@{/dosen/dashboard/beriNilaiPenguji(taId=${sidang.tugasAkhir.taId})}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-2">
+                                                    Beri Nilai
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </tr>
@@ -267,22 +232,18 @@
         <!--Left bar for profile-->
         <div id="profile" class="hidden h-full w-96 ml-auto border-l-4 flex-col">
             <p class="font-bold m-4 fontJakarta">Profile</p>
-
-            <div class="about h-full w-full flex flex-col justify-center items-center mt-6">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mr-2"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-4.42 0-8 1.79-8 4v2h16v-2c0-2.21-3.58-4-8-4z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="name text-center"><strong th:text="${dosen.nama}">John Doe</strong></p>
-                    <p class="email text-center" th:text="${dosen.email}">@dosen.unpar.ac.id</p>    
+            <div class="flex flex-col items-center justify-center p-4">
+                <div class="w-32 h-32 bg-gray-300 rounded-full mb-4"></div>
+                <h3 class="text-xl font-semibold" th:text="${dosen.nama}">Nama Dosen</h3>
+                <p class="text-gray-600" th:text="${dosen.nip}">NIP</p>
+            </div>
+            <div class="mt-4 p-4">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <p class="text-gray-600" th:text="${dosen.email}">email@example.com</p>
                 </div>
             </div>
         </div>
-
-        
     </div>
 </body>
 </html>

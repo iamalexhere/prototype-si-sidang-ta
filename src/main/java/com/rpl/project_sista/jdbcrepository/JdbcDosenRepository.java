@@ -30,7 +30,7 @@ public class JdbcDosenRepository implements DosenRepository {
     @Override
     public Optional<Dosen> findById(Integer id) {
         List<Dosen> results = jdbcTemplate.query(
-            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE d.dosen_id = ?",
+            "SELECT d.*, u.username, u.email, u.password_hash, u.role, u.created_at, u.is_active FROM dosen d JOIN users u ON d.user_id = u.user_id WHERE u.user_id = ?",
             this::mapRowToDosen,
             id
         );
@@ -39,7 +39,7 @@ public class JdbcDosenRepository implements DosenRepository {
 
     @Override
     public Dosen save(Dosen dosen) {
-        if (dosen.getDosenId() != null) {
+        if (dosen.getUserId() != null) {
             // Update existing dosen
             jdbcTemplate.update(
                 "UPDATE users SET username = ?, email = ?, password_hash = ?, role = ?::user_role, is_active = ? WHERE user_id = ?",
@@ -48,14 +48,14 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getPasswordHash(),
                 dosen.getRole().toString().toLowerCase(),
                 dosen.getIsActive(),
-                dosen.getDosenId()
+                dosen.getUserId()
             );
             
             jdbcTemplate.update(
                 "UPDATE dosen SET nip = ?, nama = ? WHERE user_id = ?",
                 dosen.getNip(),
                 dosen.getNama(),
-                dosen.getDosenId()
+                dosen.getUserId()
             );
         } else {
             // Insert new dosen
@@ -66,14 +66,11 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getPasswordHash(),
                 dosen.getRole().toString().toLowerCase(),
                 LocalDateTime.now(),
-                true
+                dosen.getIsActive()
             );
             
-            Integer userId = jdbcTemplate.queryForObject(
-                "SELECT user_id FROM users WHERE username = ?",
-                Integer.class,
-                dosen.getUsername()
-            );
+            Integer userId = jdbcTemplate.queryForObject("SELECT currval('users_user_id_seq')", Integer.class);
+            dosen.setUserId(userId);
             
             jdbcTemplate.update(
                 "INSERT INTO dosen (user_id, nip, nama) VALUES (?, ?, ?)",
@@ -82,16 +79,20 @@ public class JdbcDosenRepository implements DosenRepository {
                 dosen.getNama()
             );
             
-            dosen.setDosenId(userId);
+            // Get the generated dosen_id
+            Integer dosenId = jdbcTemplate.queryForObject(
+                "SELECT dosen_id FROM dosen WHERE user_id = ?",
+                Integer.class,
+                userId
+            );
+            dosen.setDosenId(dosenId);
         }
         return dosen;
     }
 
     @Override
     public void deleteById(Integer id) {
-        // First delete from dosen table
         jdbcTemplate.update("DELETE FROM dosen WHERE user_id = ?", id);
-        // Then delete from users table
         jdbcTemplate.update("DELETE FROM users WHERE user_id = ?", id);
     }
 
@@ -133,6 +134,7 @@ public class JdbcDosenRepository implements DosenRepository {
 
     private Dosen mapRowToDosen(ResultSet rs, int rowNum) throws SQLException {
         Dosen dosen = new Dosen();
+        dosen.setUserId(rs.getInt("user_id"));
         dosen.setDosenId(rs.getInt("dosen_id"));
         dosen.setNip(rs.getString("nip"));
         dosen.setNama(rs.getString("nama"));

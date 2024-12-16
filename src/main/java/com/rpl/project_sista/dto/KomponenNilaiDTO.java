@@ -1,19 +1,16 @@
 package com.rpl.project_sista.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KomponenNilaiDTO {
+    private Long id;
     private int komponenId;
-    private double nilai;
-
-    public KomponenNilaiDTO(int komponenId, double nilai) {
-        this.komponenId = komponenId;
-        this.nilai = nilai;
-    }
-
-    public int getKomponenId() {
-        return komponenId;
-    }
-
-    public double getNilai() {
-        return nilai;
-    }
+    private String nama;
+    private Float bobot;
+    private Double nilai;
 }

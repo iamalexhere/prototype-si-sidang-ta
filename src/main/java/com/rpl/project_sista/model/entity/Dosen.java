@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @Table(name = "dosen")
 @PrimaryKeyJoinColumn(name = "user_id")
 public class Dosen extends Users {
+    
+    @Column(name = "dosen_id")
+    private Integer dosenId;
+
     @Column(unique = true, nullable = false)
     private String nip;
     
@@ -41,11 +45,11 @@ public class Dosen extends Users {
     }
 
     public Integer getDosenId() {
-        return super.getUserId();
+        return dosenId;
     }
 
     public void setDosenId(Integer dosenId) {
-        super.setUserId(dosenId);
+        this.dosenId = dosenId;
     }
 
     // Additional getter and setter methods
