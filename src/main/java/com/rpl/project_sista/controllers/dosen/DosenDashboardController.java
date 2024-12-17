@@ -212,11 +212,11 @@ public class DosenDashboardController {
 
         // Mengatur bobot dan menyiapkan model
         for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
+            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot());
             komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
-        BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir * 100);
+        BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir);
         nilaiAkhir = bobot.setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         this.nilaiAkhirPembimbing = nilaiAkhir;
@@ -250,11 +250,11 @@ public class DosenDashboardController {
 
         // Mengatur bobot dan menyiapkan model
         for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
+            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot());
             komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
-        BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir * 100);
+        BigDecimal bobot = BigDecimal.valueOf(nilaiAkhir);
         nilaiAkhir = bobot.setScale(2, RoundingMode.HALF_UP).doubleValue();
 
         model.addAttribute("listNilai", listNilai);

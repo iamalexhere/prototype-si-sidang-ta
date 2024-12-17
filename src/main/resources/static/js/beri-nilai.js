@@ -1,29 +1,23 @@
-const saveButton = document.getElementById("saveButton");
+const form = document.querySelector("form");
 const confirmationPopup = document.getElementById("confirmationPopup");
 const successPopup = document.getElementById("successPopup");
 const confirmYes = document.getElementById("confirmYes");
 const confirmNo = document.getElementById("confirmNo");
 const successOk = document.getElementById("successOk");
 const popupOverlay = document.getElementById("popupOverlay");
-let valid = false;
 
-
-
-if(tataTulis.value != '' && kelengkapanMateri.value != '' && prosesBimbingan.value != '' && penguasaanMateri.value != ''){
-    valid = true;
-}
-
-
-function showPopup() {
+function showPopup(event) {
+    event.preventDefault();
     popupOverlay.classList.remove('hidden');
     confirmationPopup.classList.remove("hidden");
 }
 
-saveButton.addEventListener("click", showPopup);
+form.addEventListener("submit", showPopup);
 
 function confirmYesFunc(){
     confirmationPopup.classList.add("hidden");
-    successPopup.classList.remove("hidden"); 
+    successPopup.classList.remove("hidden");
+    form.submit();
 }
 
 confirmYes.addEventListener("click", confirmYesFunc);
