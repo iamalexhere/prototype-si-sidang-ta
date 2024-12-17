@@ -138,7 +138,7 @@ public class DosenDashboardController {
         
         // Mengatur bobot dalam persentase
         for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
+            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot());
             komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 
@@ -178,7 +178,7 @@ public class DosenDashboardController {
         
         // Mengatur bobot dalam persentase
         for (KomponenNilai komp : listNilai) {
-            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot() * 100);
+            BigDecimal bobot = BigDecimal.valueOf(komp.getBobot());
             komp.setBobot(bobot.setScale(2, RoundingMode.HALF_UP).floatValue());
         }
 

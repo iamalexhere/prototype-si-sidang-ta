@@ -24,7 +24,6 @@
                 profileBar.style.display = "none";
             }
         }
-
     </script>
 </head>
 <body class="bg-gray-100 font-sans h-screen">
@@ -82,8 +81,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 hover:bg-gray-200 cursor-pointer">
-                                <tr th:each="ta : ${bimbinganList}" id="infoButtonPembimbing">
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="ta : ${bimbinganList}" class="hover:bg-gray-200 cursor-pointer">
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.npm}">NPM</td>
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${ta.mahasiswa.nama}">Nama</td>
                                     <td class="px-6 py-4" th:text="${ta.judul}">Judul TA</td>
@@ -95,10 +94,12 @@
                                             Status
                                         </span>
                                     </td>
-
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="infoButtonPembimbing" data-popup="popupOverlayPembimbing">Info</button>
+                                    
                                     <!--Pop-up Informasi Mahasiswa Untuk Dosen Pembimbing-->
-                                    <div id="popupOverlayPembimbing" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
-                                        <div id="popupContentPembimbing" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+                                    <div class="popupOverlayPembimbing fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center hidden">
+                                        <div class="popupContentPembimbing pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
                                             <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
 
                                             <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
@@ -139,14 +140,15 @@
                                                 </div>
                                             </div>
 
-                                            <div class="flex w-full h-full mt-4">
-                                                <form id="formCatatanPembimbing" method="POST" action="/dosen/dashboard/simpanCatatan">
+                                            <div class="mt-4"> <!-- Container for textarea and button -->
+                                                <form id="formCatatanPembimbing" method="POST" action="/dosen/dashboard/simpanCatatan" class="flex flex-col">
                                                     <textarea id="isiCatatan" name="isiCatatan" placeholder="Catatan Sidang"
-                                                        class="h-full w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center">
+                                                            class="w-full resize-none bg-gray-100 rounded-xl p-5 flex items-center mb-3">
                                                     </textarea>
-                                                    <button type="submit" class="bg-green-300 text-white px-4 py-2 mt-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">Simpan Catatan</button>
+                                                    <button type="submit" class="bg-green-300 text-white px-4 py-2 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer self-start">Simpan Catatan</button>
                                                 </form>
                                             </div>
+
 
                                             <a th:href="@{/dosen/dashboard/beriNilaiBimbingan?(dosenId=${dosenId}, taId=${ta.taId})}">
                                                 <div id="nilai-mahasiswa" class="bg-green-300 mt-5 flex p-5 rounded-xl items-center justify-center hover:bg-green-500 hover:font-bold hover:cursor-pointer">
@@ -154,12 +156,12 @@
                                                 </div>
                                             </a>
 
-                                            <button id="closePopupPembimbing" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                                            <button class="closePopupPembimbing bg-red-500 text-white px-4 py-2 rounded mt-5">
                                                 Close
                                             </button>
                                         </div>
                                     </div>
-
+                                    </td>
                                 </tr>
                                 <tr th:if="${bimbinganList.empty}">
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada mahasiswa bimbingan</td>
@@ -183,8 +185,8 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200 hover:bg-gray-200 cursor-pointer">
-                                <tr th:each="sidang : ${sidangList}" id="infoButtonPenguji">
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="sidang : ${sidangList}" class="hover:bg-gray-200 cursor-pointer">
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${#temporals.format(sidang.jadwal, 'dd MMM yyyy HH:mm')}">Tanggal</td>
                                     <td class="px-6 py-4 whitespace-nowrap" th:text="${sidang.tugasAkhir.mahasiswa.nama}">Mahasiswa</td>
                                     <td class="px-6 py-4" th:text="${sidang.tugasAkhir.judul}">Judul TA</td>
@@ -196,9 +198,12 @@
                                             Status
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="infoButtonPenguji" data-popup="popupOverlayPenguji">Info</button>
+                                    
                                     <!--Pop-up Informasi Mahasiswa Untuk Dosen Penguji-->
-                                    <div id="popupOverlayPenguji" class="fixed inset-0 bg-black flex bg-opacity-50 backdrop-blur-sm items-center justify-center hidden">
-                                        <div id="popupContentPenguji" class="pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
+                                    <div class="popupOverlayPenguji fixed inset-0 bg-black flex bg-opacity-50 backdrop-blur-sm items-center justify-center hidden">
+                                        <div class="popupContentPenguji pop-up w-1/2 bg-white p-6 rounded-lg shadow-lg text-center transform scale-75 transition duration-100 ease-in-out">
                                             <h2 class="text-xl font-bold mb-4">Informasi Mahasiswa</h2>
 
                                             <div id="banner" class="flex gap-5 flex-col bg-gray-100 rounded-xl p-5 mt-7">
@@ -246,11 +251,12 @@
                                                 </div>
                                             </a>
 
-                                            <button id="closePopupPenguji" class="bg-red-500 text-white px-4 py-2 rounded mt-5">
+                                            <button class="closePopupPenguji bg-red-500 text-white px-4 py-2 rounded mt-5">
                                                 Close
                                             </button>
                                         </div>
                                     </div>
+                                    </td>
                                 </tr>
                                 <tr th:if="${sidangList.empty}">
                                     <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada jadwal sidang</td>
