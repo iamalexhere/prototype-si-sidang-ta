@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/mahasiswa/nilai")
+@RequestMapping("/mahasiswa")
 public class MahasiswaNilaiController {
 
     @Autowired
@@ -37,7 +38,7 @@ public class MahasiswaNilaiController {
         BOBOT_PENILAI.put("KTA", 0.10f); // 10%
     }
 
-    @GetMapping
+    @GetMapping("/nilai")
     public String showNilai(HttpSession session, Model model) {
         int mahasiswaId = (int) session.getAttribute("mahasiswaId");
         
@@ -57,21 +58,53 @@ public class MahasiswaNilaiController {
 
         // Get all nilai components for this sidang
         List<KomponenNilaiDTO> nilaiList = nilaiSidangService.findAllNilaiByIdSidang(sidang.getSidangId().intValue());
+        System.out.println("Found " + nilaiList.size() + " nilai components");
         
-        // Calculate nilai per penilai
-        Map<String, Float> nilaiPerPenilai = new HashMap<>();
+        // Split penguji nilai into PENGUJI_1 and PENGUJI_2
+        List<KomponenNilaiDTO> updatedNilaiList = new ArrayList<>();
+        Map<String, List<KomponenNilaiDTO>> pengujiByDosen = new HashMap<>();
+        
+        for (KomponenNilaiDTO nilai : nilaiList) {
+            if (nilai.getTipePenilai().equalsIgnoreCase("penguji")) {
+                String dosenName = nilai.getNamaDosen();
+                pengujiByDosen.computeIfAbsent(dosenName, k -> new ArrayList<>()).add(nilai);
+            } else {
+                updatedNilaiList.add(nilai);
+            }
+        }
+        
+        // Convert penguji to PENGUJI_1 and PENGUJI_2
+        int pengujiCount = 1;
+        for (List<KomponenNilaiDTO> dosenNilai : pengujiByDosen.values()) {
+            String pengujiType = "PENGUJI_" + pengujiCount;
+            for (KomponenNilaiDTO nilai : dosenNilai) {
+                nilai.setTipePenilai(pengujiType);
+                updatedNilaiList.add(nilai);
+            }
+            pengujiCount++;
+        }
+
+        // Normalize other tipe_penilai to uppercase
+        updatedNilaiList.forEach(nilai -> {
+            if (nilai.getTipePenilai().equalsIgnoreCase("pembimbing")) {
+                nilai.setTipePenilai("PEMBIMBING");
+            }
+        });
         
         // Group nilai by penilai and calculate average
-        Map<String, List<KomponenNilaiDTO>> nilaiByPenilai = nilaiList.stream()
+        Map<String, List<KomponenNilaiDTO>> nilaiByPenilai = updatedNilaiList.stream()
             .collect(Collectors.groupingBy(KomponenNilaiDTO::getTipePenilai));
+        System.out.println("Grouped by penilai: " + nilaiByPenilai.keySet());
 
         // Calculate average nilai for each penilai
+        Map<String, Float> nilaiPerPenilai = new HashMap<>();
         nilaiByPenilai.forEach((tipePenilai, komponenList) -> {
             float avgNilai = (float) komponenList.stream()
                 .mapToDouble(KomponenNilaiDTO::getNilai)
                 .average()
                 .orElse(0.0);
             nilaiPerPenilai.put(tipePenilai, avgNilai);
+            System.out.println("Average for " + tipePenilai + ": " + avgNilai);
         });
 
         // Add KTA's fixed nilai (100 for kedisiplinan)
@@ -84,12 +117,14 @@ public class MahasiswaNilaiController {
             Float bobot = entry.getValue();
             Float nilai = nilaiPerPenilai.getOrDefault(tipePenilai, 0.0f);
             nilaiAkhir += nilai * bobot;
+            System.out.println("Nilai for " + tipePenilai + ": " + nilai + " * " + bobot + " = " + (nilai * bobot));
         }
 
         model.addAttribute("nilaiPerPenilai", nilaiPerPenilai);
         model.addAttribute("nilaiAkhir", nilaiAkhir);
         model.addAttribute("bobotPenilai", BOBOT_PENILAI);
-        model.addAttribute("nilaiComponents", nilaiList);
+        model.addAttribute("nilaiComponents", updatedNilaiList);
+        model.addAttribute("nilaiByPenilai", nilaiByPenilai);
         
         return "mahasiswa/nilai-mahasiswa";
     }

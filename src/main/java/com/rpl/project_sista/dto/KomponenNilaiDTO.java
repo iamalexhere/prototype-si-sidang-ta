@@ -1,13 +1,13 @@
 package com.rpl.project_sista.dto;
 
 public class KomponenNilaiDTO {
-    private int komponenId;
+    private Long komponenId;
     private float nilai;
     private String namaKomponen;
     private String namaDosen;
     private String tipePenilai;
 
-    public KomponenNilaiDTO(int komponenId, float nilai, String namaKomponen, String namaDosen, String tipePenilai) {
+    public KomponenNilaiDTO(Long komponenId, float nilai, String namaKomponen, String namaDosen, String tipePenilai) {
         this.komponenId = komponenId;
         this.nilai = nilai;
         this.namaKomponen = namaKomponen;
@@ -16,7 +16,7 @@ public class KomponenNilaiDTO {
     }
 
     // Getters
-    public int getKomponenId() {
+    public Long getKomponenId() {
         return komponenId;
     }
 
@@ -37,7 +37,7 @@ public class KomponenNilaiDTO {
     }
 
     // Setters
-    public void setKomponenId(int komponenId) {
+    public void setKomponenId(Long komponenId) {
         this.komponenId = komponenId;
     }
 
@@ -55,5 +55,13 @@ public class KomponenNilaiDTO {
 
     public void setTipePenilai(String tipePenilai) {
         this.tipePenilai = tipePenilai;
+    }
+
+    public void setTipePenilai(Integer tipePenilai) {
+        this.tipePenilai = String.valueOf(tipePenilai);
+    }
+
+    public void setTipePenilai(Boolean tipePenilai) {
+        this.tipePenilai = String.valueOf(tipePenilai);
     }
 }

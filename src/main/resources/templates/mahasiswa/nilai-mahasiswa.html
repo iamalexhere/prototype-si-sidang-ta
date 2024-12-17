@@ -122,21 +122,74 @@
             <!-- Komponen Nilai Details -->
             <div th:if="${nilaiComponents != null and !nilaiComponents.empty}" class="mt-8">
                 <h4 class="text-xl font-medium text-gray-800 mb-4">Detail Komponen Nilai</h4>
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <table class="min-w-full">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Komponen</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr th:each="komponen : ${nilaiComponents}">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.komponenId}">Komponen 1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.nilai}">85</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                
+                <!-- Pembimbing Components -->
+                <div th:if="${nilaiByPenilai['PEMBIMBING'] != null}" class="mb-6">
+                    <h5 class="text-lg font-medium text-gray-800 mb-2">Komponen Nilai Pembimbing</h5>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Komponen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penilai</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="komponen : ${nilaiByPenilai['PEMBIMBING']}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaKomponen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaDosen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#numbers.formatDecimal(komponen.nilai, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Penguji 1 Components -->
+                <div th:if="${nilaiByPenilai['PENGUJI_1'] != null}" class="mb-6">
+                    <h5 class="text-lg font-medium text-gray-800 mb-2">Komponen Nilai Penguji 1</h5>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Komponen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penilai</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="komponen : ${nilaiByPenilai['PENGUJI_1']}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaKomponen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaDosen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#numbers.formatDecimal(komponen.nilai, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Penguji 2 Components -->
+                <div th:if="${nilaiByPenilai['PENGUJI_2'] != null}" class="mb-6">
+                    <h5 class="text-lg font-medium text-gray-800 mb-2">Komponen Nilai Penguji 2</h5>
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Komponen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penilai</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr th:each="komponen : ${nilaiByPenilai['PENGUJI_2']}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaKomponen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${komponen.namaDosen}"></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" th:text="${#numbers.formatDecimal(komponen.nilai, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

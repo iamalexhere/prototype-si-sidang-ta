@@ -124,7 +124,7 @@ public class DosenDashboardController {
         double totalNilai = 0.0;
 
         for (KomponenNilaiDTO nilaiSidang : nilaiSidangList) {
-            int idKomponen = nilaiSidang.getKomponenId();
+            Long idKomponen = nilaiSidang.getKomponenId();
             double nilai = nilaiSidang.getNilai();
 
             System.out.println("==============NILAI SIDANG===============================");
@@ -167,7 +167,7 @@ public class DosenDashboardController {
         double totalNilai = 0.0;
 
         for (KomponenNilaiDTO nilaiSidang : nilaiSidangList) {
-            int idKomponen = nilaiSidang.getKomponenId();
+            Long idKomponen = nilaiSidang.getKomponenId();
             double nilai = nilaiSidang.getNilai();
 
             // Cari bobot dari Map, jika idKomponen tidak ada maka gunakan bobot default 0

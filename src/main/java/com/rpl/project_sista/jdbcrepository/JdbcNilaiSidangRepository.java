@@ -36,19 +36,30 @@ public class JdbcNilaiSidangRepository {
         String sql = "SELECT n.komponen_id, n.nilai, k.nama_komponen, d.nama as nama_dosen, k.tipe_penilai " +
                     "FROM nilai_sidang n " +
                     "JOIN komponen_nilai k ON n.komponen_id = k.komponen_id " +
-                    "JOIN penguji_sidang p ON n.dosen_id = p.dosen_id AND n.sidang_id = p.sidang_id " +
-                    "JOIN dosen d ON p.dosen_id = d.dosen_id " +
-                    "WHERE n.sidang_id = ?";
+                    "LEFT JOIN dosen d ON n.dosen_id = d.dosen_id " +
+                    "WHERE n.sidang_id = ? " +
+                    "ORDER BY k.tipe_penilai, k.komponen_id";
 
-        return jdbcTemplate.query(sql, new Object[]{sidangId}, (rs, rowNum) ->
-            new KomponenNilaiDTO(
-                rs.getInt("komponen_id"),
-                rs.getFloat("nilai"),
-                rs.getString("nama_komponen"),
-                rs.getString("nama_dosen"),
-                rs.getString("tipe_penilai")
-            )
-        );
+        System.out.println("Executing SQL for sidangId: " + sidangId);
+        try {
+            List<KomponenNilaiDTO> results = jdbcTemplate.query(sql, new Object[]{sidangId}, (rs, rowNum) -> {
+                KomponenNilaiDTO dto = new KomponenNilaiDTO(
+                    rs.getLong("komponen_id"),
+                    rs.getFloat("nilai"),
+                    rs.getString("nama_komponen"),
+                    rs.getString("nama_dosen") != null ? rs.getString("nama_dosen") : "Unknown",
+                    rs.getString("tipe_penilai")
+                );
+                System.out.println("Found nilai: " + dto.getTipePenilai() + " - " + dto.getNamaKomponen() + " - " + dto.getNilai());
+                return dto;
+            });
+            System.out.println("Total results found: " + results.size());
+            return results;
+        } catch (Exception e) {
+            System.err.println("Error executing query: " + e.getMessage());
+            e.printStackTrace();
+            return List.of();
+        }
     }    
 
     public NilaiSidang findById(Long id) {
