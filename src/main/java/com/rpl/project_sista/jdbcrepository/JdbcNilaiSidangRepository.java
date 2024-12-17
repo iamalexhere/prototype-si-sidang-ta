@@ -1,6 +1,5 @@
 package com.rpl.project_sista.jdbcrepository;
 
-
 import com.rpl.project_sista.dto.KomponenNilaiDTO;
 import com.rpl.project_sista.model.entity.NilaiSidang;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class JdbcNilaiSidangRepository{
+public class JdbcNilaiSidangRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,6 +23,7 @@ public class JdbcNilaiSidangRepository{
     private final RowMapper<NilaiSidang> nilaiSidangRowMapper = (rs, rowNum) -> {
         NilaiSidang nilaiSidang = new NilaiSidang();
         nilaiSidang.setNilaiId(rs.getLong("nilai_id"));
+        nilaiSidang.setNilai(rs.getFloat("nilai"));
         return nilaiSidang;
     };
 
@@ -32,30 +32,32 @@ public class JdbcNilaiSidangRepository{
         return jdbcTemplate.query(sql, nilaiSidangRowMapper);
     }
 
-    @SuppressWarnings("deprecation")    
-    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
-        String sql = "SELECT komponen_id, nilai FROM nilai_sidang WHERE sidang_id = ?";
+    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int sidangId) {
+        String sql = "SELECT n.komponen_id, n.nilai, k.nama_komponen, d.nama as nama_dosen, k.tipe_penilai " +
+                    "FROM nilai_sidang n " +
+                    "JOIN komponen_nilai k ON n.komponen_id = k.komponen_id " +
+                    "JOIN penguji_sidang p ON n.dosen_id = p.dosen_id AND n.sidang_id = p.sidang_id " +
+                    "JOIN dosen d ON p.dosen_id = d.dosen_id " +
+                    "WHERE n.sidang_id = ?";
 
-        return jdbcTemplate.query(sql, new Object[]{idSidang}, (rs, rowNum) ->
+        return jdbcTemplate.query(sql, new Object[]{sidangId}, (rs, rowNum) ->
             new KomponenNilaiDTO(
                 rs.getInt("komponen_id"),
-                rs.getDouble("nilai")
+                rs.getFloat("nilai"),
+                rs.getString("nama_komponen"),
+                rs.getString("nama_dosen"),
+                rs.getString("tipe_penilai")
             )
         );
     }    
 
-    @SuppressWarnings("deprecation")
     public NilaiSidang findById(Long id) {
         String sql = "SELECT * FROM nilai_sidang WHERE nilai_id = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{id}, nilaiSidangRowMapper);
     }
 
-    public int saveNilaiSidang(int idSidang, int komponenId, int dosenId, double nilai) {
-        String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai, created_at, updated_at) " +
-                 "VALUES (?, ?, ?, ?, now(), now()) " +
-                 "ON CONFLICT (sidang_id, komponen_id, dosen_id) " +
-                 "DO UPDATE SET nilai = EXCLUDED.nilai, updated_at = now()";
-
-    return jdbcTemplate.update(sql, idSidang, komponenId, dosenId, nilai);
+    public void saveNilaiSidang(int idSidang, int komponenId, int dosenId, float nilai) {
+        String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.update(sql, idSidang, komponenId, dosenId, nilai);
     }
 }

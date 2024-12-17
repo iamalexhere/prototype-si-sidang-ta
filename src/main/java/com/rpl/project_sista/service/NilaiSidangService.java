@@ -24,11 +24,11 @@ public class NilaiSidangService {
         return nilaiSidangJdbcRepository.findById(id);
     }
 
-    public void saveNilaiSidang(int idSidang, int komponenId, int dosenId, double nilai) {
+    public void saveNilaiSidang(int idSidang, int komponenId, int dosenId, float nilai) {
         nilaiSidangJdbcRepository.saveNilaiSidang(idSidang, komponenId, dosenId, nilai);
     }
 
-    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang){
+    public List<KomponenNilaiDTO> findAllNilaiByIdSidang(int idSidang) {
         return nilaiSidangJdbcRepository.findAllNilaiByIdSidang(idSidang);
     }
 }

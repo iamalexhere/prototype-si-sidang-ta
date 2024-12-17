@@ -201,7 +201,7 @@ public class DosenDashboardController {
         for (KomponenNilai komp : listNilai) {
             String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
             if (allParams.containsKey(paramName)) {
-                double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
+                float nilaiKomponen = Float.parseFloat(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
                 nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
@@ -239,7 +239,7 @@ public class DosenDashboardController {
         for (KomponenNilai komp : listNilai) {
             String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
             if (allParams.containsKey(paramName)) {
-                double nilaiKomponen = Double.parseDouble(allParams.get(paramName));
+                float nilaiKomponen = Float.parseFloat(allParams.get(paramName));
                 nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
                 nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
