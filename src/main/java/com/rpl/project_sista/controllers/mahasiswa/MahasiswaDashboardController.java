@@ -45,6 +45,11 @@ public class MahasiswaDashboardController {
 
     @GetMapping
     public String showDashboard(HttpSession session, Model model) {
+        //cek udh login atau belum
+        if(session.getAttribute("email") == null) {
+            return "redirect:/";
+        }
+
         // Get Tugas Akhir data
         int mahasiswaId = (int) session.getAttribute("mahasiswaId");
         TugasAkhir tugasAkhir = mahasiswaDashboardService.getTugasAkhir(mahasiswaId);

@@ -83,6 +83,11 @@ public class DosenDashboardController {
 
     @GetMapping
     public String showDashboard(HttpSession session, Model model) {
+        //cek udh login atau belum
+        if(session.getAttribute("email") == null) {
+            return "redirect:/";
+        }
+
         // Get data
         int dosenId = (int) session.getAttribute("dosenId");
         List<TugasAkhir> bimbinganList = dosenDashboardService.getTugasAkhirBimbingan(dosenId);
