@@ -207,9 +207,15 @@ public class DosenDashboardController {
             String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
             if (allParams.containsKey(paramName)) {
                 float nilaiKomponen = Float.parseFloat(allParams.get(paramName));
-                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
+                
+                // Round nilaiKomponen to two decimal places
+                BigDecimal bd = new BigDecimal(Float.toString(nilaiKomponen));
+                bd = bd.setScale(2, RoundingMode.HALF_UP);
+                float roundedNilaiKomponen = bd.floatValue();
+
+                nilaiAkhir += roundedNilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, roundedNilaiKomponen);
                 System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             
@@ -245,9 +251,15 @@ public class DosenDashboardController {
             String paramName = "nilai_" + komp.getKomponenId(); // Input harus memiliki id unik
             if (allParams.containsKey(paramName)) {
                 float nilaiKomponen = Float.parseFloat(allParams.get(paramName));
-                nilaiAkhir += nilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
+                
+                // Round nilaiKomponen to two decimal places
+                BigDecimal bd = new BigDecimal(Float.toString(nilaiKomponen));
+                bd = bd.setScale(2, RoundingMode.HALF_UP);
+                float roundedNilaiKomponen = bd.floatValue();
+
+                nilaiAkhir += roundedNilaiKomponen * komp.getBobot() / 100; // Bobot dalam %
                 // Menyimpan nilai sidang ke database
-                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, nilaiKomponen);
+                nilaiSidangService.saveNilaiSidang(taId, komp.getKomponenId().intValue(), this.dosenId, roundedNilaiKomponen);
                 System.out.println(komp.getKomponenId()+" "+this.dosenId+" "+nilaiKomponen);
             }
             

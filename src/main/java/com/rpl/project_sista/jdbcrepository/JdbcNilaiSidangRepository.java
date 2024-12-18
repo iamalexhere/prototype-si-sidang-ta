@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Repository
@@ -68,7 +70,15 @@ public class JdbcNilaiSidangRepository {
     }
 
     public void saveNilaiSidang(int idSidang, int komponenId, int dosenId, float nilai) {
-        String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, idSidang, komponenId, dosenId, nilai);
+        // Round the nilai to two decimal places
+        BigDecimal bd = new BigDecimal(Float.toString(nilai));
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        float roundedNilai = bd.floatValue();
+
+        String sql = "INSERT INTO nilai_sidang (sidang_id, komponen_id, dosen_id, nilai) " +
+                     "VALUES (?, ?, ?, ?) " +
+                     "ON CONFLICT (sidang_id, komponen_id, dosen_id) " +
+                     "DO UPDATE SET nilai = ?";
+        jdbcTemplate.update(sql, idSidang, komponenId, dosenId, roundedNilai, roundedNilai);
     }
 }
