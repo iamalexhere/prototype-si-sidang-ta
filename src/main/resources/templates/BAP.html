@@ -124,7 +124,7 @@
                         <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 10%;">Bobot</th>
                         <th style="border: 1px solid black; padding: 0.5rem; font-weight: 600; width: 10%;">Nilai Akhir</th>
                     </tr>
-                    <tr style="font-weight: 600;">
+                    <tr>
                         <td style="border: 1px solid black; padding: 0.5rem;">1</td>
                         <td style="border: 1px solid black; padding: 0.5rem;">Ketua Tim Penguji</td>
                         <td style="border: 1px solid black; padding: 0.5rem;" th:text="${KetuaNilai}">80.90</td>
@@ -197,6 +197,97 @@
                     <td style="border: 1px solid #D1D5DB; padding: 0.5rem; height: 12rem; width:12rem"></td>
                 </tr>
             </table>
+        </div>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- BAP Upload/Download Table -->
+            <div class="mb-8 overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-6 py-3 border-b text-center">Penguji 1</th>
+                            <th class="px-6 py-3 border-b text-center">Penguji 2</th>
+                            <th class="px-6 py-3 border-b text-center">Pembimbing</th>
+                            <th class="px-6 py-3 border-b text-center">Mahasiswa</th>
+                            <th class="px-6 py-3 border-b text-center">KTA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-6 py-4 border-b text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div th:with="penguji1Approval=${bap.persetujuanSet.?[user.role == 'dosen' and user.dosen.pengujiSidangSet.?[peranPenguji == 'penguji1' and sidang.sidangId == bap.sidang.sidangId].size() > 0].?[isApproved == true].size() > 0}" 
+                                         th:if="${penguji1Approval}" class="text-green-600">✓ Approved</div>
+                                    <form th:action="@{/bap/upload/{sidangId}(sidangId=${bap.sidang.sidangId})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="userType" value="PENGUJI_1">
+                                        <input type="file" name="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                        <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+                                    </form>
+                                    <a th:if="${penguji1Approval}" 
+                                       th:href="@{/bap/download/{sidangId}/PENGUJI_1(sidangId=${bap.sidang.sidangId})}" 
+                                       class="text-blue-600 hover:text-blue-800">Download</a>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div th:with="penguji2Approval=${bap.persetujuanSet.?[user.role == 'dosen' and user.dosen.pengujiSidangSet.?[peranPenguji == 'penguji2' and sidang.sidangId == bap.sidang.sidangId].size() > 0].?[isApproved == true].size() > 0}"
+                                         th:if="${penguji2Approval}" class="text-green-600">✓ Approved</div>
+                                    <form th:action="@{/bap/upload/{sidangId}(sidangId=${bap.sidang.sidangId})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="userType" value="PENGUJI_2">
+                                        <input type="file" name="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                        <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+                                    </form>
+                                    <a th:if="${penguji2Approval}"
+                                       th:href="@{/bap/download/{sidangId}/PENGUJI_2(sidangId=${bap.sidang.sidangId})}" 
+                                       class="text-blue-600 hover:text-blue-800">Download</a>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div th:with="pembimbingApproval=${bap.persetujuanSet.?[user.role == 'dosen' and user.dosen.pembimbingTASet.?[ta.taId == bap.sidang.ta.taId].size() > 0].?[isApproved == true].size() > 0}"
+                                         th:if="${pembimbingApproval}" class="text-green-600">✓ Approved</div>
+                                    <form th:action="@{/bap/upload/{sidangId}(sidangId=${bap.sidang.sidangId})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="userType" value="PEMBIMBING">
+                                        <input type="file" name="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                        <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+                                    </form>
+                                    <a th:if="${pembimbingApproval}"
+                                       th:href="@{/bap/download/{sidangId}/PEMBIMBING(sidangId=${bap.sidang.sidangId})}" 
+                                       class="text-blue-600 hover:text-blue-800">Download</a>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div th:with="mahasiswaApproval=${bap.persetujuanSet.?[user.role == 'mahasiswa' and user.mahasiswa.tugasAkhirSet.?[taId == bap.sidang.ta.taId].size() > 0].?[isApproved == true].size() > 0}"
+                                         th:if="${mahasiswaApproval}" class="text-green-600">✓ Approved</div>
+                                    <form th:action="@{/bap/upload/{sidangId}(sidangId=${bap.sidang.sidangId})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="userType" value="MAHASISWA">
+                                        <input type="file" name="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                        <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+                                    </form>
+                                    <a th:if="${mahasiswaApproval}"
+                                       th:href="@{/bap/download/{sidangId}/MAHASISWA(sidangId=${bap.sidang.sidangId})}" 
+                                       class="text-blue-600 hover:text-blue-800">Download</a>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 border-b text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div th:with="ktaApproval=${bap.persetujuanSet.?[user.role == 'admin'].?[isApproved == true].size() > 0}"
+                                         th:if="${ktaApproval}" class="text-green-600">✓ Approved</div>
+                                    <form th:action="@{/bap/upload/{sidangId}(sidangId=${bap.sidang.sidangId})}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="userType" value="KTA">
+                                        <input type="file" name="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                                        <button type="submit" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Upload</button>
+                                    </form>
+                                    <a th:if="${ktaApproval}"
+                                       th:href="@{/bap/download/{sidangId}/KTA(sidangId=${bap.sidang.sidangId})}" 
+                                       class="text-blue-600 hover:text-blue-800">Download</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <button  class="bg-green-600 hover:bg-green-800 text-white font-bold rounded-full py-2 px-6 w-32" id="DownloadButton">Download</button>
