@@ -45,9 +45,12 @@ public class JdbcNilaiSidangRepository {
         System.out.println("Executing SQL for sidangId: " + sidangId);
         try {
             List<KomponenNilaiDTO> results = jdbcTemplate.query(sql, new Object[]{sidangId}, (rs, rowNum) -> {
+                BigDecimal bd = new BigDecimal(rs.getFloat("nilai"));
+                bd = bd.setScale(2, RoundingMode.HALF_UP);
+                float roundedNilai = bd.floatValue();
                 KomponenNilaiDTO dto = new KomponenNilaiDTO(
                     rs.getLong("komponen_id"),
-                    rs.getFloat("nilai"),
+                    roundedNilai,
                     rs.getString("nama_komponen"),
                     rs.getString("nama_dosen") != null ? rs.getString("nama_dosen") : "Unknown",
                     rs.getString("tipe_penilai")
